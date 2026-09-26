@@ -71,6 +71,9 @@ manga-ai = "manga_ai.cli:main"
 where = ["."]
 include = ["manga_ai*"]
 
+[tool.setuptools.package-data]
+manga_ai = ["configs/*.yaml", "configs/*.yml"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]

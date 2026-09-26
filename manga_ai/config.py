@@ -31,6 +31,74 @@ def config_hash(config: Dict[str, Any]) -> str:
     return hashlib.sha256(serialized.encode("utf-8")).hexdigest()[:16]
 
 
+def package_root() -> Path:
+    """Repo / install root (parent of the ``manga_ai`` package)."""
+    return Path(__file__).resolve().parent.parent
+
+
+def list_bundled_configs() -> list[str]:
+    """Return available config stem names from known config directories."""
+    names: set[str] = set()
+    for folder in (
+        package_root() / "configs",
+        Path(__file__).resolve().parent / "configs",
+    ):
+        if not folder.is_dir():
+            continue
+        for path in folder.glob("*.yaml"):
+            names.add(path.stem)
+        for path in folder.glob("*.yml"):
+            names.add(path.stem)
+    return sorted(names)
+
+
+def resolve_config_path(config: str | Path | None) -> Optional[Path]:
+    """Resolve a config path or bare name (e.g. ``hybrid_qwen_en``).
+
+    Search order:
+      1. Path as given (cwd-relative or absolute)
+      2. ``./configs/<name>.yaml``
+      3. ``<package_root>/configs/<name>.yaml``
+      4. ``manga_ai/configs/<name>.yaml`` (bundled with the package)
+    """
+    if config is None or str(config).strip() == "":
+        return None
+
+    raw = Path(config)
+    if raw.is_file():
+        return raw.resolve()
+
+    name = raw.name
+    if raw.suffix.lower() not in (".yaml", ".yml"):
+        name = f"{name}.yaml"
+
+    root = package_root()
+    candidates = [
+        Path.cwd() / config,
+        Path.cwd() / "configs" / name,
+        root / "configs" / name,
+        root / "configs" / raw.name,
+        Path(__file__).resolve().parent / "configs" / name,
+        Path(__file__).resolve().parent / "configs" / raw.name,
+    ]
+    # Also allow ``configs/foo.yaml`` when cwd is elsewhere but repo has it
+    if not str(config).startswith(("configs/", "configs\\")):
+        candidates.append(root / "configs" / Path(config).name)
+
+    seen: set[Path] = set()
+    for cand in candidates:
+        try:
+            resolved = cand.resolve()
+        except OSError:
+            continue
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        if resolved.is_file():
+            return resolved
+    return None
+
+
 class Config:
     """Pipeline configuration wrapper."""
 
@@ -60,11 +128,16 @@ class Config:
                 data = yaml.safe_load(f) or {}
 
         if config_path:
-            cfg_path = Path(config_path)
-            if cfg_path.exists():
-                with open(cfg_path, "r", encoding="utf-8") as f:
-                    custom = yaml.safe_load(f) or {}
-                data = deep_merge(data, custom)
+            cfg_path = resolve_config_path(config_path)
+            if cfg_path is None:
+                available = ", ".join(list_bundled_configs()) or "(none found)"
+                raise FileNotFoundError(
+                    f"Config not found: {config_path!r}. "
+                    f"Tried cwd and package configs/. Available: {available}"
+                )
+            with open(cfg_path, "r", encoding="utf-8") as f:
+                custom = yaml.safe_load(f) or {}
+            data = deep_merge(data, custom)
 
         if overrides:
             data = deep_merge(data, overrides)

@@ -10,7 +10,7 @@ from typing import Optional
 import click
 
 from manga_ai import __version__
-from manga_ai.config import Config
+from manga_ai.config import Config, list_bundled_configs, resolve_config_path
 from manga_ai.logging import get_logger, setup_logging
 from manga_ai.pipeline import Pipeline
 from manga_ai.utils import list_images, page_id_from_path
@@ -26,7 +26,18 @@ def _resolve_config(
     overrides = {}
     if force:
         overrides["pipeline"] = {"force": True}
-    cfg = Config.load(config_path=config, overrides=overrides or None)
+    resolved = resolve_config_path(config) if config else None
+    if config and resolved is None:
+        available = ", ".join(list_bundled_configs()) or "(none found)"
+        raise click.ClickException(
+            f"Config not found: {config!r}. "
+            f"Pull/checkout the branch that adds it, or pass an absolute path.\n"
+            f"Available bundled configs: {available}"
+        )
+    cfg = Config.load(
+        config_path=str(resolved) if resolved else None,
+        overrides=overrides or None,
+    )
     if backend:
         cfg = cfg.with_backend(backend)
     return cfg
@@ -41,7 +52,13 @@ def main() -> None:
 
 @main.command()
 @click.argument("chapter_dir", type=click.Path(exists=True, file_okay=False))
-@click.option("--config", "-c", type=click.Path(exists=True), default=None)
+@click.option(
+    "--config",
+    "-c",
+    type=str,
+    default=None,
+    help="Config path or bare name (e.g. hybrid_qwen_en / configs/hybrid_qwen_en.yaml)",
+)
 @click.option("--backend", type=str, default=None, help="Force all backends (e.g. mock)")
 @click.option("--force", is_flag=True, help="Ignore cache and re-run all stages")
 def process(chapter_dir: str, config: Optional[str], backend: Optional[str], force: bool) -> None:
@@ -57,7 +74,13 @@ def process(chapter_dir: str, config: Optional[str], backend: Optional[str], for
 
 @main.command()
 @click.argument("chapter_dir", type=click.Path(exists=True, file_okay=False))
-@click.option("--config", "-c", type=click.Path(exists=True), default=None)
+@click.option(
+    "--config",
+    "-c",
+    type=str,
+    default=None,
+    help="Config path or bare name (e.g. hybrid_qwen_en)",
+)
 @click.option("--backend", type=str, default=None)
 @click.option("--force", is_flag=True)
 def detect(chapter_dir: str, config: Optional[str], backend: Optional[str], force: bool) -> None:
@@ -69,7 +92,13 @@ def detect(chapter_dir: str, config: Optional[str], backend: Optional[str], forc
 
 @main.command()
 @click.argument("chapter_dir", type=click.Path(exists=True, file_okay=False))
-@click.option("--config", "-c", type=click.Path(exists=True), default=None)
+@click.option(
+    "--config",
+    "-c",
+    type=str,
+    default=None,
+    help="Config path or bare name (e.g. hybrid_qwen_en)",
+)
 @click.option("--backend", type=str, default=None)
 @click.option("--force", is_flag=True)
 def ocr(chapter_dir: str, config: Optional[str], backend: Optional[str], force: bool) -> None:
@@ -81,7 +110,13 @@ def ocr(chapter_dir: str, config: Optional[str], backend: Optional[str], force: 
 
 @main.command()
 @click.argument("chapter_dir", type=click.Path(exists=True, file_okay=False))
-@click.option("--config", "-c", type=click.Path(exists=True), default=None)
+@click.option(
+    "--config",
+    "-c",
+    type=str,
+    default=None,
+    help="Config path or bare name (e.g. hybrid_qwen_en)",
+)
 @click.option("--backend", type=str, default=None)
 @click.option("--force", is_flag=True)
 def translate(chapter_dir: str, config: Optional[str], backend: Optional[str], force: bool) -> None:
@@ -93,7 +128,13 @@ def translate(chapter_dir: str, config: Optional[str], backend: Optional[str], f
 
 @main.command()
 @click.argument("chapter_dir", type=click.Path(exists=True, file_okay=False))
-@click.option("--config", "-c", type=click.Path(exists=True), default=None)
+@click.option(
+    "--config",
+    "-c",
+    type=str,
+    default=None,
+    help="Config path or bare name (e.g. hybrid_qwen_en)",
+)
 @click.option("--force", is_flag=True)
 def mask(chapter_dir: str, config: Optional[str], force: bool) -> None:
     """Generate text masks only."""
@@ -104,7 +145,13 @@ def mask(chapter_dir: str, config: Optional[str], force: bool) -> None:
 
 @main.command()
 @click.argument("chapter_dir", type=click.Path(exists=True, file_okay=False))
-@click.option("--config", "-c", type=click.Path(exists=True), default=None)
+@click.option(
+    "--config",
+    "-c",
+    type=str,
+    default=None,
+    help="Config path or bare name (e.g. hybrid_qwen_en)",
+)
 @click.option("--backend", type=str, default=None)
 @click.option("--force", is_flag=True)
 def clean(chapter_dir: str, config: Optional[str], backend: Optional[str], force: bool) -> None:
@@ -117,7 +164,13 @@ def clean(chapter_dir: str, config: Optional[str], backend: Optional[str], force
 @main.command("benchmark")
 @click.argument("stage", type=click.Choice(["detection", "ocr", "inpainting", "full"]))
 @click.argument("chapter_dir", type=click.Path(exists=True, file_okay=False))
-@click.option("--config", "-c", type=click.Path(exists=True), default=None)
+@click.option(
+    "--config",
+    "-c",
+    type=str,
+    default=None,
+    help="Config path or bare name (e.g. hybrid_qwen_en)",
+)
 @click.option("--backend", type=str, default="mock")
 def benchmark_cmd(stage: str, chapter_dir: str, config: Optional[str], backend: str) -> None:
     """Benchmark a stage (time, VRAM, counts)."""
