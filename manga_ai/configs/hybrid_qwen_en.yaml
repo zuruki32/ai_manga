@@ -1,16 +1,14 @@
-# Hybrid OCR: EasyOCR boxes + Qwen2.5-VL recognition on crops
-# (Paddle detection is skipped by default — PaddlePaddle 3.3.x crashes on
-# Windows CPU with oneDNN/PIR. Use easyocr for boxes instead.)
+# Hybrid OCR: ogkalu text-segmenter boxes + LOCAL Qwen3-VL-8B on crops
 #
-# Requires:
-#   pip install easyocr
-#   pip install 'transformers>=4.49.0' accelerate bitsandbytes qwen-vl-utils
-#   pip install torch torchvision
+# Uses your existing weights (no Hub download):
+#   D:/projects/models/Qwen3-VL-8B-Instruct
 #
-# Optional Paddle (only if you have a working paddle GPU or paddlepaddle==3.2.2):
-#   detection.backend: paddle
+# Setup:
+#   pip install ultralytics huggingface_hub
+#   pip install -U 'transformers>=4.57.0' accelerate bitsandbytes qwen-vl-utils
+#   python scripts/download_comic_yolo.py --variant textseg
 #
-# First run downloads Qwen/Qwen2.5-VL-3B-Instruct (~7GB). Use load_in_4bit on 6GB GPUs.
+# 8B on 6GB VRAM needs 4-bit. If OOM, set max_pixels lower or use a smaller VL.
 
 pipeline:
   version: "0.1.0"
@@ -24,21 +22,23 @@ preprocessing:
   validate: true
 
 detection:
-  backend: "easyocr"
-  languages: ["en"]
+  backend: "yolo_comic"
+  model: "models/comic-yolo.pt"
+  variant: "textseg"
   confidence_threshold: 0.25
-  min_size: 12
-  paragraph: false
-  detect_max_dimension: 1600
+  imgsz: 1024
 
 ocr:
   backend: "hybrid_qwen"
-  model: "Qwen/Qwen2.5-VL-3B-Instruct"
+  model: "D:/projects/models/Qwen3-VL-8B-Instruct"
+  local_files_only: true
   lang: "en"
   confidence_threshold: 0.3
   load_in_4bit: true
   max_new_tokens: 96
   pad_px: 6
+  # Keep vision tokens small on 6GB
+  max_pixels: 3211264
   prompt: >
     Read all English text in this comic speech bubble or caption.
     Output only the transcribed text, nothing else.

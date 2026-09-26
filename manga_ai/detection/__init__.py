@@ -35,8 +35,10 @@ def create_detector(backend: str = "mock", **kwargs) -> Detector:
             model=kwargs.get("model") or kwargs.get("weights") or "models/comic-yolo.pt",
             use_gpu=kwargs.get("use_gpu", True),
             confidence_threshold=float(kwargs.get("confidence_threshold", 0.25)),
-            imgsz=int(kwargs.get("imgsz", 1280)),
+            imgsz=int(kwargs.get("imgsz", 1024)),
             classes=kwargs.get("classes"),
+            variant=kwargs.get("variant", "textseg"),
+            auto_download=bool(kwargs.get("auto_download", True)),
         )
     raise ValueError(
         f"Unknown detector backend: {backend}. "

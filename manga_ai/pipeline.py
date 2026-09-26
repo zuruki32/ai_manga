@@ -116,8 +116,10 @@ class Pipeline:
                     ),
                     model=self.config.get("detection.model")
                     or self.config.get("detection.weights"),
-                    imgsz=self.config.get("detection.imgsz", 1280),
+                    imgsz=self.config.get("detection.imgsz", 1024),
                     classes=self.config.get("detection.classes"),
+                    variant=self.config.get("detection.variant", "textseg"),
+                    auto_download=self.config.get("detection.auto_download", True),
                 )
             except Exception as e:
                 logger.warning(f"Detector '{backend}' failed ({e}), using mock")
@@ -145,6 +147,7 @@ class Pipeline:
                     pad_px=self.config.get("ocr.pad_px", 4),
                     min_pixels=self.config.get("ocr.min_pixels"),
                     max_pixels=self.config.get("ocr.max_pixels"),
+                    local_files_only=self.config.get("ocr.local_files_only"),
                 )
             except Exception as e:
                 logger.warning(f"OCR '{backend}' failed ({e}), using mock")

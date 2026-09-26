@@ -49,6 +49,10 @@ hybrid-qwen = [
     "qwen-vl-utils>=0.0.8",
     "bitsandbytes>=0.43.0",
 ]
+yolo = [
+    "ultralytics>=8.1.0",
+    "huggingface_hub>=0.20.0",
+]
 translation-local = [
     "transformers>=4.36.0",
     "sentencepiece>=0.1.99",
@@ -61,7 +65,7 @@ local = [
     "manga-ai[gpu,easyocr,translation-local]",
 ]
 all = [
-    "manga-ai[dev,gpu,ocr,easyocr,manga-ocr,hybrid-qwen,translation-local,lama]",
+    "manga-ai[dev,gpu,ocr,easyocr,manga-ocr,hybrid-qwen,yolo,translation-local,lama]",
 ]
 
 [project.scripts]

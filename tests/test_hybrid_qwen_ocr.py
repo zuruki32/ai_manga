@@ -13,10 +13,17 @@ from manga_ai.ocr.hybrid_qwen import HybridQwenOCRBackend, _crop_region as qwen_
 
 
 def test_create_hybrid_qwen_lazy():
-    o = create_ocr("hybrid_qwen", model="Qwen/Qwen2.5-VL-3B-Instruct", lang="en")
+    o = create_ocr(
+        "hybrid_qwen",
+        model="D:/projects/models/Qwen3-VL-8B-Instruct",
+        lang="en",
+        local_files_only=False,
+    )
     assert o.name == "hybrid_qwen"
     assert isinstance(o, HybridQwenOCRBackend)
     assert o._model is None  # lazy — no download on construct
+    assert "Qwen3-VL-8B-Instruct" in o.model_name.replace("\\", "/")
+
 
 
 def test_get_ocr_backend_alias():

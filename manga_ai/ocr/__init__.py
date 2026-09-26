@@ -31,7 +31,7 @@ def create_ocr(backend: str = "mock", **kwargs) -> OCRBackend:
             use_gpu=kwargs.get("use_gpu", True),
             default_lang=kwargs.get("default_lang", "en"),
         )
-    if backend in ("hybrid_qwen", "qwen", "qwen_vl", "qwen2_vl"):
+    if backend in ("hybrid_qwen", "qwen", "qwen_vl", "qwen2_vl", "qwen3_vl"):
         from manga_ai.ocr.hybrid_qwen import HybridQwenOCRBackend
         return HybridQwenOCRBackend(
             model=kwargs.get("model"),
@@ -46,6 +46,7 @@ def create_ocr(backend: str = "mock", **kwargs) -> OCRBackend:
             pad_px=kwargs.get("pad_px", 4),
             min_pixels=kwargs.get("min_pixels"),
             max_pixels=kwargs.get("max_pixels"),
+            local_files_only=kwargs.get("local_files_only"),
         )
     if backend == "router":
         from manga_ai.ocr.router import OCRRouter

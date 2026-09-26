@@ -1,15 +1,19 @@
-"""YOLO / Ultralytics comic bubble + text detector.
+"""YOLO / Ultralytics comic text detector (ogkalu / AnimeText).
 
-Recommended models (download once):
-  - ogkalu/comic-text-segmenter-yolov8m  (YOLOv8m, manga/webtoon)
-  - any ultralytics .pt trained on speech bubbles
+Recommended weights (download once)::
 
-Usage:
-  detection:
-    backend: yolo_comic
-    model: models/comic-yolo.pt   # local path
-    confidence_threshold: 0.25
-    imgsz: 1280
+    python scripts/download_comic_yolo.py --variant textseg
+    # → models/comic-yolo.pt   (ogkalu/comic-text-segmenter-yolov8m)
+
+Other variants: ``bubble``, ``animetext``.
+
+Config::
+
+    detection:
+      backend: yolo_comic
+      model: models/comic-yolo.pt
+      confidence_threshold: 0.25
+      imgsz: 1024
 """
 
 from __future__ import annotations
@@ -24,6 +28,24 @@ from manga_ai.logging import get_logger
 
 logger = get_logger("manga_ai.detection.yolo_comic")
 
+# HF defaults used when local weights are missing
+_DEFAULT_HF = {
+    "textseg": ("ogkalu/comic-text-segmenter-yolov8m", "comic-text-segmenter.pt"),
+    "bubble": ("ogkalu/comic-speech-bubble-detector-yolov8m", "comic-speech-bubble-detector.pt"),
+    "animetext": ("Library-Mutsumi/AnimeText_yolo", "yolo12n_animetext/model.pt"),
+}
+
+
+def _region_type(cls_id: int, names: Optional[Dict[int, str]]) -> str:
+    label = ""
+    if names:
+        label = str(names.get(cls_id, "")).lower()
+    if "bubble" in label:
+        return "bubble"
+    if "free" in label or "text" in label or "comic" in label or "block" in label:
+        return "text"
+    return "text" if cls_id != 0 or not label else "bubble"
+
 
 class YOLOComicDetector(Detector):
     name = "yolo_comic"
@@ -33,16 +55,41 @@ class YOLOComicDetector(Detector):
         model: str = "models/comic-yolo.pt",
         use_gpu: bool = True,
         confidence_threshold: float = 0.25,
-        imgsz: int = 1280,
+        imgsz: int = 1024,
         classes: Optional[List[int]] = None,
+        variant: str = "textseg",
+        auto_download: bool = True,
         **kwargs: Any,
     ):
         self.model_path = model
         self.use_gpu = use_gpu
         self.confidence_threshold = confidence_threshold
         self.imgsz = int(imgsz)
-        self.classes = classes  # e.g. [0,1] for bubble+text
+        self.classes = classes
+        self.variant = (variant or "textseg").lower()
+        self.auto_download = auto_download
         self._model = None
+        self._device: Any = "cpu"
+        self._names: Dict[int, str] = {}
+
+    def _download_default(self, dest: Path) -> Path:
+        try:
+            from huggingface_hub import hf_hub_download
+        except ImportError as e:
+            raise ImportError(
+                "huggingface_hub required to auto-download YOLO weights.\n"
+                "  pip install huggingface_hub\n"
+                "Or: python scripts/download_comic_yolo.py --variant textseg"
+            ) from e
+
+        repo, filename = _DEFAULT_HF.get(self.variant, _DEFAULT_HF["textseg"])
+        logger.info(f"Downloading {repo}/{filename} → {dest}")
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        cached = hf_hub_download(repo, filename)
+        import shutil
+
+        shutil.copy2(cached, dest)
+        return dest
 
     def _ensure_model(self):
         if self._model is not None:
@@ -57,22 +104,42 @@ class YOLOComicDetector(Detector):
 
         path = Path(self.model_path)
         if not path.exists():
-            # try HF-style id via ultralytics if user passed repo
-            logger.warning(
-                f"Model path not found: {path}. "
-                f"Place a YOLOv8 .pt at this path "
-                f"(e.g. from ogkalu/comic-text-segmenter-yolov8m)."
-            )
-        device = 0 if self.use_gpu else "cpu"
-        logger.info(f"Loading YOLO comic detector model={self.model_path} device={device}")
-        self._model = YOLO(str(self.model_path))
+            if self.auto_download:
+                path = self._download_default(path)
+            else:
+                raise FileNotFoundError(
+                    f"YOLO weights not found: {path}\n"
+                    f"Run: python scripts/download_comic_yolo.py --variant {self.variant}"
+                )
+
+        # Prefer CUDA when available; fall back to CPU cleanly
+        device: Any = "cpu"
+        if self.use_gpu:
+            try:
+                import torch
+
+                if torch.cuda.is_available():
+                    device = 0
+            except Exception:
+                device = "cpu"
+
+        logger.info(
+            f"Loading YOLO comic detector model={path} device={device} "
+            f"variant={self.variant} imgsz={self.imgsz}"
+        )
+        self._model = YOLO(str(path))
         self._device = device
+        names = getattr(self._model, "names", None) or {}
+        if isinstance(names, dict):
+            self._names = {int(k): str(v) for k, v in names.items()}
+        else:
+            self._names = {i: str(n) for i, n in enumerate(names)}
 
     def detect(self, image: np.ndarray) -> List[Dict[str, Any]]:
         self._ensure_model()
         h, w = image.shape[:2]
 
-        kwargs = dict(
+        kwargs: Dict[str, Any] = dict(
             conf=self.confidence_threshold,
             imgsz=self.imgsz,
             device=self._device,
@@ -103,15 +170,16 @@ class YOLOComicDetector(Detector):
                 continue
             conf = float(confs[i])
             cls_id = int(clss[i])
-            # Prefer polygon as bbox corners
+            label = self._names.get(cls_id, str(cls_id))
             poly = [[x1, y1], [x2, y1], [x2, y2], [x1, y2]]
             regions.append(
                 {
                     "bbox": [x1, y1, x2, y2],
                     "polygon": poly,
                     "confidence": conf,
-                    "region_type": "bubble" if cls_id == 0 else "text",
+                    "region_type": _region_type(cls_id, self._names),
                     "class_id": cls_id,
+                    "label": label,
                 }
             )
 
@@ -122,6 +190,7 @@ class YOLOComicDetector(Detector):
         self._model = None
         try:
             import torch
+
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
         except Exception:

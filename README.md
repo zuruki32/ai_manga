@@ -70,12 +70,17 @@ manga-ai process ./data/chapters/my_chapter --config configs/local_ko_fa.yaml
 | `hybrid_qwen` | `pip install -e ".[gpu,hybrid-qwen]"`         | EN comics via Qwen-VL |
 | `router`      | paddle + manga-ocr                           | auto by language      |
 
-Hybrid Qwen (detector boxes + Qwen2.5-VL crop OCR):
+Hybrid Qwen (comic YOLO boxes + Qwen2.5-VL crop OCR):
 
 ```bash
-pip install -e ".[gpu,ocr,hybrid-qwen]"
+pip install -e ".[gpu,yolo,hybrid-qwen]"
+python scripts/download_comic_yolo.py --all          # textseg + bubble + animetext
+python scripts/test_comic_detectors.py "./data/chapters/my_chapter"   # compare all 3
 manga-ai process ./data/chapters/my_chapter --config configs/hybrid_qwen_en.yaml
 ```
+
+Detector configs: `hybrid_qwen_en` (textseg), `hybrid_qwen_bubble`, `hybrid_qwen_animetext`,
+`local_yolo_comic`, `local_yolo_bubble`, `local_yolo_animetext`.
 
 ### OpenAI API (optional only)
 
