@@ -64,22 +64,13 @@ class PaddleOCRBackend(OCRBackend):
     def _ensure_model(self):
         if self._ocr is not None:
             return
-        from paddleocr import PaddleOCR
+        from manga_ai.utils.paddle_ocr import create_paddle_ocr
 
         logger.info(f"Loading PaddleOCR rec lang={self.lang}")
-        for kwargs in (
-            dict(lang=self.lang, device="gpu" if self.use_gpu else "cpu"),
-            dict(lang=self.lang, use_gpu=self.use_gpu, use_angle_cls=True, show_log=False),
-            dict(lang=self.lang, use_angle_cls=True),
-            dict(lang=self.lang),
-        ):
-            try:
-                self._ocr = PaddleOCR(**kwargs)
-                break
-            except TypeError:
-                continue
-        if self._ocr is None:
-            self._ocr = PaddleOCR(lang=self.lang)
+        # enable_mkldnn=False avoids Windows CPU oneDNN/PIR crash
+        self._ocr = create_paddle_ocr(
+            lang=self.lang, use_gpu=self.use_gpu, enable_mkldnn=False
+        )
         self._api = "v3" if hasattr(self._ocr, "predict") else "v2"
 
     def _run_ocr(self, crop: np.ndarray) -> Tuple[list, list]:
