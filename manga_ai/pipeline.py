@@ -559,7 +559,7 @@ class Pipeline:
     def _is_gibberish_token(self, token: str) -> bool:
         """Heuristic OCR garbage token (e.g. ANYNMORE, CARROOON)."""
         import re
-        t = (token or "").strip()
+        t = re.sub(r"^[^\w]+|[^\w]+$", "", (token or "").strip())
         if len(t) < 4:
             return False
         # long run of same letter
