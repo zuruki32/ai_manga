@@ -44,7 +44,8 @@ ocr:
 
 translation:
   backend: "huggingface"
-  # Dedicated translator (Tencent, 33 languages incl. Persian). ~5 GB VRAM in 4-bit.
+  # Dedicated translator (Tencent). FULL download is ~16 GB on disk; 4-bit VRAM ~5 GB.
+  # Prefer Gemma (already local) unless you have the disk space:
   #   python scripts/download_models.py --model hunyuan_mt
   model: "models/Hunyuan-MT-7B"
   local_files_only: true
