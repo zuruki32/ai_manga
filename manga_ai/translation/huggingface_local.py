@@ -6,8 +6,9 @@ Uses AutoModelForSeq2SeqLM / AutoModelForCausalLM / Gemma3 directly.
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, List, Optional, Sequence, Type
 
 from manga_ai.translation.base import Translator
 from manga_ai.logging import get_logger
@@ -27,7 +28,6 @@ CAUSAL_PREFIXES = ("gemma", "llama", "mistral", "qwen", "phi", "gpt")
 
 def _is_causal(model_name: str) -> bool:
     low = (model_name or "").lower().replace("\\", "/")
-    # path folders
     if any(p in low for p in CAUSAL_PREFIXES):
         return True
     return False
@@ -46,32 +46,134 @@ def _has_accelerate() -> bool:
         return False
 
 
-def _pick_causal_class(model_id: str) -> Type[Any]:
-    """Prefer Gemma3 class when available for local gemma-3 folders."""
-    if _is_gemma3(model_id):
+def _read_config(model_id: str) -> Dict[str, Any]:
+    path = Path(model_id).expanduser()
+    cfg_path = path / "config.json" if path.is_dir() else None
+    if cfg_path and cfg_path.is_file():
+        try:
+            return json.loads(cfg_path.read_text(encoding="utf-8"))
+        except Exception as e:
+            logger.warning(f"Could not read {cfg_path}: {e}")
+    try:
+        from transformers import AutoConfig
+
+        cfg = AutoConfig.from_pretrained(model_id, trust_remote_code=True)
+        return cfg.to_dict() if hasattr(cfg, "to_dict") else dict(cfg)
+    except Exception:
+        return {}
+
+
+def _architectures(cfg: Dict[str, Any]) -> List[str]:
+    arch = cfg.get("architectures") or []
+    if isinstance(arch, str):
+        return [arch]
+    return [str(a) for a in arch]
+
+
+def _is_multimodal_gemma3(model_id: str, cfg: Optional[Dict[str, Any]] = None) -> bool:
+    cfg = cfg or _read_config(model_id)
+    arch = " ".join(_architectures(cfg)).lower()
+    if "conditionalgeneration" in arch or "gemma3forconditional" in arch:
+        return True
+    if cfg.get("vision_config") or cfg.get("text_config"):
+        # Gemma-3 4B/12B/27B IT ship as multimodal configs
+        return True
+    return False
+
+
+def _pick_model_class(model_id: str) -> Type[Any]:
+    """Pick the correct HF class for a local/remote checkpoint."""
+    cfg = _read_config(model_id)
+    archs = _architectures(cfg)
+    arch_l = " ".join(archs).lower()
+
+    if _is_gemma3(model_id) or "gemma3" in arch_l:
+        if _is_multimodal_gemma3(model_id, cfg) or "conditional" in arch_l:
+            try:
+                from transformers import Gemma3ForConditionalGeneration
+
+                logger.info(
+                    f"Using Gemma3ForConditionalGeneration "
+                    f"(architectures={archs or 'multimodal config'})"
+                )
+                return Gemma3ForConditionalGeneration
+            except ImportError as e:
+                raise ImportError(
+                    "Gemma3ForConditionalGeneration requires a recent transformers.\n"
+                    "  pip install -U 'transformers>=4.57.0'"
+                ) from e
         try:
             from transformers import Gemma3ForCausalLM
 
+            logger.info(f"Using Gemma3ForCausalLM (architectures={archs})")
             return Gemma3ForCausalLM
         except ImportError:
             pass
+
     from transformers import AutoModelForCausalLM
 
     return AutoModelForCausalLM
 
 
-def _load_gemma3_fallback(model_id: str, kwargs: Dict[str, Any]):
-    """Last-resort loaders for multimodal Gemma-3 configs."""
+def _assert_weights_look_loaded(model: Any, model_id: str) -> None:
+    """Fail fast if we loaded the wrong architecture (empty / random heads)."""
+    import torch
+
+    # Collect a few key tensors that must exist for a usable text model
+    state = model.state_dict()
+    keys = list(state.keys())
+    has_lang = any(k.startswith("language_model.") for k in keys)
+    has_text = any(
+        k.startswith("model.embed_tokens")
+        or k.startswith("model.layers")
+        or k.endswith("lm_head.weight")
+        for k in keys
+    )
+    if not has_lang and not has_text:
+        raise RuntimeError(
+            f"Loaded model has no language weights (keys={len(keys)}). "
+            f"Wrong class for {model_id}?"
+        )
+
+    # Spot-check that some weight is non-zero / finite (not freshly init empty shell)
+    sample_key = None
+    for cand in (
+        "language_model.model.embed_tokens.weight",
+        "model.embed_tokens.weight",
+        "language_model.lm_head.weight",
+        "lm_head.weight",
+    ):
+        if cand in state:
+            sample_key = cand
+            break
+    if sample_key is None:
+        # any 2d float tensor
+        for k, v in state.items():
+            if getattr(v, "ndim", 0) == 2 and v.numel() > 1000:
+                sample_key = k
+                break
+    if sample_key is None:
+        raise RuntimeError(f"Could not find embed/lm_head weights in {model_id}")
+
+    t = state[sample_key].detach()
+    if t.is_meta:
+        raise RuntimeError(f"Weight {sample_key} is still on meta device — load failed")
+    # dequantized peek for bitsandbytes can be awkward; check finite + non-all-zero on float
     try:
-        from transformers import Gemma3ForConditionalGeneration
-
-        logger.info("Falling back to Gemma3ForConditionalGeneration")
-        return Gemma3ForConditionalGeneration.from_pretrained(model_id, **kwargs)
+        flat = t.float().reshape(-1)[:4096]
+        if not torch.isfinite(flat).all():
+            raise RuntimeError(f"Weight {sample_key} has non-finite values")
+        if float(flat.abs().sum()) == 0.0:
+            raise RuntimeError(
+                f"Weight {sample_key} is all zeros — checkpoint did not load. "
+                f"Your folder may be incomplete or the wrong class was used for {model_id}."
+            )
+    except RuntimeError:
+        raise
     except Exception as e:
-        logger.warning(f"Gemma3ForConditionalGeneration failed: {e}")
-    from transformers import AutoModel
+        logger.warning(f"Could not validate weight {sample_key}: {e}")
 
-    return AutoModel.from_pretrained(model_id, **kwargs)
+    logger.info(f"Weight check OK ({sample_key}, total_tensors={len(keys)})")
 
 
 class HuggingFaceTranslator(Translator):
@@ -102,7 +204,6 @@ class HuggingFaceTranslator(Translator):
         self.load_in_4bit = load_in_4bit
         self.load_in_8bit = load_in_8bit
         self.max_new_tokens = max_new_tokens
-        # Auto: if model path exists on disk, stay offline
         if local_files_only:
             self.local_files_only = True
         elif model and Path(model).expanduser().exists():
@@ -116,6 +217,7 @@ class HuggingFaceTranslator(Translator):
         self._pivot_tokenizer = None
         self._mode = "seq2seq"  # or "causal"
         self._is_m2m = False
+        self._is_gemma3_mm = False
 
     def _resolve_model(self, src: str, tgt: str) -> str:
         if self.model_name:
@@ -128,6 +230,40 @@ class HuggingFaceTranslator(Translator):
         if self.device.startswith("cuda") and torch.cuda.is_available():
             return torch.device("cuda:0")
         return torch.device("cpu")
+
+    def _load_kwargs(self, model_id: str) -> Dict[str, Any]:
+        import torch
+
+        kwargs: Dict[str, Any] = {
+            "trust_remote_code": True,
+            "local_files_only": self.local_files_only,
+        }
+        # Gemma3 prefers bf16 compute
+        compute_dtype = torch.bfloat16 if _is_gemma3(model_id) else torch.float16
+
+        if self.load_in_4bit or self.load_in_8bit:
+            if not _has_accelerate():
+                raise ImportError(
+                    "pip install accelerate bitsandbytes\n"
+                    "Required for 4-bit/8-bit loading."
+                )
+            from transformers import BitsAndBytesConfig
+
+            if self.load_in_4bit:
+                kwargs["quantization_config"] = BitsAndBytesConfig(
+                    load_in_4bit=True,
+                    bnb_4bit_compute_dtype=compute_dtype,
+                    bnb_4bit_quant_type="nf4",
+                    bnb_4bit_use_double_quant=True,
+                )
+            else:
+                kwargs["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
+            kwargs["device_map"] = "auto"
+        else:
+            kwargs["torch_dtype"] = compute_dtype
+            if _has_accelerate() and self.device.startswith("cuda"):
+                kwargs["device_map"] = "auto"
+        return kwargs
 
     def _load_seq2seq(self, model_id: str):
         import torch
@@ -166,13 +302,16 @@ class HuggingFaceTranslator(Translator):
         return model, tok, is_m2m
 
     def _load_causal(self, model_id: str):
-        import torch
         from transformers import AutoTokenizer
 
+        cfg = _read_config(model_id)
+        self._is_gemma3_mm = _is_multimodal_gemma3(model_id, cfg)
+        model_cls = _pick_model_class(model_id)
+
         logger.info(
-            f"Loading causal model: {model_id} "
+            f"Loading causal/VLM model: {model_id} via {model_cls.__name__} "
             f"(4bit={self.load_in_4bit}, 8bit={self.load_in_8bit}, "
-            f"local_files_only={self.local_files_only})"
+            f"local_files_only={self.local_files_only}, multimodal={self._is_gemma3_mm})"
         )
         tok = AutoTokenizer.from_pretrained(
             model_id,
@@ -182,64 +321,75 @@ class HuggingFaceTranslator(Translator):
         if tok.pad_token is None:
             tok.pad_token = tok.eos_token
 
-        kwargs: Dict[str, Any] = {
-            "trust_remote_code": True,
-            "local_files_only": self.local_files_only,
-        }
-        use_device_map = False
+        kwargs = self._load_kwargs(model_id)
+        use_device_map = "device_map" in kwargs
 
-        if self.load_in_4bit or self.load_in_8bit:
-            if not _has_accelerate():
-                raise ImportError(
-                    "pip install accelerate bitsandbytes\n"
-                    "Required for 4-bit/8-bit loading."
-                )
-            from transformers import BitsAndBytesConfig
-            if self.load_in_4bit:
-                kwargs["quantization_config"] = BitsAndBytesConfig(
-                    load_in_4bit=True,
-                    bnb_4bit_compute_dtype=torch.float16,
-                    bnb_4bit_quant_type="nf4",
-                )
-            else:
-                kwargs["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
-            kwargs["device_map"] = "auto"
-            use_device_map = True
-        else:
-            if _has_accelerate() and self.device.startswith("cuda"):
-                kwargs["device_map"] = "auto"
-                kwargs["torch_dtype"] = torch.bfloat16 if _is_gemma3(model_id) else torch.float16
-                use_device_map = True
-            else:
-                # no accelerate: load then .to(device)
-                kwargs["torch_dtype"] = (
-                    torch.bfloat16
-                    if _is_gemma3(model_id)
-                    else (torch.float16 if self.device.startswith("cuda") else torch.float32)
-                )
-
-        model_cls = _pick_causal_class(model_id)
         try:
             model = model_cls.from_pretrained(model_id, **kwargs)
         except Exception as e1:
-            logger.warning(f"{model_cls.__name__} failed ({e1}), trying AutoModelForCausalLM")
-            from transformers import AutoModelForCausalLM
-
-            try:
-                model = AutoModelForCausalLM.from_pretrained(model_id, **kwargs)
-            except Exception as e2:
-                logger.warning(f"AutoModelForCausalLM failed ({e2})")
-                if _is_gemma3(model_id):
-                    model = _load_gemma3_fallback(model_id, kwargs)
-                else:
-                    from transformers import AutoModel
-
-                    model = AutoModel.from_pretrained(model_id, **kwargs)
+            # Wrong class guess — try the other Gemma3 class once
+            logger.warning(f"{model_cls.__name__} failed ({e1})")
+            alt = None
+            if "CausalLM" in model_cls.__name__:
+                try:
+                    from transformers import Gemma3ForConditionalGeneration as alt
+                except ImportError:
+                    alt = None
+            elif "Conditional" in model_cls.__name__:
+                try:
+                    from transformers import Gemma3ForCausalLM as alt
+                except ImportError:
+                    alt = None
+            if alt is None:
+                raise
+            logger.info(f"Retrying with {alt.__name__}")
+            model = alt.from_pretrained(model_id, **kwargs)
+            self._is_gemma3_mm = "Conditional" in alt.__name__
 
         if not use_device_map:
             model = model.to(self._torch_device())
         model.eval()
+        _assert_weights_look_loaded(model, model_id)
+
+        # Smoke test: one short generate so FP4/device errors surface before the chapter loop
+        try:
+            self._smoke_generate(model, tok)
+        except Exception as e:
+            raise RuntimeError(
+                f"Model loaded but generate() failed for {model_id}: {e}\n"
+                "Common fixes:\n"
+                "  - pip install -U 'transformers>=4.57.0' accelerate bitsandbytes\n"
+                "  - Ensure models/gemma-3-4b-persian is a complete HF snapshot "
+                "(config.json + safetensors), not a partial download"
+            ) from e
         return model, tok
+
+    def _smoke_generate(self, model: Any, tok: Any) -> None:
+        import torch
+
+        prompt = "Translate to Persian: Hi"
+        try:
+            messages = [{"role": "user", "content": prompt}]
+            text = tok.apply_chat_template(
+                messages, add_generation_prompt=True, tokenize=False
+            )
+        except Exception:
+            text = f"<start_of_turn>user\n{prompt}\n<end_of_turn>\n<start_of_turn>model\n"
+        inputs = tok(text, return_tensors="pt")
+        try:
+            dev = next(model.parameters()).device
+            inputs = {k: v.to(dev) for k, v in inputs.items()}
+        except Exception:
+            pass
+        with torch.no_grad():
+            out = model.generate(
+                **inputs,
+                max_new_tokens=8,
+                do_sample=False,
+                pad_token_id=tok.eos_token_id or tok.pad_token_id,
+            )
+        _ = tok.decode(out[0], skip_special_tokens=True)
+        logger.info("Generate smoke test OK")
 
     def _ensure_pipeline(self, src: str, tgt: str) -> None:
         if self._model is not None:
@@ -262,7 +412,6 @@ class HuggingFaceTranslator(Translator):
         import torch
 
         device = next(model.parameters()).device
-        # M2M100 language codes
         if is_m2m:
             src_lang = {"en": "en", "fa": "fa", "pe": "fa"}.get(src[:2], src[:2])
             tgt_lang = {"en": "en", "fa": "fa", "pe": "fa"}.get(tgt[:2], tgt[:2])
@@ -299,6 +448,18 @@ class HuggingFaceTranslator(Translator):
             out = model.generate(**inputs, **gen_kwargs)
         return tok.batch_decode(out, skip_special_tokens=True)
 
+    def _build_causal_messages(self, text: str, src_name: str, tgt_name: str) -> Any:
+        user_msg = (
+            f"You are a professional manhwa/comic translator.\n"
+            f"Translate the following {src_name} dialogue to natural colloquial {tgt_name}.\n"
+            f"Keep character names unchanged unless a glossary replacement is already applied.\n"
+            f"Return only the translation, nothing else.\n\n{text}"
+        )
+        # Gemma3 multimodal chat templates often want typed content blocks
+        if self._is_gemma3_mm:
+            return [{"role": "user", "content": [{"type": "text", "text": user_msg}]}]
+        return [{"role": "user", "content": user_msg}]
+
     def _translate_causal_one(self, text: str, src: str, tgt: str) -> str:
         if not text.strip():
             return ""
@@ -317,28 +478,35 @@ class HuggingFaceTranslator(Translator):
         tok = self._tokenizer
         model_l = (self.model_name or "").lower().replace("\\", "/")
 
-        # Sheikhaei dedicated EN-FA format
         if "english-persian" in model_l or "en-fa" in model_l or "llama-en-fa" in model_l or "llama-3.2-1b" in model_l:
             prompt = f"### English:\n{text}\n### Persian:\n"
             inputs = tok(prompt, return_tensors="pt", truncation=True, max_length=512)
         else:
-            user_msg = (
-                f"You are a professional manhwa/comic translator.\n"
-                f"Translate the following {src_name} dialogue to natural colloquial {tgt_name}.\n"
-                f"Keep character names unchanged unless a glossary replacement is already applied.\n"
-                f"Return only the translation, nothing else.\n\n{text}"
-            )
+            messages = self._build_causal_messages(text, src_name, tgt_name)
             try:
-                messages = [{"role": "user", "content": user_msg}]
                 prompt = tok.apply_chat_template(
                     messages, add_generation_prompt=True, tokenize=False
                 )
                 inputs = tok(prompt, return_tensors="pt", truncation=True, max_length=512)
             except Exception:
-                prompt = (
-                    f"<start_of_turn>user\n{user_msg}\n"
-                    f"<end_of_turn>\n<start_of_turn>model\n"
-                )
+                # typed content failed — fall back to plain string message
+                if isinstance(messages[0]["content"], list):
+                    plain = messages[0]["content"][0]["text"]
+                    messages = [{"role": "user", "content": plain}]
+                    try:
+                        prompt = tok.apply_chat_template(
+                            messages, add_generation_prompt=True, tokenize=False
+                        )
+                    except Exception:
+                        prompt = (
+                            f"<start_of_turn>user\n{plain}\n"
+                            f"<end_of_turn>\n<start_of_turn>model\n"
+                        )
+                else:
+                    prompt = (
+                        f"<start_of_turn>user\n{messages[0]['content']}\n"
+                        f"<end_of_turn>\n<start_of_turn>model\n"
+                    )
                 inputs = tok(prompt, return_tensors="pt", truncation=True, max_length=512)
 
         try:
@@ -369,7 +537,6 @@ class HuggingFaceTranslator(Translator):
 
         need_pivot = False
         if src[:2] not in ("en",) and tgt[:2] in ("fa", "pe") and src[:2] != "fa":
-            # optional pivot for ko/ja → en → fa if pivot set
             if self.pivot_model_name:
                 need_pivot = True
 
@@ -397,11 +564,8 @@ class HuggingFaceTranslator(Translator):
         if non_empty_texts:
             if self._mode == "causal":
                 for t in non_empty_texts:
-                    try:
-                        results_text.append(self._translate_causal_one(t, src, tgt))
-                    except Exception as e:
-                        logger.error(f"Causal translation failed: {e}")
-                        results_text.append(t)
+                    # Fail fast — do not silently dump English for the whole chapter
+                    results_text.append(self._translate_causal_one(t, src, tgt))
             else:
                 for start in range(0, len(non_empty_texts), self.batch_size):
                     batch = non_empty_texts[start : start + self.batch_size]
@@ -423,7 +587,7 @@ class HuggingFaceTranslator(Translator):
                         results_text.extend(out)
                     except Exception as e:
                         logger.error(f"HF translation batch failed: {e}")
-                        results_text.extend(batch)
+                        raise
 
             for j, idx in enumerate(non_empty_idx):
                 translated[idx] = (

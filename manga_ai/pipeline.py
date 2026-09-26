@@ -744,6 +744,20 @@ class Pipeline:
             msg = str(e)
             errors.append(msg)
             log_error(logger, stage, msg)
+            elapsed = (time.perf_counter() - started) * 1000
+            meta.status = StageStatus.FAILED
+            meta.errors = errors
+            meta.execution_time_ms = elapsed
+            meta.finished_at = _now_iso()
+            meta.duration_ms = elapsed
+            self._set_stage_meta(stage, meta)
+            if self.config.get("device.unload_after_stage", True):
+                try:
+                    translator.unload()
+                except Exception:
+                    pass
+                self._translator = None
+            raise RuntimeError(f"Translation failed: {msg}") from e
 
         elapsed = (time.perf_counter() - started) * 1000
         meta.status = StageStatus.SUCCESS if not errors else StageStatus.FAILED
