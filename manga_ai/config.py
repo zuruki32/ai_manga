@@ -142,7 +142,7 @@ class Config:
         if overrides:
             data = deep_merge(data, overrides)
 
-        # Inject env vars for translation
+        # Inject env vars for translation (only fill blanks — never override YAML)
         trans = data.setdefault("translation", {})
         if not trans.get("base_url"):
             trans["base_url"] = os.getenv("TRANSLATION_BASE_URL")
@@ -150,6 +150,34 @@ class Config:
             trans["api_key"] = os.getenv("TRANSLATION_API_KEY")
         if not trans.get("model"):
             trans["model"] = os.getenv("TRANSLATION_MODEL")
+        # Env can force backend only when YAML left it empty/mock-ish
+        env_backend = (os.getenv("TRANSLATION_BACKEND") or "").strip().lower()
+        if env_backend and not trans.get("backend"):
+            trans["backend"] = env_backend
+
+        # Safety: HF backend + GGUF path is a common local mis-edit
+        backend = str(trans.get("backend") or "").lower()
+        model = str(trans.get("model") or "")
+        model_l = model.lower().replace("\\", "/")
+        if backend in ("huggingface", "hf", "local", "transformers", "gemma") and (
+            model_l.endswith(".gguf") or "gguf" in Path(model_l).name
+        ):
+            fixed = model
+            if Path(model).name.lower().endswith("-gguf"):
+                fixed = str(Path(model).with_name(Path(model).name[: -len("-gguf")]))
+            elif model_l.endswith(".gguf") and Path(model).parent.name.lower().endswith("-gguf"):
+                parent = Path(model).parent
+                fixed = str(parent.with_name(parent.name[: -len("-gguf")]))
+            if fixed != model:
+                # Late import avoided — warn via print; pipeline logger may not be up
+                import warnings
+                warnings.warn(
+                    f"Config had GGUF model {model!r} with HF backend; "
+                    f"rewrote to {fixed!r}. Edit configs/hybrid_qwen_en.yaml if wrong.",
+                    UserWarning,
+                    stacklevel=2,
+                )
+                trans["model"] = fixed
 
         return cls(data)
 

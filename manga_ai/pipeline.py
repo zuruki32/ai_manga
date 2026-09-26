@@ -160,12 +160,14 @@ class Pipeline:
     def _get_translator(self) -> Translator:
         if self._translator is None:
             backend = self.config.get("translation.backend", "mock")
+            model = self.config.get("translation.model")
+            logger.info(f"Creating translator backend={backend!r} model={model!r}")
             try:
                 self._translator = create_translator(
                     backend,
                     base_url=self.config.get("translation.base_url"),
                     api_key=self.config.get("translation.api_key"),
-                    model=self.config.get("translation.model"),
+                    model=model,
                     temperature=self.config.get("translation.temperature", 0.2),
                     max_retries=self.config.get("translation.max_retries", 1),
                     device=self.device,
