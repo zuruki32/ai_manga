@@ -1,4 +1,4 @@
-# Hybrid: AnimeText YOLO → Qwen3-VL OCR → Gemma Persian GGUF
+# Hybrid: AnimeText YOLO → Qwen3-VL OCR → HF Gemma Persian
 # python scripts/download_comic_yolo.py --variant animetext
 
 pipeline:
@@ -29,12 +29,13 @@ ocr:
   pad_px: 6
 
 translation:
-  backend: "llama_cpp"
-  model: "models/gemma-3-4b-persian-gguf"
-  n_gpu_layers: -1
-  n_ctx: 2048
-  max_tokens: 256
-  temperature: 0.1
+  backend: "huggingface"
+  model: "models/gemma-3-4b-persian"
+  local_files_only: true
+  load_in_4bit: true
+  max_new_tokens: 128
+  max_length: 256
+  batch_size: 1
   glossary:
     "Jennette": "جنت"
     "JENNETTE": "جنت"

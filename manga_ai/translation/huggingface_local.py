@@ -1,12 +1,13 @@
 """Local Hugging Face translation (MarianMT, M2M100, Gemma, Llama).
 
 Does NOT rely on pipeline("translation") — newer transformers dropped that task.
-Uses AutoModelForSeq2SeqLM / AutoModelForCausalLM directly.
+Uses AutoModelForSeq2SeqLM / AutoModelForCausalLM / Gemma3 directly.
 """
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Type
 
 from manga_ai.translation.base import Translator
 from manga_ai.logging import get_logger
@@ -32,12 +33,45 @@ def _is_causal(model_name: str) -> bool:
     return False
 
 
+def _is_gemma3(model_name: str) -> bool:
+    low = (model_name or "").lower().replace("\\", "/")
+    return "gemma-3" in low or "gemma3" in low or "gemma_3" in low
+
+
 def _has_accelerate() -> bool:
     try:
         import accelerate  # noqa: F401
         return True
     except Exception:
         return False
+
+
+def _pick_causal_class(model_id: str) -> Type[Any]:
+    """Prefer Gemma3 class when available for local gemma-3 folders."""
+    if _is_gemma3(model_id):
+        try:
+            from transformers import Gemma3ForCausalLM
+
+            return Gemma3ForCausalLM
+        except ImportError:
+            pass
+    from transformers import AutoModelForCausalLM
+
+    return AutoModelForCausalLM
+
+
+def _load_gemma3_fallback(model_id: str, kwargs: Dict[str, Any]):
+    """Last-resort loaders for multimodal Gemma-3 configs."""
+    try:
+        from transformers import Gemma3ForConditionalGeneration
+
+        logger.info("Falling back to Gemma3ForConditionalGeneration")
+        return Gemma3ForConditionalGeneration.from_pretrained(model_id, **kwargs)
+    except Exception as e:
+        logger.warning(f"Gemma3ForConditionalGeneration failed: {e}")
+    from transformers import AutoModel
+
+    return AutoModel.from_pretrained(model_id, **kwargs)
 
 
 class HuggingFaceTranslator(Translator):
@@ -55,6 +89,7 @@ class HuggingFaceTranslator(Translator):
         load_in_4bit: bool = False,
         load_in_8bit: bool = False,
         max_new_tokens: int = 128,
+        local_files_only: bool = False,
         **kwargs: Any,
     ):
         self.model_name = model
@@ -67,6 +102,13 @@ class HuggingFaceTranslator(Translator):
         self.load_in_4bit = load_in_4bit
         self.load_in_8bit = load_in_8bit
         self.max_new_tokens = max_new_tokens
+        # Auto: if model path exists on disk, stay offline
+        if local_files_only:
+            self.local_files_only = True
+        elif model and Path(model).expanduser().exists():
+            self.local_files_only = True
+        else:
+            self.local_files_only = False
 
         self._model = None
         self._tokenizer = None
@@ -125,17 +167,25 @@ class HuggingFaceTranslator(Translator):
 
     def _load_causal(self, model_id: str):
         import torch
-        from transformers import AutoModelForCausalLM, AutoTokenizer
+        from transformers import AutoTokenizer
 
         logger.info(
             f"Loading causal model: {model_id} "
-            f"(4bit={self.load_in_4bit}, 8bit={self.load_in_8bit})"
+            f"(4bit={self.load_in_4bit}, 8bit={self.load_in_8bit}, "
+            f"local_files_only={self.local_files_only})"
         )
-        tok = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
+        tok = AutoTokenizer.from_pretrained(
+            model_id,
+            trust_remote_code=True,
+            local_files_only=self.local_files_only,
+        )
         if tok.pad_token is None:
             tok.pad_token = tok.eos_token
 
-        kwargs: Dict[str, Any] = {"trust_remote_code": True}
+        kwargs: Dict[str, Any] = {
+            "trust_remote_code": True,
+            "local_files_only": self.local_files_only,
+        }
         use_device_map = False
 
         if self.load_in_4bit or self.load_in_8bit:
@@ -158,20 +208,33 @@ class HuggingFaceTranslator(Translator):
         else:
             if _has_accelerate() and self.device.startswith("cuda"):
                 kwargs["device_map"] = "auto"
-                kwargs["torch_dtype"] = torch.float16
+                kwargs["torch_dtype"] = torch.bfloat16 if _is_gemma3(model_id) else torch.float16
                 use_device_map = True
             else:
                 # no accelerate: load then .to(device)
                 kwargs["torch_dtype"] = (
-                    torch.float16 if self.device.startswith("cuda") else torch.float32
+                    torch.bfloat16
+                    if _is_gemma3(model_id)
+                    else (torch.float16 if self.device.startswith("cuda") else torch.float32)
                 )
 
+        model_cls = _pick_causal_class(model_id)
         try:
-            model = AutoModelForCausalLM.from_pretrained(model_id, **kwargs)
+            model = model_cls.from_pretrained(model_id, **kwargs)
         except Exception as e1:
-            logger.warning(f"AutoModelForCausalLM failed ({e1}), trying AutoModel")
-            from transformers import AutoModel
-            model = AutoModel.from_pretrained(model_id, **kwargs)
+            logger.warning(f"{model_cls.__name__} failed ({e1}), trying AutoModelForCausalLM")
+            from transformers import AutoModelForCausalLM
+
+            try:
+                model = AutoModelForCausalLM.from_pretrained(model_id, **kwargs)
+            except Exception as e2:
+                logger.warning(f"AutoModelForCausalLM failed ({e2})")
+                if _is_gemma3(model_id):
+                    model = _load_gemma3_fallback(model_id, kwargs)
+                else:
+                    from transformers import AutoModel
+
+                    model = AutoModel.from_pretrained(model_id, **kwargs)
 
         if not use_device_map:
             model = model.to(self._torch_device())
@@ -260,7 +323,9 @@ class HuggingFaceTranslator(Translator):
             inputs = tok(prompt, return_tensors="pt", truncation=True, max_length=512)
         else:
             user_msg = (
-                f"Translate the following {src_name} text to {tgt_name}. "
+                f"You are a professional manhwa/comic translator.\n"
+                f"Translate the following {src_name} dialogue to natural colloquial {tgt_name}.\n"
+                f"Keep character names unchanged unless a glossary replacement is already applied.\n"
                 f"Return only the translation, nothing else.\n\n{text}"
             )
             try:

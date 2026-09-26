@@ -32,6 +32,7 @@ def create_translator(backend: str = "mock", **kwargs) -> Translator:
             load_in_4bit=bool(kwargs.get("load_in_4bit", False)),
             load_in_8bit=bool(kwargs.get("load_in_8bit", False)),
             max_new_tokens=int(kwargs.get("max_new_tokens", 128)),
+            local_files_only=bool(kwargs.get("local_files_only", False)),
         )
     if backend in ("llama_cpp", "llamacpp", "gguf"):
         from manga_ai.translation.llama_cpp_backend import LlamaCppTranslator

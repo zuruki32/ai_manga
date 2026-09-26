@@ -174,6 +174,7 @@ class Pipeline:
                     load_in_4bit=self.config.get("translation.load_in_4bit", False),
                     load_in_8bit=self.config.get("translation.load_in_8bit", False),
                     max_new_tokens=self.config.get("translation.max_new_tokens", 128),
+                    local_files_only=self.config.get("translation.local_files_only", False),
                     n_gpu_layers=self.config.get("translation.n_gpu_layers", -1),
                     n_ctx=self.config.get("translation.n_ctx", 2048),
                     max_tokens=self.config.get("translation.max_tokens", 128),
