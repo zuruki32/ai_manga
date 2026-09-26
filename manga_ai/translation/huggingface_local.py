@@ -606,8 +606,9 @@ class HuggingFaceTranslator(Translator):
             return False, "identical"
         en_words = max(1, len(en.split()))
         fa_words = max(1, len(fa.split()))
-        if en_words >= 8 and fa_words < max(3, int(en_words * 0.35)):
-            return False, "too_short"
+        # Colloquial FA is often shorter than EN — treat extreme cuts as soft only
+        if en_words >= 12 and fa_words < max(2, int(en_words * 0.2)):
+            return True, "soft_too_short"
         # Placeholders should survive; missing name is soft (not hard-fail)
         if placeholders:
             missing_ph = [ph for ph in placeholders if ph not in fa]
@@ -733,7 +734,7 @@ class HuggingFaceTranslator(Translator):
                             protected, fa, glossary, tgt, placeholders=ph_map
                         )
                         # Only hard-retry real failures (not soft name issues)
-                        hard = reason in ("empty_fa", "no_persian", "identical", "too_short")
+                        hard = reason in ("empty_fa", "no_persian", "identical")
                         retries = 0
                         while hard and not ok and retries < self.max_retries:
                             logger.warning(
@@ -745,7 +746,7 @@ class HuggingFaceTranslator(Translator):
                             ok, reason = self._translation_ok(
                                 protected, fa, glossary, tgt, placeholders=ph_map
                             )
-                            hard = reason in ("empty_fa", "no_persian", "identical", "too_short")
+                            hard = reason in ("empty_fa", "no_persian", "identical")
                             retries += 1
                         if reason.startswith("soft_"):
                             logger.debug(f"Translation soft QA: {reason}")
