@@ -995,6 +995,27 @@ class Pipeline:
         inpainter = self._get_inpainter()
         errors: List[str] = []
 
+        def _opencv_fallback(reason: str) -> Inpainter:
+            nonlocal inpainter
+            logger.warning(f"{reason} — switching chapter to OpenCV inpainting")
+            meta.warnings.append(reason)
+            meta.backend = "opencv"
+            from manga_ai.inpainting import create_inpainter
+            try:
+                inpainter.unload()
+            except Exception:
+                pass
+            inpainter = create_inpainter(
+                "opencv",
+                radius=self.config.get("inpainting.radius", 7),
+                method=self.config.get("inpainting.method", "telea"),
+                passes=self.config.get("inpainting.passes", 2),
+                soft_edge=self.config.get("inpainting.soft_edge", 3),
+                bg_fill=self.config.get("inpainting.bg_fill", True),
+            )
+            self._inpainter = inpainter
+            return inpainter
+
         for img_path in images:
             page = page_id_from_path(img_path)
             try:
@@ -1008,13 +1029,15 @@ class Pipeline:
 
                 try:
                     cleaned = inpainter.inpaint(arr, mask)
+                except ImportError as e:
+                    # LaMa lazy-import failed mid-chapter (should be rare after create_inpainter probe)
+                    _opencv_fallback(f"LaMa unavailable ({e})")
+                    cleaned = inpainter.inpaint(arr, mask)
                 except RuntimeError as e:
                     if "out of memory" in str(e).lower():
-                        logger.warning(f"OOM on page {page}, clearing CUDA and falling back to OpenCV")
                         clear_cuda()
-                        from manga_ai.inpainting.opencv_backend import OpenCVInpainter
-                        cleaned = OpenCVInpainter().inpaint(arr, mask)
-                        meta.warnings.append(f"page={page}: OOM fallback to opencv")
+                        _opencv_fallback(f"page={page}: OOM on LaMa")
+                        cleaned = inpainter.inpaint(arr, mask)
                     else:
                         raise
 

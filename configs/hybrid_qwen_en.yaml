@@ -79,8 +79,9 @@ masking:
 
 inpainting:
   # Best quality (same stack as manga-image-translator / PanelCleaner / manga-text-cleaner):
-  #   pip install simple-lama-inpainting --no-deps
-  # Falls back to improved OpenCV if LaMa missing / OOM.
+  #   pip install 'manga-ai[lama]'
+  #   # or: pip install simple-lama-inpainting --no-deps
+  # Auto-falls back to improved OpenCV if LaMa missing / OOM (no per-page hard fail).
   backend: "lama"
   radius: 7
   method: "telea"
