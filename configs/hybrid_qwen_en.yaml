@@ -1,14 +1,15 @@
-# Hybrid OCR: ogkalu text-segmenter boxes + LOCAL Qwen3-VL-8B on crops
+# Hybrid OCR + local Gemma Persian GGUF translation
 #
-# Uses your existing weights (no Hub download):
-#   D:/projects/models/Qwen3-VL-8B-Instruct
+# Local weights (no Hub download for these):
+#   OCR:         D:/projects/models/Qwen3-VL-8B-Instruct
+#   Translation: models/gemma-3-4b-persian-gguf/*.gguf
 #
 # Setup:
-#   pip install ultralytics huggingface_hub
+#   pip install ultralytics huggingface_hub llama-cpp-python
 #   pip install -U 'transformers>=4.57.0' accelerate bitsandbytes qwen-vl-utils
 #   python scripts/download_comic_yolo.py --variant textseg
 #
-# 8B on 6GB VRAM needs 4-bit. If OOM, set max_pixels lower or use a smaller VL.
+# Note: unload_after_stage frees VRAM between Qwen OCR and Gemma translate.
 
 pipeline:
   version: "0.1.0"
@@ -37,7 +38,6 @@ ocr:
   load_in_4bit: true
   max_new_tokens: 96
   pad_px: 6
-  # Keep vision tokens small on 6GB
   max_pixels: 3211264
   prompt: >
     Read all English text in this comic speech bubble or caption.
@@ -45,10 +45,12 @@ ocr:
     If there is no readable text, output an empty string.
 
 translation:
-  backend: "huggingface"
-  model: "models/m2m100-en2fa"
-  batch_size: 4
-  max_length: 256
+  backend: "llama_cpp"
+  model: "models/gemma-3-4b-persian-gguf"
+  n_gpu_layers: -1
+  n_ctx: 2048
+  max_tokens: 256
+  temperature: 0.1
   glossary:
     "Jennette": "جنت"
     "JENNETTE": "جنت"

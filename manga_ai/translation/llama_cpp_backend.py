@@ -52,17 +52,49 @@ class LlamaCppTranslator(Translator):
         self.verbose = verbose
         self._llm = None
 
+    def _resolve_gguf_path(self) -> Path:
+        """Accept a .gguf file or a folder containing one."""
+        if not self.model_path:
+            raise ValueError(
+                "translation.model must be a path to a .gguf file or folder "
+                "(e.g. models/gemma-3-4b-persian-gguf)"
+            )
+        path = Path(self.model_path).expanduser()
+        if path.is_file() and path.suffix.lower() == ".gguf":
+            return path.resolve()
+        if path.is_dir():
+            ggufs = sorted(path.glob("*.gguf")) + sorted(path.glob("**/*.gguf"))
+            # de-dupe while keeping order
+            seen = set()
+            uniq = []
+            for g in ggufs:
+                key = str(g.resolve())
+                if key not in seen:
+                    seen.add(key)
+                    uniq.append(g)
+            if not uniq:
+                raise FileNotFoundError(f"No .gguf files in {path.resolve()}")
+            # Prefer smaller quantized variants for 6GB GPUs
+            def score(p: Path) -> tuple:
+                n = p.name.lower()
+                pref = 50
+                for i, tag in enumerate(
+                    ("q4_k_m", "q4_k_s", "q4_0", "q5_k_m", "q5_0", "q8_0", "q6_k", "f16", "f32")
+                ):
+                    if tag in n:
+                        pref = i
+                        break
+                return (pref, p.stat().st_size, p.name)
+
+            chosen = sorted(uniq, key=score)[0]
+            logger.info(f"Resolved GGUF folder {path} → {chosen.name}")
+            return chosen.resolve()
+        raise FileNotFoundError(f"GGUF not found: {path.resolve()}")
+
     def _ensure_model(self):
         if self._llm is not None:
             return
-        if not self.model_path:
-            raise ValueError(
-                "translation.model must be a path to a .gguf file "
-                "(e.g. models/model-q4_k_m.gguf)"
-            )
-        path = Path(self.model_path)
-        if not path.exists():
-            raise FileNotFoundError(f"GGUF not found: {path.resolve()}")
+        path = self._resolve_gguf_path()
 
         try:
             from llama_cpp import Llama
@@ -102,10 +134,12 @@ class LlamaCppTranslator(Translator):
     def _build_prompt(self, text: str, src: str, tgt: str) -> str:
         src_n = self._lang_name(src)
         tgt_n = self._lang_name(tgt)
-        # Generic instruct prompt works for Gemma / Llama GGUF
         return (
-            f"Translate the following {src_n} text to {tgt_n}. "
-            f"Return only the translation, nothing else.\n\n{text}"
+            f"You are a professional manhwa/comic translator.\n"
+            f"Translate the following {src_n} dialogue to natural colloquial {tgt_n}.\n"
+            f"Keep character names unchanged unless a glossary replacement is already applied.\n"
+            f"Return only the translation, nothing else.\n\n"
+            f"{text}"
         )
 
     def _translate_one(self, text: str, src: str, tgt: str) -> str:
