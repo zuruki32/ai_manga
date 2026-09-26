@@ -13,6 +13,7 @@ Usage (from repo root):
   python scripts/download_models.py --model m2m100
   python scripts/download_models.py --model llama_en_fa
   python scripts/download_models.py --model gemma_persian
+  python scripts/download_models.py --model gemma_it
   python scripts/download_models.py --model gemma_gguf
   python scripts/download_models.py --model opus
   python scripts/download_models.py --model hunyuan_mt
@@ -44,6 +45,12 @@ CATALOG = {
     "gemma_persian": (
         "mshojaei77/gemma-3-4b-persian-v0",
         "gemma-3-4b-persian",
+        False,
+    ),
+    # Stock Gemma-3 4B Instruct (often better at following translation prompts than Persian SFT)
+    "gemma_it": (
+        "google/gemma-3-4b-it",
+        "gemma-3-4b-it",
         False,
     ),
     "gemma_gguf": (

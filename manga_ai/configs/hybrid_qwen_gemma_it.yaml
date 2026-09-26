@@ -1,16 +1,17 @@
-# Hybrid OCR (local Qwen3-VL) + full HF Gemma Persian translation
+# Hybrid OCR (local Qwen3-VL) + stock Gemma-3-4B-IT translation
 #
-# Local weights (no Hub download):
+# Local weights:
 #   OCR:         D:/projects/models/Qwen3-VL-8B-Instruct
-# Translation: models/gemma-3-4b-persian   (Persian SFT)
-# Alt (often more faithful): configs/hybrid_qwen_gemma_it.yaml → models/gemma-3-4b-it
+#   Translation: models/gemma-3-4b-it   (google/gemma-3-4b-it — NOT the Persian SFT)
 #
-# Setup:
-#   pip install ultralytics huggingface_hub
-#   pip install -U 'transformers>=4.57.0' accelerate bitsandbytes qwen-vl-utils
-#   python scripts/download_comic_yolo.py --variant textseg
+# Why: the Persian SFT (mshojaei77) is a chat model and often invents filler /
+# drops meaning. Stock Instruct + our colloquial prompt is usually more faithful.
 #
-# Note: unload_after_stage frees VRAM between Qwen OCR and Gemma translate.
+# Download (HF account + accept Gemma license may be required):
+#   hf auth login
+#   python scripts/download_models.py --model gemma_it
+#
+# Compare with Persian SFT: -c configs/hybrid_qwen_en.yaml
 
 pipeline:
   version: "0.1.0"
@@ -47,7 +48,7 @@ ocr:
 
 translation:
   backend: "huggingface"
-  model: "models/gemma-3-4b-persian"
+  model: "models/gemma-3-4b-it"
   local_files_only: true
   load_in_4bit: true
   max_new_tokens: 192
@@ -55,8 +56,7 @@ translation:
   batch_size: 1
   validate: true
   max_retries: 2
-  # Match Iranian manhwa scanlation tone + @ per bubble
-  # IMPORTANT: do NOT put EN:/FA: few-shot lines in extra_instructions (Gemma copies them)
+  # Stock Instruct + colloquial prompt (no Persian SFT). No EN:/FA: few-shots.
   style: "colloquial_fa"
   # Neighbouring bubbles shown to the model as context (not translated)
   context_window: 1
