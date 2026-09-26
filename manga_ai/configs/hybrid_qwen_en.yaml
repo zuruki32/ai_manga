@@ -57,6 +57,8 @@ translation:
   # Match Iranian manhwa scanlation tone + @ per bubble
   # IMPORTANT: do NOT put EN:/FA: few-shot lines in extra_instructions (Gemma copies them)
   style: "colloquial_fa"
+  # Neighbouring bubbles shown to the model as context (not translated)
+  context_window: 1
   unit: "region"
   output_format: "scanlation"
   glossary:

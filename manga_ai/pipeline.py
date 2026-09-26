@@ -183,6 +183,8 @@ class Pipeline:
                     validate=self.config.get("translation.validate", True),
                     style=self.config.get("translation.style", "colloquial_fa"),
                     extra_instructions=self.config.get("translation.extra_instructions", "") or "",
+                    context_window=self.config.get("translation.context_window", 1),
+                    mt_target_label=self.config.get("translation.mt_target_label", "Persian"),
                     n_gpu_layers=self.config.get("translation.n_gpu_layers", -1),
                     n_ctx=self.config.get("translation.n_ctx", 2048),
                     max_tokens=self.config.get("translation.max_tokens", 128),
@@ -572,6 +574,8 @@ class Pipeline:
         r"only\s+official\s+domain", r"any\s+other\s+domain", r"scam",
         r"carrotoon", r"carro+o+n", r"kwbooks", r"twitter", r"join\s+our",
         r"toomics", r"webtoon", r"tapas",
+        r"\bluaco", r"read\s+at\s+lua", r"copyright", r"fastest\s+re",
+        r"official\s+(domain|ave|site)", r"other\s+domain", r"^\s*\d+\s*won\b",
     )
 
     def _is_gibberish_token(self, token: str) -> bool:

@@ -23,7 +23,10 @@ DEFAULT_MODELS = {
     ("zh", "en"): "Helsinki-NLP/opus-mt-zh-en",
 }
 
-CAUSAL_PREFIXES = ("gemma", "llama", "mistral", "qwen", "phi", "gpt")
+CAUSAL_PREFIXES = (
+    "gemma", "llama", "mistral", "qwen", "phi", "gpt",
+    "hunyuan", "aya", "cohere", "seed-x", "tower",
+)
 
 
 def _is_causal(model_name: str) -> bool:
@@ -31,6 +34,12 @@ def _is_causal(model_name: str) -> bool:
     if any(p in low for p in CAUSAL_PREFIXES):
         return True
     return False
+
+
+def _is_hunyuan_mt(model_name: str) -> bool:
+    """Tencent Hunyuan-MT: dedicated translator with a fixed prompt template."""
+    low = (model_name or "").lower().replace("\\", "/")
+    return "hunyuan-mt" in low or "hunyuan_mt" in low
 
 
 def _is_gemma3(model_name: str) -> bool:
@@ -196,9 +205,13 @@ class HuggingFaceTranslator(Translator):
         max_retries: int = 1,
         style: str = "colloquial_fa",
         extra_instructions: str = "",
+        context_window: int = 1,
+        mt_target_label: str = "Persian",
         **kwargs: Any,
     ):
         self.model_name = model
+        self.context_window = max(0, int(context_window))
+        self.mt_target_label = (mt_target_label or "Persian").strip()
         self.device = device
         self.max_length = max_length
         self.batch_size = max(1, batch_size)
@@ -246,8 +259,10 @@ class HuggingFaceTranslator(Translator):
             "trust_remote_code": True,
             "local_files_only": self.local_files_only,
         }
-        # Gemma3 prefers bf16 compute
-        compute_dtype = torch.bfloat16 if _is_gemma3(model_id) else torch.float16
+        # Gemma3 / Hunyuan are trained in bf16; fall back to fp16 on GPUs without bf16
+        wants_bf16 = _is_gemma3(model_id) or _is_hunyuan_mt(model_id)
+        bf16_ok = torch.cuda.is_available() and torch.cuda.is_bf16_supported()
+        compute_dtype = torch.bfloat16 if (wants_bf16 and bf16_ok) else torch.float16
 
         if self.load_in_4bit or self.load_in_8bit:
             if not _has_accelerate():
@@ -464,6 +479,8 @@ class HuggingFaceTranslator(Translator):
         *,
         keep_names: Optional[List[str]] = None,
         strict: bool = False,
+        prev_text: str = "",
+        next_text: str = "",
     ) -> Any:
         name_line = ""
         if keep_names:
@@ -482,17 +499,27 @@ class HuggingFaceTranslator(Translator):
         strict_line = ""
         if strict:
             strict_line = (
-                "هشدار: ترجمه قبلی اسم‌ها رو انداخت یا زیادی کوتاه شد. "
-                "این بار هر جمله رو کامل و با همون اسم‌ها برگردون.\n"
+                "هشدار: ترجمه قبلی ناقص بود یا کلمه انگلیسی داشت. "
+                "این بار همه‌ی معنی رو کامل و فقط با حروف فارسی برگردون.\n"
             )
 
+        context_block = ""
+        if prev_text or next_text:
+            context_block = "بافت گفتگو (فقط برای فهم معنی — اینا رو ترجمه نکن):\n"
+            if prev_text:
+                context_block += f"- حباب قبلی: {prev_text}\n"
+            if next_text:
+                context_block += f"- حباب بعدی: {next_text}\n"
+            context_block += "\n"
+
         if self.style in ("colloquial_fa", "scanlation", "manhwa_fa", "fa_colloquial"):
-            # Tone only — NO few-shot FA lines (Gemma copies them into every bubble)
+            # Don't list sample filler words here — Gemma sprinkles them into every line
             user_msg = (
-                "نقش تو: مترجم دیالوگ مانها به فارسی محاوره‌ای ایرانی.\n"
+                "نقش تو: مترجم دیالوگ مانهوا از انگلیسی به فارسی محاوره‌ای ایرانی.\n"
                 f"{strict_line}"
-                "فقط همان جمله‌ی داده‌شده را ترجمه کن.\n"
-                "لحن: خودمونی و طبیعی (می‌تونم، مگه نه، خب، وای) — نه کتابی.\n"
+                "فقط همون یک جمله‌ی «متن انگلیسی» رو ترجمه کن؛ معنی دقیق، لحن طبیعی و گفتاری، نه کتابی.\n"
+                "هر حرف ندا یا کلمه‌ی پرکننده فقط وقتی بیاد که معادلش تو متن انگلیسی باشه.\n"
+                "هیچ کلمه‌ی انگلیسی تو خروجی نذار (جز توکن‌های ⟦ ⟧).\n"
                 f"{name_line}"
             )
             tips = self._safe_extra_instructions()
@@ -504,6 +531,7 @@ class HuggingFaceTranslator(Translator):
                 "- آوردن پیشوند EN/FA یا توضیح\n"
                 "- خلاصه‌کردن یا حذف معنی\n"
                 "- ترجمه کردن توکن‌های داخل ⟦ ⟧\n\n"
+                f"{context_block}"
                 f"متن انگلیسی:\n{text}\n\n"
                 "فقط ترجمه فارسی:"
             )
@@ -518,7 +546,15 @@ class HuggingFaceTranslator(Translator):
                 f"- Return ONLY the translation text, nothing else.\n"
                 f"- Keep punctuation and speaker tone (hesitation, shouting).\n"
                 f"- If a word looks like OCR garbage, skip that word only.\n\n"
-                f"{text}"
+                + (
+                    "Context (do NOT translate):\n"
+                    + (f"- previous: {prev_text}\n" if prev_text else "")
+                    + (f"- next: {next_text}\n" if next_text else "")
+                    + "\n"
+                    if (prev_text or next_text)
+                    else ""
+                )
+                + f"Line to translate:\n{text}"
             )
         if self._is_gemma3_mm:
             return [{"role": "user", "content": [{"type": "text", "text": user_msg}]}]
@@ -600,6 +636,45 @@ class HuggingFaceTranslator(Translator):
         "oh my god, you little rascals",
     )
     _FILLER_FA = ("چیه؟", "چیه", "وای خدای من", "وای خدای من!")
+    _HARD_QA = frozenset(
+        {"empty_fa", "no_persian", "identical", "hallucinated_example", "latin_leftover"}
+    )
+
+    def _strip_added_fillers(self, fa: str, en: str) -> str:
+        """Drop وای/خب/مگه نه that the model added without an English source for them."""
+        import re
+
+        t = (fa or "").strip()
+        if not t:
+            return t
+        en_s = en or ""
+        has_interj = re.search(
+            r"\b(wow|oh|ah+|uh|um|huh|hmm+|whoa|ugh|eh|hey|well|ooh|oops|geez|gosh|yikes|wah)\b",
+            en_s,
+            re.I,
+        )
+        has_tag_q = re.search(
+            r"(right\s*\?|isn'?t (it|he|she|that)|don'?t you|didn'?t (she|he|you|it|they|we)|"
+            r"aren'?t (you|they|we)|won'?t you|wasn'?t it|doesn'?t it|huh\s*\?)",
+            en_s,
+            re.I,
+        )
+        out = t
+        if not has_interj:
+            out = re.sub(r"(^|(?<=[.!?؟]\s))(?:وای|خب|آخ|اوه)،\s*", r"\1", out)
+        if not has_tag_q:
+            end = "؟" if "?" in en_s else "."
+            out = re.sub(r"،\s*(?:مگه نه|نه)\s*[؟?]", end, out)
+        out = re.sub(r"\s{2,}", " ", out).strip()
+        return out if re.search(r"[\u0600-\u06FF]", out) else t
+
+    def _inline_names(self, text: str, glossary: Dict[str, str]) -> str:
+        """For dedicated MT models: swap EN names for their FA form before translating."""
+        out = text or ""
+        for en, fa in sorted(glossary.items(), key=lambda kv: -len(kv[0] or "")):
+            if en and fa and en in out:
+                out = out.replace(en, fa)
+        return out
 
     def _safe_extra_instructions(self) -> str:
         """Strip EN:/FA: few-shot pairs from project tips so they can't poison the prompt."""
@@ -731,6 +806,13 @@ class HuggingFaceTranslator(Translator):
         fa_compact = fa.strip(" !?؟.,،~")
         if en_words >= 3 and fa_compact in self._FILLER_FA:
             return False, "hallucinated_example"
+        latin = [
+            w
+            for w in re.findall(r"[A-Za-z][A-Za-z'’\-]{2,}", re.sub(r"⟦\d+⟧", "", fa))
+            if w.lower() not in ("ok",)
+        ]
+        if latin:
+            return False, "latin_leftover"
         # Colloquial FA is often shorter — extreme cuts are soft only
         if en_words >= 12 and fa_words < max(2, int(en_words * 0.2)):
             return True, "soft_too_short"
@@ -755,6 +837,9 @@ class HuggingFaceTranslator(Translator):
         *,
         keep_names: Optional[List[str]] = None,
         strict: bool = False,
+        prev_text: str = "",
+        next_text: str = "",
+        sample: bool = False,
     ) -> str:
         if not text.strip():
             return ""
@@ -774,13 +859,37 @@ class HuggingFaceTranslator(Translator):
         model_l = (self.model_name or "").lower().replace("\\", "/")
 
         approx_out = min(512, max(self.max_new_tokens, int(len(text.split()) * 2.5) + 32))
+        gen_extra: Dict[str, Any] = {}
 
-        if "english-persian" in model_l or "en-fa" in model_l or "llama-en-fa" in model_l or "llama-3.2-1b" in model_l:
+        if _is_hunyuan_mt(self.model_name or ""):
+            # Official template; extra instructions degrade this translator
+            label = self.mt_target_label if tgt[:2] in ("fa", "pe") else tgt_name
+            prompt_txt = (
+                f"Translate the following segment into {label}, "
+                f"without additional explanation.\n\n{text}"
+            )
+            messages = [{"role": "user", "content": prompt_txt}]
+            try:
+                # Hunyuan's template already opens the assistant turn
+                prompt = tok.apply_chat_template(
+                    messages, add_generation_prompt=False, tokenize=False
+                )
+            except Exception:
+                prompt = prompt_txt
+            inputs = tok(prompt, return_tensors="pt", truncation=True, max_length=768)
+            gen_extra["repetition_penalty"] = 1.05
+        elif "english-persian" in model_l or "en-fa" in model_l or "llama-en-fa" in model_l or "llama-3.2-1b" in model_l:
             prompt = f"### English:\n{text}\n### Persian:\n"
             inputs = tok(prompt, return_tensors="pt", truncation=True, max_length=768)
         else:
             messages = self._build_causal_messages(
-                text, src_name, tgt_name, keep_names=keep_names, strict=strict
+                text,
+                src_name,
+                tgt_name,
+                keep_names=keep_names,
+                strict=strict,
+                prev_text=prev_text,
+                next_text=next_text,
             )
             try:
                 prompt = tok.apply_chat_template(
@@ -814,15 +923,25 @@ class HuggingFaceTranslator(Translator):
             pass
 
         pad_id = tok.eos_token_id or getattr(tok, "pad_token_id", None)
+        if sample:
+            # Hunyuan-MT's recommended sampling settings
+            gen_extra.update(
+                {"do_sample": True, "temperature": 0.7, "top_p": 0.6, "top_k": 20}
+            )
+        else:
+            gen_extra["do_sample"] = False
         with torch.no_grad():
             out = self._model.generate(
                 **inputs,
                 max_new_tokens=approx_out,
-                do_sample=False,
                 pad_token_id=pad_id,
+                **gen_extra,
             )
         gen = out[0][inputs["input_ids"].shape[-1] :]
-        return tok.decode(gen, skip_special_tokens=True).strip()
+        text_out = tok.decode(gen, skip_special_tokens=True).strip()
+        if "```" in text_out:
+            text_out = text_out.split("```")[0].strip()
+        return text_out
 
     def translate_chapter(
         self,
@@ -848,48 +967,59 @@ class HuggingFaceTranslator(Translator):
 
         if non_empty_texts:
             if self._mode == "causal":
-                for t in non_empty_texts:
-                    protected, ph_map, keep_ph = self._protect_names(t, glossary)
-                    fa = self._translate_causal_one(
-                        protected, src, tgt, keep_names=keep_ph or None, strict=False
-                    )
-                    fa = self._sanitize_fa_output(fa, protected)
+                is_mt = _is_hunyuan_mt(self.model_name or "")
+                ctx_texts = [self._inline_names(x, glossary) for x in non_empty_texts]
+                for j, t in enumerate(non_empty_texts):
+                    if is_mt:
+                        protected, ph_map, keep_ph = self._inline_names(t, glossary), {}, []
+                    else:
+                        protected, ph_map, keep_ph = self._protect_names(t, glossary)
+                    w = self.context_window
+                    prev_text = " / ".join(ctx_texts[max(0, j - w) : j]) if w else ""
+                    next_text = " / ".join(ctx_texts[j + 1 : j + 1 + w]) if w else ""
+
+                    def attempt(strict: bool, sample: bool) -> str:
+                        raw = self._translate_causal_one(
+                            protected,
+                            src,
+                            tgt,
+                            keep_names=keep_ph or None,
+                            strict=strict,
+                            prev_text=prev_text,
+                            next_text=next_text,
+                            sample=sample,
+                        )
+                        cleaned = self._sanitize_fa_output(raw, protected)
+                        return self._strip_added_fillers(cleaned, t)
+
+                    fa = attempt(strict=False, sample=False)
+                    best = fa
                     if self.validate:
                         ok, reason = self._translation_ok(
                             protected, fa, glossary, tgt, placeholders=ph_map
                         )
-                        hard = reason in (
-                            "empty_fa",
-                            "no_persian",
-                            "identical",
-                            "hallucinated_example",
-                        )
                         retries = 0
-                        while hard and not ok and retries < self.max_retries:
+                        while not ok and reason in self._HARD_QA and retries < self.max_retries:
                             logger.warning(
-                                f"Translation QA failed ({reason}); retrying stricter prompt"
+                                f"Translation QA failed ({reason}); retrying"
                             )
-                            fa = self._translate_causal_one(
-                                protected, src, tgt, keep_names=keep_ph or None, strict=True
-                            )
-                            fa = self._sanitize_fa_output(fa, protected)
+                            # Greedy MT would repeat itself; sample instead of a stricter prompt
+                            fa = attempt(strict=not is_mt, sample=is_mt)
                             ok, reason = self._translation_ok(
                                 protected, fa, glossary, tgt, placeholders=ph_map
                             )
-                            hard = reason in (
-                                "empty_fa",
-                                "no_persian",
-                                "identical",
-                                "hallucinated_example",
-                            )
+                            if fa and (ok or not best):
+                                best = fa
                             retries += 1
+                        if ok:
+                            best = fa
                         if reason.startswith("soft_"):
                             logger.debug(f"Translation soft QA: {reason}")
-                        elif hard and not ok:
+                        elif not ok and reason in self._HARD_QA:
                             logger.warning(
                                 f"Translation QA still failing ({reason}) — keeping best attempt"
                             )
-                    fa = self._restore_names(fa, ph_map)
+                    fa = self._restore_names(best, ph_map)
                     results_text.append(self._apply_glossary(fa, glossary))
             else:
                 protected_list: List[str] = []

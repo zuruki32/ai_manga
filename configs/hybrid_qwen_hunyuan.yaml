@@ -1,15 +1,13 @@
-# Hybrid OCR (local Qwen3-VL) + full HF Gemma Persian translation
+# Hybrid OCR (local Qwen3-VL) + Hunyuan-MT-7B translation (EN -> FA)
 #
-# Local weights (no Hub download):
+# Local weights:
 #   OCR:         D:/projects/models/Qwen3-VL-8B-Instruct
-#   Translation: models/gemma-3-4b-persian   (complete HF folder, NOT gguf)
+#   Translation: models/Hunyuan-MT-7B   (python scripts/download_models.py --model hunyuan_mt)
 #
 # Setup:
-#   pip install ultralytics huggingface_hub
 #   pip install -U 'transformers>=4.57.0' accelerate bitsandbytes qwen-vl-utils
-#   python scripts/download_comic_yolo.py --variant textseg
 #
-# Note: unload_after_stage frees VRAM between Qwen OCR and Gemma translate.
+# Note: unload_after_stage frees VRAM between Qwen OCR and translation.
 
 pipeline:
   version: "0.1.0"
@@ -46,7 +44,9 @@ ocr:
 
 translation:
   backend: "huggingface"
-  model: "models/gemma-3-4b-persian"
+  # Dedicated translator (Tencent, 33 languages incl. Persian). ~5 GB VRAM in 4-bit.
+  #   python scripts/download_models.py --model hunyuan_mt
+  model: "models/Hunyuan-MT-7B"
   local_files_only: true
   load_in_4bit: true
   max_new_tokens: 192
@@ -54,11 +54,8 @@ translation:
   batch_size: 1
   validate: true
   max_retries: 2
-  # Match Iranian manhwa scanlation tone + @ per bubble
-  # IMPORTANT: do NOT put EN:/FA: few-shot lines in extra_instructions (Gemma copies them)
-  style: "colloquial_fa"
-  # Neighbouring bubbles shown to the model as context (not translated)
-  context_window: 1
+  # Label used in the official prompt. Try "colloquial Persian" for a more spoken tone.
+  mt_target_label: "Persian"
   unit: "region"
   output_format: "scanlation"
   glossary:

@@ -93,6 +93,8 @@ def create_translator(backend: str = "mock", **kwargs) -> Translator:
             max_retries=int(kwargs.get("max_retries", 1)),
             style=str(kwargs.get("style", "colloquial_fa")),
             extra_instructions=str(kwargs.get("extra_instructions") or ""),
+            context_window=int(kwargs.get("context_window", 1) or 0),
+            mt_target_label=str(kwargs.get("mt_target_label") or "Persian"),
         )
     if backend in ("llama_cpp", "llamacpp", "gguf"):
         from manga_ai.translation.llama_cpp_backend import LlamaCppTranslator

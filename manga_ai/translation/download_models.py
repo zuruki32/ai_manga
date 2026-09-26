@@ -15,6 +15,7 @@ Usage (from repo root):
   python scripts/download_models.py --model gemma_persian
   python scripts/download_models.py --model gemma_gguf
   python scripts/download_models.py --model opus
+  python scripts/download_models.py --model hunyuan_mt
 
 Models are saved under ./models/
 """
@@ -54,6 +55,12 @@ CATALOG = {
     "opus": (
         "Helsinki-NLP/opus-mt-en-fa",
         "opus-mt-en-fa",
+        False,
+    ),
+    # Dedicated 7B translator (33 languages incl. Persian); ~5 GB VRAM in 4-bit
+    "hunyuan_mt": (
+        "tencent/Hunyuan-MT-7B",
+        "Hunyuan-MT-7B",
         False,
     ),
 }
