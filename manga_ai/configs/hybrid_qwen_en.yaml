@@ -1,8 +1,14 @@
-# Hybrid OCR: classical detector boxes + Qwen2.5-VL recognition on crops
+# Hybrid OCR: EasyOCR boxes + Qwen2.5-VL recognition on crops
+# (Paddle detection is skipped by default — PaddlePaddle 3.3.x crashes on
+# Windows CPU with oneDNN/PIR. Use easyocr for boxes instead.)
+#
 # Requires:
-#   pip install paddlepaddle paddleocr
+#   pip install easyocr
 #   pip install 'transformers>=4.49.0' accelerate bitsandbytes qwen-vl-utils
 #   pip install torch torchvision
+#
+# Optional Paddle (only if you have a working paddle GPU or paddlepaddle==3.2.2):
+#   detection.backend: paddle
 #
 # First run downloads Qwen/Qwen2.5-VL-3B-Instruct (~7GB). Use load_in_4bit on 6GB GPUs.
 
@@ -18,9 +24,12 @@ preprocessing:
   validate: true
 
 detection:
-  backend: "paddle"
-  lang: "en"
-  confidence_threshold: 0.45
+  backend: "easyocr"
+  languages: ["en"]
+  confidence_threshold: 0.25
+  min_size: 12
+  paragraph: false
+  detect_max_dimension: 1600
 
 ocr:
   backend: "hybrid_qwen"
