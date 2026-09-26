@@ -37,6 +37,10 @@ env/
 .env
 .env.local
 
+# Telegram / per-project bot data
+data/projects/
+*.session
+
 # Project artifacts
 data/chapters/*/detection/
 data/chapters/*/ocr/

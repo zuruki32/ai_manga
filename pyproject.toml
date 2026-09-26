@@ -58,18 +58,20 @@ translation-local = [
     "sentencepiece>=0.1.99",
     "sacremoses>=0.0.53",
 ]
-lama = [
-    "simple-lama-inpainting>=0.1.0",
+# Telegram bot (optional)
+telegram = [
+    "python-telegram-bot>=21.0",
 ]
 local = [
     "manga-ai[gpu,easyocr,translation-local]",
 ]
 all = [
-    "manga-ai[dev,gpu,ocr,easyocr,manga-ocr,hybrid-qwen,yolo,translation-local,lama]",
+    "manga-ai[dev,gpu,ocr,easyocr,manga-ocr,hybrid-qwen,yolo,translation-local,lama,telegram]",
 ]
 
 [project.scripts]
 manga-ai = "manga_ai.cli:main"
+manga-ai-telegram = "manga_ai.telegram.bot:run_bot"
 
 [tool.setuptools.packages.find]
 where = ["."]

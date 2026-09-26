@@ -13,8 +13,11 @@ def create_inpainter(backend: str = "mock", **kwargs) -> Inpainter:
     if backend == "opencv":
         from manga_ai.inpainting.opencv_backend import OpenCVInpainter
         return OpenCVInpainter(
-            radius=kwargs.get("radius", 5),
+            radius=int(kwargs.get("radius", 7)),
             method=kwargs.get("method", "telea"),
+            passes=int(kwargs.get("passes", 2)),
+            soft_edge=int(kwargs.get("soft_edge", 3)),
+            bg_fill=bool(kwargs.get("bg_fill", True)),
         )
     if backend == "lama":
         from manga_ai.inpainting.lama import LaMaInpainter

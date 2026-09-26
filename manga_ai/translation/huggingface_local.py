@@ -195,6 +195,7 @@ class HuggingFaceTranslator(Translator):
         validate: bool = True,
         max_retries: int = 1,
         style: str = "colloquial_fa",
+        extra_instructions: str = "",
         **kwargs: Any,
     ):
         self.model_name = model
@@ -210,6 +211,7 @@ class HuggingFaceTranslator(Translator):
         self.validate = validate
         self.max_retries = max(0, int(max_retries))
         self.style = (style or "colloquial_fa").lower()
+        self.extra_instructions = (extra_instructions or "").strip()
         if local_files_only:
             self.local_files_only = True
         elif model and Path(model).expanduser().exists():
@@ -499,6 +501,10 @@ class HuggingFaceTranslator(Translator):
                 "EN: Oh my god, you little rascals!\n"
                 "FA: وای خدای من، شما شیطونای کوچولو!\n"
                 f"{name_line}"
+            )
+            if self.extra_instructions:
+                user_msg += f"دستورهای اضافه از صاحب پروژه:\n{self.extra_instructions}\n"
+            user_msg += (
                 "قوانین:\n"
                 "- فقط متن ترجمه رو برگردون؛ توضیح، ایموجی، یا پیشوند EN/FA نذار.\n"
                 "- کامل ترجمه کن؛ خلاصه نکن و کوتاهش نکن.\n"

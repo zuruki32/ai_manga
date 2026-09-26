@@ -78,6 +78,8 @@ class Pipeline:
             use_polygon=config.get("masking.use_polygon", True),
             residual_expand=config.get("masking.residual_expand", True),
             residual_thresh=config.get("masking.residual_thresh", 140),
+            bubble_inflate=config.get("masking.bubble_inflate", True),
+            bubble_pad_px=config.get("masking.bubble_pad_px", 8),
         )
         self.quality = QualityChecker(config.section("quality"))
 
@@ -178,6 +180,7 @@ class Pipeline:
                     local_files_only=self.config.get("translation.local_files_only", False),
                     validate=self.config.get("translation.validate", True),
                     style=self.config.get("translation.style", "colloquial_fa"),
+                    extra_instructions=self.config.get("translation.extra_instructions", "") or "",
                     n_gpu_layers=self.config.get("translation.n_gpu_layers", -1),
                     n_ctx=self.config.get("translation.n_ctx", 2048),
                     max_tokens=self.config.get("translation.max_tokens", 128),
@@ -200,6 +203,11 @@ class Pipeline:
                     tile_size=self.config.get("inpainting.tile_size", 768),
                     overlap=self.config.get("inpainting.overlap", 64),
                     precision=self.config.get("inpainting.precision", "fp16"),
+                    radius=self.config.get("inpainting.radius", 7),
+                    method=self.config.get("inpainting.method", "telea"),
+                    passes=self.config.get("inpainting.passes", 2),
+                    soft_edge=self.config.get("inpainting.soft_edge", 3),
+                    bg_fill=self.config.get("inpainting.bg_fill", True),
                 )
             except Exception as e:
                 logger.warning(f"Inpainter '{backend}' failed ({e}), falling back to opencv")

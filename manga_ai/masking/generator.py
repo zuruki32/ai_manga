@@ -1,4 +1,4 @@
-"""Generate text masks from polygons / bboxes (+ optional residual fill)."""
+"""Generate text masks from polygons / bboxes (+ residual fill + bubble inflate)."""
 
 from __future__ import annotations
 
@@ -18,12 +18,16 @@ class MaskGenerator:
         use_polygon: bool = True,
         residual_expand: bool = True,
         residual_thresh: int = 140,
+        bubble_inflate: bool = True,
+        bubble_pad_px: int = 8,
     ):
         self.dilation_px = dilation_px
         self.blur_radius = blur_radius
         self.use_polygon = use_polygon
         self.residual_expand = residual_expand
         self.residual_thresh = residual_thresh
+        self.bubble_inflate = bubble_inflate
+        self.bubble_pad_px = bubble_pad_px
 
     def generate(
         self,
@@ -65,19 +69,41 @@ class MaskGenerator:
             else:
                 gray = image
             dark = (gray < self.residual_thresh).astype(np.uint8) * 255
-            # only near existing mask
-            near = cv2.dilate(mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (21, 21)))
+            near = cv2.dilate(
+                mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (31, 31))
+            )
             extra = cv2.bitwise_and(dark, near)
             mask = cv2.bitwise_or(mask, extra)
             mask = cv2.dilate(
                 mask,
-                cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)),
+                cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7)),
                 iterations=1,
             )
+
+            # Inflate into bright bubble interiors so leftover serifs disappear
+            if self.bubble_inflate:
+                bright = (gray > 200).astype(np.uint8) * 255
+                near2 = cv2.dilate(
+                    mask,
+                    cv2.getStructuringElement(
+                        cv2.MORPH_ELLIPSE,
+                        (self.bubble_pad_px * 2 + 1, self.bubble_pad_px * 2 + 1),
+                    ),
+                )
+                bubble = cv2.bitwise_and(bright, near2)
+                # only keep bubble components that touch the text mask
+                num, labels = cv2.connectedComponents(bubble)
+                grow = np.zeros_like(mask)
+                touch = (mask > 0)
+                for lab in range(1, num):
+                    comp = labels == lab
+                    if np.any(comp & touch):
+                        grow[comp] = 255
+                mask = cv2.bitwise_or(mask, grow)
 
         if self.blur_radius > 0:
             k = self.blur_radius * 2 + 1
             mask = cv2.GaussianBlur(mask, (k, k), 0)
-            _, mask = cv2.threshold(mask, 10, 255, cv2.THRESH_BINARY)
+            _, mask = cv2.threshold(mask, 8, 255, cv2.THRESH_BINARY)
 
         return mask

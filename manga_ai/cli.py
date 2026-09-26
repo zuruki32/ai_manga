@@ -219,5 +219,14 @@ def benchmark_cmd(stage: str, chapter_dir: str, config: Optional[str], backend: 
     click.echo(f"pages_per_hour={len(images) / elapsed * 3600:.1f}" if elapsed > 0 else "")
 
 
+@main.command("telegram")
+@click.option("--token", default=None, help="Bot token (else TELEGRAM_BOT_TOKEN / .env)")
+def telegram_cmd(token: Optional[str]) -> None:
+    """Run Irisekai Telegram bot (projects, names, ZIP chapters)."""
+    from manga_ai.telegram.bot import run_bot
+
+    run_bot(token=token)
+
+
 if __name__ == "__main__":
     main()
