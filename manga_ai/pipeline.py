@@ -29,6 +29,7 @@ from manga_ai.schemas import (
 )
 from manga_ai.translation import Translator, create_translator
 from manga_ai.utils import ensure_dir, list_images, page_id_from_path
+from manga_ai.utils.io import IMAGE_EXTENSIONS
 from manga_ai.utils.cache import ArtifactCache
 from manga_ai.utils.device import clear_cuda, get_device, log_vram, peak_vram_mb
 from manga_ai.utils.hashing import content_hash
@@ -312,7 +313,7 @@ class Pipeline:
         if self.original_dir.is_dir() and list_images(self.original_dir):
             images = list_images(self.original_dir)
         else:
-            images = list_images(self.chapter_dir)
+            images = list_images(self.chapter_dir, recursive=True)
             if images:
                 ensure_dir(self.original_dir)
                 import shutil
@@ -323,7 +324,18 @@ class Pipeline:
                 images = list_images(self.original_dir)
 
         if not images:
-            raise FileNotFoundError(f"No images found in {self.chapter_dir}")
+            # Last resort: reused cleaned pages (translation-only recovery)
+            if self.cleaned_dir.is_dir():
+                images = list_images(self.cleaned_dir)
+            if not images:
+                exts = ", ".join(sorted(IMAGE_EXTENSIONS))
+                raise FileNotFoundError(
+                    f"No images found in {self.chapter_dir}\n"
+                    f"Expected page images in:\n"
+                    f"  - {self.original_dir}\n"
+                    f"  - {self.chapter_dir} (or one subfolder)\n"
+                    f"Supported extensions: {exts}"
+                )
 
         pages = [page_id_from_path(p) for p in images]
         seen: Dict[str, int] = {}
@@ -918,6 +930,36 @@ class Pipeline:
         return self.manifest
 
     def run_stage(self, stage: str) -> None:
+        # Translation can run from existing OCR/manifest without page images.
+        if stage in ("translate", "translation"):
+            regions: List[TextRegion] = []
+            if self.manifest_path.exists():
+                data = json.loads(self.manifest_path.read_text(encoding="utf-8"))
+                self.manifest = ChapterManifest(**data)
+                regions = list(self.manifest.regions)
+            if not regions and self.ocr_dir.is_dir():
+                ensure_dir(self.translation_dir)
+                for ocr_path in sorted(self.ocr_dir.glob("*.json")):
+                    for item in json.loads(ocr_path.read_text(encoding="utf-8")):
+                        regions.append(TextRegion(**item))
+            if not regions:
+                # Last resort: discover images then load matching OCR jsons
+                images = self.run_preprocess()
+                for p in images:
+                    page = page_id_from_path(p)
+                    ocr_path = self.ocr_dir / f"{page}.json"
+                    if ocr_path.exists():
+                        for item in json.loads(ocr_path.read_text(encoding="utf-8")):
+                            regions.append(TextRegion(**item))
+            if not regions:
+                raise FileNotFoundError(
+                    f"No OCR regions found for translation in {self.chapter_dir}.\n"
+                    f"Need {self.manifest_path.name} or files under {self.ocr_dir}"
+                )
+            self.run_translation(regions)
+            self._unload_all()
+            return
+
         images = self.run_preprocess()
         if stage in ("detect", "detection"):
             self.run_detection(images)
@@ -931,20 +973,6 @@ class Pipeline:
                 else:
                     detections[page] = []
             self.run_ocr(images, detections)
-        elif stage in ("translate", "translation"):
-            regions: List[TextRegion] = []
-            if self.manifest_path.exists():
-                data = json.loads(self.manifest_path.read_text(encoding="utf-8"))
-                self.manifest = ChapterManifest(**data)
-                regions = list(self.manifest.regions)
-            if not regions:
-                for p in images:
-                    page = page_id_from_path(p)
-                    ocr_path = self.ocr_dir / f"{page}.json"
-                    if ocr_path.exists():
-                        for item in json.loads(ocr_path.read_text(encoding="utf-8")):
-                            regions.append(TextRegion(**item))
-            self.run_translation(regions)
         elif stage in ("mask", "masking"):
             regions = []
             if self.manifest_path.exists():

@@ -15,8 +15,12 @@ def ensure_dir(path: str | Path) -> Path:
     return p
 
 
-def list_images(directory: str | Path) -> List[Path]:
-    """Return sorted list of image files in a directory."""
+def list_images(directory: str | Path, recursive: bool = False) -> List[Path]:
+    """Return sorted list of image files in a directory.
+
+    If ``recursive`` is True, also search one level of subdirectories
+    (skips common pipeline output folder names).
+    """
     directory = Path(directory)
     if not directory.is_dir():
         return []
@@ -25,6 +29,25 @@ def list_images(directory: str | Path) -> List[Path]:
         for p in directory.iterdir()
         if p.is_file() and p.suffix.lower() in IMAGE_EXTENSIONS
     ]
+    if recursive and not files:
+        skip = {
+            "detection",
+            "ocr",
+            "translation",
+            "masks",
+            "cleaned",
+            "debug",
+            "cache",
+            "__pycache__",
+        }
+        for sub in sorted(directory.iterdir()):
+            if not sub.is_dir() or sub.name.lower() in skip or sub.name.startswith("."):
+                continue
+            files.extend(
+                p
+                for p in sub.iterdir()
+                if p.is_file() and p.suffix.lower() in IMAGE_EXTENSIONS
+            )
     return sorted(files, key=lambda p: _natural_key(p.name))
 
 
