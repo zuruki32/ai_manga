@@ -487,31 +487,24 @@ class HuggingFaceTranslator(Translator):
             )
 
         if self.style in ("colloquial_fa", "scanlation", "manhwa_fa", "fa_colloquial"):
-            # Tone target: Iranian manhwa scanlation (spoken, punchy, not literary)
+            # Tone only — NO few-shot FA lines (Gemma copies them into every bubble)
             user_msg = (
-                "تو مترجم حرفه‌ای مانها/وب‌تون به فارسی محاوره‌ای ایرانی هستی.\n"
+                "نقش تو: مترجم دیالوگ مانها به فارسی محاوره‌ای ایرانی.\n"
                 f"{strict_line}"
-                "لحن هدف: گفت‌وگوی روزمره، خودمونی، طبیعی — مثل ساب‌های اسکنلیشن فارسی، "
-                "نه فارسی کتابی/رسمی.\n"
-                "نمونه‌ی لحن (فقط الگو، کپی نکن):\n"
-                "EN: You did great, Jewel.\n"
-                "FA: خیلی خوب از پسش براومدی، جوول.\n"
-                "EN: How could I sleep when you were in so much pain?\n"
-                "FA: چطوری می‌تونستم بخوابم اونم وقتی داشتی این همه درد می‌کشیدی؟\n"
-                "EN: Oh my god, you little rascals!\n"
-                "FA: وای خدای من، شما شیطونای کوچولو!\n"
+                "فقط همان جمله‌ی داده‌شده را ترجمه کن.\n"
+                "لحن: خودمونی و طبیعی (می‌تونم، مگه نه، خب، وای) — نه کتابی.\n"
                 f"{name_line}"
             )
             if self.extra_instructions:
-                user_msg += f"دستورهای اضافه از صاحب پروژه:\n{self.extra_instructions}\n"
+                user_msg += f"دستور اضافه:\n{self.extra_instructions}\n"
             user_msg += (
-                "قوانین:\n"
-                "- فقط متن ترجمه رو برگردون؛ توضیح، ایموجی، یا پیشوند EN/FA نذار.\n"
-                "- کامل ترجمه کن؛ خلاصه نکن و کوتاهش نکن.\n"
-                "- محاوره: می‌تونم، مگه نه، خب، وای، واقعاً، چی؟! — از «می‌باشم/خواهند بود» ادبی پرهیز کن.\n"
-                "- لحن فریاد/لکنت/شوخی رو حفظ کن.\n"
-                "- اگه کلمه‌ای OCR خراب به نظر میاد، فقط همون کلمه رو رد کن.\n\n"
-                f"{text}"
+                "ممنوع:\n"
+                "- ساختن دیالوگ جدید یا کپی از حافظه/نمونه\n"
+                "- آوردن پیشوند EN/FA یا توضیح\n"
+                "- خلاصه‌کردن یا حذف معنی\n"
+                "- ترجمه کردن توکن‌های داخل ⟦ ⟧\n\n"
+                f"متن انگلیسی:\n{text}\n\n"
+                "فقط ترجمه فارسی:"
             )
         else:
             user_msg = (
@@ -584,6 +577,45 @@ class HuggingFaceTranslator(Translator):
             out = out.replace(f"[{bare}]", fa).replace(f"({bare})", fa)
         return out
 
+    # Phrases from old few-shot prompts that Gemma was regurgitating
+    _LEAKED_FA = (
+        "شیطونای کوچولو",
+        "چطوری می‌تونستم بخوابم اونم وقتی داشتی این همه درد می‌کشیدی",
+        "خیلی خوب از پسش براومدی، جوول",
+        "وای خدای من، شما شیطونای",
+    )
+
+    def _sanitize_fa_output(self, fa: str, en: str) -> str:
+        import re
+
+        t = (fa or "").strip()
+        if not t:
+            return ""
+        # Drop accidental "EN: ... FA: ..." junk the model invents
+        if re.search(r"(?i)^EN\s*:", t):
+            # keep only after last FA: if present
+            m = re.search(r"(?i)FA\s*:\s*(.+)$", t, re.S)
+            if m:
+                t = m.group(1).strip()
+            else:
+                t = ""
+        t = re.sub(r"(?i)\bEN\s*:.*?(?=FA\s*:|$)", "", t, flags=re.S).strip()
+        t = re.sub(r"(?i)^\s*FA\s*:\s*", "", t).strip()
+        # If output is mostly a leaked stock phrase and EN is unrelated, blank it
+        for leak in self._LEAKED_FA:
+            if leak in t:
+                # allow if EN actually matches the old example meanings — otherwise kill
+                en_l = (en or "").lower()
+                related = any(
+                    k in en_l
+                    for k in ("rascal", "sleep", "pain", "jewel", "did great", "oh my god")
+                )
+                if not related:
+                    # remove the leaked sentence chunks
+                    t = t.replace(leak, "").strip(" ،,.!?")
+        t = re.sub(r"\s{2,}", " ", t).strip(" ،")
+        return t
+
     def _translation_ok(
         self,
         en: str,
@@ -604,12 +636,16 @@ class HuggingFaceTranslator(Translator):
                 return False, "no_persian"
         if fa.strip() == en.strip():
             return False, "identical"
-        en_words = max(1, len(en.split()))
-        fa_words = max(1, len(fa.split()))
-        # Colloquial FA is often shorter than EN — treat extreme cuts as soft only
-        if en_words >= 12 and fa_words < max(2, int(en_words * 0.2)):
-            return True, "soft_too_short"
-        # Placeholders should survive; missing name is soft (not hard-fail)
+        # Hallucinated stock lines from old few-shots
+        for leak in self._LEAKED_FA:
+            if leak in fa:
+                en_l = (en or "").lower()
+                related = any(
+                    k in en_l
+                    for k in ("rascal", "sleep", "pain", "jewel", "did great")
+                )
+                if not related:
+                    return False, "hallucinated_example"
         if placeholders:
             missing_ph = [ph for ph in placeholders if ph not in fa]
             if missing_ph:
