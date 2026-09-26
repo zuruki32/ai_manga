@@ -91,7 +91,7 @@ class ProjectStore:
         cfg["masking"]["bubble_inflate"] = True
         cfg["masking"]["residual_expand"] = True
         cfg.setdefault("inpainting", {})
-        cfg["inpainting"]["backend"] = "opencv"
+        cfg["inpainting"]["backend"] = "lama"
         cfg["inpainting"]["passes"] = 2
         cfg["inpainting"]["bg_fill"] = True
         cfg["inpainting"]["soft_edge"] = 3

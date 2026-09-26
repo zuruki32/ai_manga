@@ -212,7 +212,14 @@ class Pipeline:
             except Exception as e:
                 logger.warning(f"Inpainter '{backend}' failed ({e}), falling back to opencv")
                 try:
-                    self._inpainter = create_inpainter("opencv")
+                    self._inpainter = create_inpainter(
+                        "opencv",
+                        radius=self.config.get("inpainting.radius", 7),
+                        method=self.config.get("inpainting.method", "telea"),
+                        passes=self.config.get("inpainting.passes", 2),
+                        soft_edge=self.config.get("inpainting.soft_edge", 3),
+                        bg_fill=self.config.get("inpainting.bg_fill", True),
+                    )
                 except Exception:
                     self._inpainter = create_inpainter("mock")
         return self._inpainter

@@ -77,7 +77,10 @@ masking:
   bubble_pad_px: 10
 
 inpainting:
-  backend: "opencv"
+  # Best quality (same stack as manga-image-translator / PanelCleaner / manga-text-cleaner):
+  #   pip install simple-lama-inpainting --no-deps
+  # Falls back to improved OpenCV if LaMa missing / OOM.
+  backend: "lama"
   radius: 7
   method: "telea"
   passes: 2
