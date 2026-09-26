@@ -476,8 +476,8 @@ class HuggingFaceTranslator(Translator):
                     uniq.append(n)
             if uniq:
                 name_line = (
-                    "این اسم‌ها رو عیناً نگه دار (ترجمه/حذف/خلاصه‌سازی نکن): "
-                    f"{', '.join(uniq)}\n"
+                    "توکن‌های داخل ⟦ ⟧ رو عیناً تو خروجی نگه دار و ترجمه/حذف نکن "
+                    f"(بعداً با اسم جایگزین می‌شن): {', '.join(uniq)}\n"
                 )
         strict_line = ""
         if strict:
@@ -549,12 +549,49 @@ class HuggingFaceTranslator(Translator):
             return True
         return False
 
+    def _protect_names(
+        self, text: str, glossary: Dict[str, str]
+    ) -> tuple[str, Dict[str, str], List[str]]:
+        """Replace glossary EN names with stable tokens the model must keep."""
+        mapping: Dict[str, str] = {}  # placeholder -> FA (preferred) or EN
+        keep_tokens: List[str] = []
+        if not text or not glossary:
+            return text, mapping, keep_tokens
+        # longest keys first
+        items = sorted(
+            ((k, v) for k, v in glossary.items() if k and k in text),
+            key=lambda kv: -len(kv[0]),
+        )
+        # de-dupe overlapping (same span): keep first longest only by sequential replace
+        out = text
+        i = 0
+        for en, fa in items:
+            if en not in out:
+                continue
+            ph = f"⟦{i}⟧"
+            out = out.replace(en, ph)
+            mapping[ph] = fa or en
+            keep_tokens.append(ph)
+            i += 1
+        return out, mapping, keep_tokens
+
+    def _restore_names(self, text: str, mapping: Dict[str, str]) -> str:
+        out = text or ""
+        for ph, fa in mapping.items():
+            out = out.replace(ph, fa)
+            # model sometimes strips brackets
+            bare = ph.strip("⟦⟧")
+            out = out.replace(f"[{bare}]", fa).replace(f"({bare})", fa)
+        return out
+
     def _translation_ok(
         self,
         en: str,
         fa: str,
         glossary: Dict[str, str],
         tgt: str,
+        *,
+        placeholders: Optional[Dict[str, str]] = None,
     ) -> tuple[bool, str]:
         import re
 
@@ -562,23 +599,20 @@ class HuggingFaceTranslator(Translator):
             return True, ""
         if not fa.strip():
             return False, "empty_fa"
-        # Must contain Persian letters when targeting FA
         if tgt[:2] in ("fa", "pe"):
             if not re.search(r"[\u0600-\u06FF]", fa):
                 return False, "no_persian"
-        # Don't allow near-identical English passthrough
         if fa.strip() == en.strip():
             return False, "identical"
-        # Length / over-summarization (for longer lines)
         en_words = max(1, len(en.split()))
         fa_words = max(1, len(fa.split()))
         if en_words >= 8 and fa_words < max(3, int(en_words * 0.35)):
             return False, "too_short"
-        # Glossary names must survive (EN form or FA form)
-        for en_name, fa_name in glossary.items():
-            if en_name and en_name in en:
-                if not self._fa_has_name(fa, en_name, fa_name or ""):
-                    return False, f"missing_name:{en_name}"
+        # Placeholders should survive; missing name is soft (not hard-fail)
+        if placeholders:
+            missing_ph = [ph for ph in placeholders if ph not in fa]
+            if missing_ph:
+                return True, f"soft_missing_ph:{','.join(missing_ph)}"
         return True, ""
 
     def _apply_glossary(self, text: str, glossary: Dict[str, str]) -> str:
@@ -614,7 +648,6 @@ class HuggingFaceTranslator(Translator):
         tok = self._tokenizer
         model_l = (self.model_name or "").lower().replace("\\", "/")
 
-        # Dynamic token budget: don't truncate long page passages
         approx_out = min(512, max(self.max_new_tokens, int(len(text.split()) * 2.5) + 32))
 
         if "english-persian" in model_l or "en-fa" in model_l or "llama-en-fa" in model_l or "llama-3.2-1b" in model_l:
@@ -691,42 +724,56 @@ class HuggingFaceTranslator(Translator):
         if non_empty_texts:
             if self._mode == "causal":
                 for t in non_empty_texts:
-                    keep = self._names_in_text(t, glossary)
-                    fa = self._translate_causal_one(t, src, tgt, keep_names=keep, strict=False)
+                    protected, ph_map, keep_ph = self._protect_names(t, glossary)
+                    fa = self._translate_causal_one(
+                        protected, src, tgt, keep_names=keep_ph or None, strict=False
+                    )
                     if self.validate:
-                        ok, reason = self._translation_ok(t, fa, glossary, tgt)
+                        ok, reason = self._translation_ok(
+                            protected, fa, glossary, tgt, placeholders=ph_map
+                        )
+                        # Only hard-retry real failures (not soft name issues)
+                        hard = reason in ("empty_fa", "no_persian", "identical", "too_short")
                         retries = 0
-                        while not ok and retries < self.max_retries:
+                        while hard and not ok and retries < self.max_retries:
                             logger.warning(
                                 f"Translation QA failed ({reason}); retrying stricter prompt"
                             )
                             fa = self._translate_causal_one(
-                                t, src, tgt, keep_names=keep, strict=True
+                                protected, src, tgt, keep_names=keep_ph or None, strict=True
                             )
-                            ok, reason = self._translation_ok(t, fa, glossary, tgt)
+                            ok, reason = self._translation_ok(
+                                protected, fa, glossary, tgt, placeholders=ph_map
+                            )
+                            hard = reason in ("empty_fa", "no_persian", "identical", "too_short")
                             retries += 1
-                        if not ok:
+                        if reason.startswith("soft_"):
+                            logger.debug(f"Translation soft QA: {reason}")
+                        elif hard and not ok:
                             logger.warning(
                                 f"Translation QA still failing ({reason}) — keeping best attempt"
                             )
+                    fa = self._restore_names(fa, ph_map)
+                    # If placeholders were dropped, still apply leftover EN glossary keys
                     results_text.append(self._apply_glossary(fa, glossary))
             else:
-                # seq2seq: protect names with placeholders (models usually keep them)
-                protected: List[str] = []
+                protected_list: List[str] = []
                 placeholders: List[Dict[str, str]] = []
                 for text in non_empty_texts:
                     mapping = {}
                     t = text
-                    for i, (term, _) in enumerate(glossary.items()):
+                    for i, (term, _) in enumerate(
+                        sorted(glossary.items(), key=lambda kv: -len(kv[0] or ""))
+                    ):
                         if term and term in t:
-                            ph = f"__GLOSS_{i}__"
+                            ph = f"⟦{i}⟧"
                             t = t.replace(term, ph)
-                            mapping[ph] = term
+                            mapping[ph] = glossary.get(term) or term
                     placeholders.append(mapping)
-                    protected.append(t)
+                    protected_list.append(t)
 
-                for start in range(0, len(protected), self.batch_size):
-                    batch = protected[start : start + self.batch_size]
+                for start in range(0, len(protected_list), self.batch_size):
+                    batch = protected_list[start : start + self.batch_size]
                     if need_pivot and self._pivot_model is not None:
                         mid = self._seq2seq_generate(
                             batch, self._pivot_model, self._pivot_tokenizer,
@@ -744,8 +791,7 @@ class HuggingFaceTranslator(Translator):
                     results_text.extend(out)
 
                 for j, text in enumerate(results_text):
-                    for ph, term in placeholders[j].items():
-                        text = text.replace(ph, term)
+                    text = self._restore_names(text, placeholders[j])
                     results_text[j] = self._apply_glossary(text, glossary)
 
             for j, idx in enumerate(non_empty_idx):
