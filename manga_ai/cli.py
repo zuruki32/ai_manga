@@ -67,9 +67,15 @@ def process(chapter_dir: str, config: Optional[str], backend: Optional[str], for
     setup_logging(level=cfg.get("logging.level", "INFO"))
     pipe = Pipeline(cfg, chapter_dir)
     manifest = pipe.process()
-    click.echo(f"\nDone. Manifest: {pipe.manifest_path}")
-    click.echo(f"Pages: {len(manifest.pages)}")
-    click.echo(f"Regions: {len(manifest.regions)}")
+    try:
+        click.echo(f"\nDone. Manifest: {pipe.manifest_path}")
+        click.echo(f"Pages: {len(manifest.pages)}")
+        click.echo(f"Regions: {len(manifest.regions)}")
+    except OSError:
+        # Windows console handle can already be closed; don't crash after success
+        print(f"\nDone. Manifest: {pipe.manifest_path}")
+        print(f"Pages: {len(manifest.pages)}")
+        print(f"Regions: {len(manifest.regions)}")
 
 
 @main.command()
