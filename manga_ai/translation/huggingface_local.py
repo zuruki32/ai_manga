@@ -192,6 +192,8 @@ class HuggingFaceTranslator(Translator):
         load_in_8bit: bool = False,
         max_new_tokens: int = 128,
         local_files_only: bool = False,
+        validate: bool = True,
+        max_retries: int = 1,
         **kwargs: Any,
     ):
         self.model_name = model
@@ -204,6 +206,8 @@ class HuggingFaceTranslator(Translator):
         self.load_in_4bit = load_in_4bit
         self.load_in_8bit = load_in_8bit
         self.max_new_tokens = max_new_tokens
+        self.validate = validate
+        self.max_retries = max(0, int(max_retries))
         if local_files_only:
             self.local_files_only = True
         elif model and Path(model).expanduser().exists():
@@ -448,19 +452,118 @@ class HuggingFaceTranslator(Translator):
             out = model.generate(**inputs, **gen_kwargs)
         return tok.batch_decode(out, skip_special_tokens=True)
 
-    def _build_causal_messages(self, text: str, src_name: str, tgt_name: str) -> Any:
+    def _build_causal_messages(
+        self,
+        text: str,
+        src_name: str,
+        tgt_name: str,
+        *,
+        keep_names: Optional[List[str]] = None,
+        strict: bool = False,
+    ) -> Any:
+        name_line = ""
+        if keep_names:
+            uniq = []
+            seen = set()
+            for n in keep_names:
+                key = n.lower()
+                if n and key not in seen:
+                    seen.add(key)
+                    uniq.append(n)
+            if uniq:
+                name_line = (
+                    "Keep these character/proper names EXACTLY as written "
+                    f"(do not translate, drop, or paraphrase them): {', '.join(uniq)}.\n"
+                )
+        strict_line = ""
+        if strict:
+            strict_line = (
+                "CRITICAL: Previous attempt dropped names or summarized. "
+                "Translate EVERY clause. Preserve every listed name verbatim.\n"
+            )
         user_msg = (
-            f"You are a professional manhwa/comic translator.\n"
-            f"Translate the following {src_name} dialogue to natural colloquial {tgt_name}.\n"
-            f"Keep character names unchanged unless a glossary replacement is already applied.\n"
-            f"Return only the translation, nothing else.\n\n{text}"
+            f"You are a professional manhwa/comic dialogue translator.\n"
+            f"{strict_line}"
+            f"Translate the following {src_name} dialogue into natural colloquial {tgt_name}.\n"
+            f"{name_line}"
+            f"Rules:\n"
+            f"- Translate the FULL meaning; do NOT summarize or shorten.\n"
+            f"- Return ONLY the translation text, nothing else.\n"
+            f"- Keep punctuation and speaker tone (hesitation, shouting).\n"
+            f"- If a word looks like OCR garbage, skip that word only.\n\n"
+            f"{text}"
         )
-        # Gemma3 multimodal chat templates often want typed content blocks
         if self._is_gemma3_mm:
             return [{"role": "user", "content": [{"type": "text", "text": user_msg}]}]
         return [{"role": "user", "content": user_msg}]
 
-    def _translate_causal_one(self, text: str, src: str, tgt: str) -> str:
+    def _names_in_text(self, text: str, glossary: Dict[str, str]) -> List[str]:
+        found = []
+        for term in glossary.keys():
+            if term and term in text:
+                found.append(term)
+        return found
+
+    def _fa_has_name(self, fa: str, en_name: str, fa_name: str) -> bool:
+        if not fa:
+            return False
+        if en_name and en_name in fa:
+            return True
+        if fa_name and fa_name in fa:
+            return True
+        # case-insensitive latin check
+        if en_name and en_name.lower() in fa.lower():
+            return True
+        return False
+
+    def _translation_ok(
+        self,
+        en: str,
+        fa: str,
+        glossary: Dict[str, str],
+        tgt: str,
+    ) -> tuple[bool, str]:
+        import re
+
+        if not en.strip():
+            return True, ""
+        if not fa.strip():
+            return False, "empty_fa"
+        # Must contain Persian letters when targeting FA
+        if tgt[:2] in ("fa", "pe"):
+            if not re.search(r"[\u0600-\u06FF]", fa):
+                return False, "no_persian"
+        # Don't allow near-identical English passthrough
+        if fa.strip() == en.strip():
+            return False, "identical"
+        # Length / over-summarization (for longer lines)
+        en_words = max(1, len(en.split()))
+        fa_words = max(1, len(fa.split()))
+        if en_words >= 8 and fa_words < max(3, int(en_words * 0.35)):
+            return False, "too_short"
+        # Glossary names must survive (EN form or FA form)
+        for en_name, fa_name in glossary.items():
+            if en_name and en_name in en:
+                if not self._fa_has_name(fa, en_name, fa_name or ""):
+                    return False, f"missing_name:{en_name}"
+        return True, ""
+
+    def _apply_glossary(self, text: str, glossary: Dict[str, str]) -> str:
+        # Longer keys first so "Your Highness" wins over partials
+        for term, fa in sorted(glossary.items(), key=lambda kv: -len(kv[0] or "")):
+            if term and fa and term in text:
+                text = text.replace(term, fa)
+        return text
+
+    def _translate_causal_one(
+        self,
+        text: str,
+        src: str,
+        tgt: str,
+        *,
+        keep_names: Optional[List[str]] = None,
+        strict: bool = False,
+    ) -> str:
         if not text.strip():
             return ""
         import torch
@@ -478,18 +581,22 @@ class HuggingFaceTranslator(Translator):
         tok = self._tokenizer
         model_l = (self.model_name or "").lower().replace("\\", "/")
 
+        # Dynamic token budget: don't truncate long page passages
+        approx_out = min(512, max(self.max_new_tokens, int(len(text.split()) * 2.5) + 32))
+
         if "english-persian" in model_l or "en-fa" in model_l or "llama-en-fa" in model_l or "llama-3.2-1b" in model_l:
             prompt = f"### English:\n{text}\n### Persian:\n"
-            inputs = tok(prompt, return_tensors="pt", truncation=True, max_length=512)
+            inputs = tok(prompt, return_tensors="pt", truncation=True, max_length=768)
         else:
-            messages = self._build_causal_messages(text, src_name, tgt_name)
+            messages = self._build_causal_messages(
+                text, src_name, tgt_name, keep_names=keep_names, strict=strict
+            )
             try:
                 prompt = tok.apply_chat_template(
                     messages, add_generation_prompt=True, tokenize=False
                 )
-                inputs = tok(prompt, return_tensors="pt", truncation=True, max_length=512)
+                inputs = tok(prompt, return_tensors="pt", truncation=True, max_length=768)
             except Exception:
-                # typed content failed — fall back to plain string message
                 if isinstance(messages[0]["content"], list):
                     plain = messages[0]["content"][0]["text"]
                     messages = [{"role": "user", "content": plain}]
@@ -507,7 +614,7 @@ class HuggingFaceTranslator(Translator):
                         f"<start_of_turn>user\n{messages[0]['content']}\n"
                         f"<end_of_turn>\n<start_of_turn>model\n"
                     )
-                inputs = tok(prompt, return_tensors="pt", truncation=True, max_length=512)
+                inputs = tok(prompt, return_tensors="pt", truncation=True, max_length=768)
 
         try:
             dev = next(self._model.parameters()).device
@@ -519,7 +626,7 @@ class HuggingFaceTranslator(Translator):
         with torch.no_grad():
             out = self._model.generate(
                 **inputs,
-                max_new_tokens=self.max_new_tokens,
+                max_new_tokens=approx_out,
                 do_sample=False,
                 pad_token_id=pad_id,
             )
@@ -543,67 +650,78 @@ class HuggingFaceTranslator(Translator):
         self._ensure_pipeline(src if not need_pivot else "en", tgt)
 
         texts = [r.get("source_text") or "" for r in regions]
-        placeholders: List[Dict[str, str]] = []
-        protected: List[str] = []
-        for text in texts:
-            mapping = {}
-            t = text
-            for i, (term, _) in enumerate(glossary.items()):
-                if term and term in t:
-                    ph = f"__GLOSS_{i}__"
-                    t = t.replace(term, ph)
-                    mapping[ph] = term
-            placeholders.append(mapping)
-            protected.append(t)
-
-        translated = [""] * len(protected)
-        non_empty_idx = [i for i, t in enumerate(protected) if t.strip()]
-        non_empty_texts = [protected[i] for i in non_empty_idx]
+        translated = [""] * len(texts)
+        non_empty_idx = [i for i, t in enumerate(texts) if t.strip()]
+        non_empty_texts = [texts[i] for i in non_empty_idx]
         results_text: List[str] = []
 
         if non_empty_texts:
             if self._mode == "causal":
                 for t in non_empty_texts:
-                    # Fail fast — do not silently dump English for the whole chapter
-                    results_text.append(self._translate_causal_one(t, src, tgt))
+                    keep = self._names_in_text(t, glossary)
+                    fa = self._translate_causal_one(t, src, tgt, keep_names=keep, strict=False)
+                    if self.validate:
+                        ok, reason = self._translation_ok(t, fa, glossary, tgt)
+                        retries = 0
+                        while not ok and retries < self.max_retries:
+                            logger.warning(
+                                f"Translation QA failed ({reason}); retrying stricter prompt"
+                            )
+                            fa = self._translate_causal_one(
+                                t, src, tgt, keep_names=keep, strict=True
+                            )
+                            ok, reason = self._translation_ok(t, fa, glossary, tgt)
+                            retries += 1
+                        if not ok:
+                            logger.warning(
+                                f"Translation QA still failing ({reason}) — keeping best attempt"
+                            )
+                    results_text.append(self._apply_glossary(fa, glossary))
             else:
-                for start in range(0, len(non_empty_texts), self.batch_size):
-                    batch = non_empty_texts[start : start + self.batch_size]
-                    try:
-                        if need_pivot and self._pivot_model is not None:
-                            mid = self._seq2seq_generate(
-                                batch, self._pivot_model, self._pivot_tokenizer,
-                                False, src, "en",
-                            )
-                            out = self._seq2seq_generate(
-                                mid, self._model, self._tokenizer,
-                                self._is_m2m, "en", tgt,
-                            )
-                        else:
-                            out = self._seq2seq_generate(
-                                batch, self._model, self._tokenizer,
-                                self._is_m2m, src, tgt,
-                            )
-                        results_text.extend(out)
-                    except Exception as e:
-                        logger.error(f"HF translation batch failed: {e}")
-                        raise
+                # seq2seq: protect names with placeholders (models usually keep them)
+                protected: List[str] = []
+                placeholders: List[Dict[str, str]] = []
+                for text in non_empty_texts:
+                    mapping = {}
+                    t = text
+                    for i, (term, _) in enumerate(glossary.items()):
+                        if term and term in t:
+                            ph = f"__GLOSS_{i}__"
+                            t = t.replace(term, ph)
+                            mapping[ph] = term
+                    placeholders.append(mapping)
+                    protected.append(t)
+
+                for start in range(0, len(protected), self.batch_size):
+                    batch = protected[start : start + self.batch_size]
+                    if need_pivot and self._pivot_model is not None:
+                        mid = self._seq2seq_generate(
+                            batch, self._pivot_model, self._pivot_tokenizer,
+                            False, src, "en",
+                        )
+                        out = self._seq2seq_generate(
+                            mid, self._model, self._tokenizer,
+                            self._is_m2m, "en", tgt,
+                        )
+                    else:
+                        out = self._seq2seq_generate(
+                            batch, self._model, self._tokenizer,
+                            self._is_m2m, src, tgt,
+                        )
+                    results_text.extend(out)
+
+                for j, text in enumerate(results_text):
+                    for ph, term in placeholders[j].items():
+                        text = text.replace(ph, term)
+                    results_text[j] = self._apply_glossary(text, glossary)
 
             for j, idx in enumerate(non_empty_idx):
                 translated[idx] = (
-                    results_text[j] if j < len(results_text) else protected[idx]
+                    results_text[j] if j < len(results_text) else texts[idx]
                 )
 
-        for i, text in enumerate(translated):
-            for ph, term in placeholders[i].items():
-                text = text.replace(ph, term)
-            for term, fa in glossary.items():
-                if term and term in text:
-                    text = text.replace(term, fa)
-            translated[i] = text.strip()
-
         return [
-            {"region_id": regions[i]["region_id"], "text": translated[i]}
+            {"region_id": regions[i]["region_id"], "text": (translated[i] or "").strip()}
             for i in range(len(regions))
         ]
 

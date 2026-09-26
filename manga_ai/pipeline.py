@@ -176,6 +176,8 @@ class Pipeline:
                     load_in_8bit=self.config.get("translation.load_in_8bit", False),
                     max_new_tokens=self.config.get("translation.max_new_tokens", 128),
                     local_files_only=self.config.get("translation.local_files_only", False),
+                    validate=self.config.get("translation.validate", True),
+                    max_retries=self.config.get("translation.max_retries", 1),
                     n_gpu_layers=self.config.get("translation.n_gpu_layers", -1),
                     n_ctx=self.config.get("translation.n_ctx", 2048),
                     max_tokens=self.config.get("translation.max_tokens", 128),
@@ -551,8 +553,30 @@ class Pipeline:
         r"discord", r"dsc\.?\s*gg", r"http", r"www\.", r"\.net", r"\.com",
         r"isbn", r"fastest\s+release", r"please\s+visit", r"without\s+your\s+support",
         r"only\s+official\s+domain", r"any\s+other\s+domain", r"scam",
-        r"carrotoon", r"kwbooks", r"twitter", r"join\s+our",
+        r"carrotoon", r"carro+o+n", r"kwbooks", r"twitter", r"join\s+our",
+        r"toomics", r"webtoon", r"tapas",
     )
+
+    def _is_gibberish_token(self, token: str) -> bool:
+        """Heuristic OCR garbage token (e.g. ANYNMORE, CARROOON)."""
+        import re
+        t = (token or "").strip()
+        if len(t) < 4:
+            return False
+        # long run of same letter
+        if re.search(r"(.)\1{3,}", t, re.I):
+            return True
+        letters = [c for c in t if c.isalpha()]
+        if len(letters) < 4:
+            return False
+        vowels = sum(c.lower() in "aeiou" for c in letters)
+        # very low vowel ratio on long tokens
+        if len(letters) >= 6 and vowels / len(letters) < 0.15:
+            return True
+        # known OCR mangling
+        if re.fullmatch(r"(?i)anynmore|reto|carro+o*n+", t):
+            return True
+        return False
 
     def _is_junk_ocr(self, text: str) -> bool:
         import re
@@ -568,6 +592,9 @@ class Pipeline:
         letters = sum(c.isalpha() for c in t)
         if letters < max(2, len(t) * 0.35):
             return True
+        # whole line is a single gibberish token
+        if len(t.split()) == 1 and self._is_gibberish_token(t):
+            return True
         return False
 
     def _clean_ocr_line(self, text: str) -> str:
@@ -575,8 +602,9 @@ class Pipeline:
         t = (text or "").strip()
         t = t.replace("_", " ")
         t = re.sub(r"\s+", " ", t)
-        return t.strip()
-
+        # Drop gibberish tokens inside otherwise good lines
+        kept = [w for w in t.split() if not self._is_gibberish_token(w)]
+        return " ".join(kept).strip()
     def run_translation(self, regions: List[TextRegion]) -> List[TextRegion]:
         """Merge OCR lines per page → translate page passages → write EN+FA chapter files."""
         stage = "translation"

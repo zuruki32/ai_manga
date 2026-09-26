@@ -33,9 +33,11 @@ translation:
   model: "models/gemma-3-4b-persian"
   local_files_only: true
   load_in_4bit: true
-  max_new_tokens: 128
-  max_length: 256
+  max_new_tokens: 256
+  max_length: 512
   batch_size: 1
+  validate: true
+  max_retries: 1
   glossary:
     "Jennette": "جنت"
     "JENNETTE": "جنت"
