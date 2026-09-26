@@ -53,8 +53,9 @@ translation:
   max_length: 512
   batch_size: 1
   validate: true
-  max_retries: 1
+  max_retries: 2
   # Match Iranian manhwa scanlation tone + @ per bubble
+  # IMPORTANT: do NOT put EN:/FA: few-shot lines in extra_instructions (Gemma copies them)
   style: "colloquial_fa"
   unit: "region"
   output_format: "scanlation"

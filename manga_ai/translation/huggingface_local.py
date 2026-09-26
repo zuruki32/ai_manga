@@ -495,8 +495,9 @@ class HuggingFaceTranslator(Translator):
                 "لحن: خودمونی و طبیعی (می‌تونم، مگه نه، خب، وای) — نه کتابی.\n"
                 f"{name_line}"
             )
-            if self.extra_instructions:
-                user_msg += f"دستور اضافه:\n{self.extra_instructions}\n"
+            tips = self._safe_extra_instructions()
+            if tips:
+                user_msg += f"دستور اضافه (لحن فقط، نمونه دیالوگ نده):\n{tips}\n"
             user_msg += (
                 "ممنوع:\n"
                 "- ساختن دیالوگ جدید یا کپی از حافظه/نمونه\n"
@@ -577,13 +578,61 @@ class HuggingFaceTranslator(Translator):
             out = out.replace(f"[{bare}]", fa).replace(f"({bare})", fa)
         return out
 
-    # Phrases from old few-shot prompts that Gemma was regurgitating
+    # Stock FA from old few-shots / model regurgitation (must never appear unless EN matches)
     _LEAKED_FA = (
         "شیطونای کوچولو",
         "چطوری می‌تونستم بخوابم اونم وقتی داشتی این همه درد می‌کشیدی",
         "خیلی خوب از پسش براومدی، جوول",
         "وای خدای من، شما شیطونای",
+        "واقعاً دردسرساز شدی",
+        "واقعاً دردسرساز هستی",
+        "خیلی متاسفم، من نمی‌خواستم اشکات رو بریزم",
+        "تو بهترینشی، میدونی",
+        "وقتی عصبانی میشی خیلی قیافه خوبی داری",
     )
+    _LEAKED_EN = (
+        "you're a real pain in the neck",
+        "i'm so sorry, i didn't mean to make you cry",
+        "you're the best, you know",
+        "you're so cute when you're angry",
+        "you did great, jewel",
+        "how could i sleep when you were in so much pain",
+        "oh my god, you little rascals",
+    )
+    _FILLER_FA = ("چیه؟", "چیه", "وای خدای من", "وای خدای من!")
+
+    def _safe_extra_instructions(self) -> str:
+        """Strip EN:/FA: few-shot pairs from project tips so they can't poison the prompt."""
+        import re
+
+        raw = (self.extra_instructions or "").strip()
+        if not raw:
+            return ""
+        # Drop explicit parallel examples
+        cleaned = re.sub(r"(?im)^\s*EN\s*:.*$", "", raw)
+        cleaned = re.sub(r"(?im)^\s*FA\s*:.*$", "", cleaned)
+        cleaned = re.sub(r"(?i)\bEN\s*:.*?(?=FA\s*:|$)", "", cleaned)
+        cleaned = re.sub(r"(?i)\bFA\s*:", "", cleaned)
+        for leak in self._LEAKED_FA:
+            cleaned = cleaned.replace(leak, "")
+        cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+        return cleaned
+
+    def _en_related_to_leak(self, en: str, leak: str) -> bool:
+        en_l = (en or "").lower()
+        leak_keys = {
+            "شیطونای": ("rascal", "little devil", "naughty"),
+            "خوابم": ("sleep", "pain"),
+            "جوول": ("jewel", "did great"),
+            "دردسرساز": ("pain in the neck", "troublesome", "nuisance"),
+            "اشکات": ("cry", "sorry", "tear"),
+            "بهترینشی": ("you're the best", "the best"),
+            "عصبانی": ("angry", "cute when"),
+        }
+        for needle, keys in leak_keys.items():
+            if needle in leak and any(k in en_l for k in keys):
+                return True
+        return False
 
     def _sanitize_fa_output(self, fa: str, en: str) -> str:
         import re
@@ -593,7 +642,6 @@ class HuggingFaceTranslator(Translator):
             return ""
         # Drop accidental "EN: ... FA: ..." junk the model invents
         if re.search(r"(?i)^EN\s*:", t):
-            # keep only after last FA: if present
             m = re.search(r"(?i)FA\s*:\s*(.+)$", t, re.S)
             if m:
                 t = m.group(1).strip()
@@ -601,19 +649,52 @@ class HuggingFaceTranslator(Translator):
                 t = ""
         t = re.sub(r"(?i)\bEN\s*:.*?(?=FA\s*:|$)", "", t, flags=re.S).strip()
         t = re.sub(r"(?i)^\s*FA\s*:\s*", "", t).strip()
-        # If output is mostly a leaked stock phrase and EN is unrelated, blank it
+        t = re.sub(r"(?i)\bFA\s*:\s*", "", t).strip()
+        # Strip leaked English example lines embedded in FA
+        for leak_en in self._LEAKED_EN:
+            if leak_en in t.lower():
+                t = re.sub(re.escape(leak_en), "", t, flags=re.I).strip(" ،,.!?")
+        # Latin leftover that isn't a placeholder / known name → drop those clauses
+        if re.search(r"[A-Za-z]{4,}", t) and "⟦" not in t:
+            # keep short latin (OCR names) only if also in source
+            en_l = (en or "").lower()
+            def _keep_latin(m: re.Match) -> str:
+                w = m.group(0)
+                return w if w.lower() in en_l or w.startswith("⟦") else ""
+            t = re.sub(r"[A-Za-z][A-Za-z'’\-]{3,}", _keep_latin, t)
+        removed_leak = False
         for leak in self._LEAKED_FA:
-            if leak in t:
-                # allow if EN actually matches the old example meanings — otherwise kill
-                en_l = (en or "").lower()
-                related = any(
-                    k in en_l
-                    for k in ("rascal", "sleep", "pain", "jewel", "did great", "oh my god")
-                )
-                if not related:
-                    # remove the leaked sentence chunks
-                    t = t.replace(leak, "").strip(" ،,.!?")
+            if leak in t and not self._en_related_to_leak(en, leak):
+                removed_leak = True
+                # Drop the whole clause/sentence that contains the leak
+                parts = re.split(r"(?<=[!.?؟\n])\s*", t)
+                kept = []
+                for p in parts:
+                    if leak in p:
+                        continue
+                    # Drop filler-only clauses glued after a stock line
+                    compact = p.strip(" !?؟.,،~")
+                    if compact in self._FILLER_FA:
+                        continue
+                    kept.append(p)
+                t = " ".join(kept).strip(" ،,.!?؟")
+                t = t.replace(leak, "").strip(" ،,.!?؟")
         t = re.sub(r"\s{2,}", " ", t).strip(" ،")
+        # Remnant of "وای خدای من، شما شیطونای کوچولو" after partial strip
+        if re.search(r"وای خدای من،?\s*شما\s*$", t) and "rascal" not in (en or "").lower():
+            t = ""
+        # Trailing lone filler after a real clause (keep standalone "چیه؟" for short EN)
+        t = re.sub(r"(?<=\S)\s+(?:چیه|چیه؟|وای خدای من!?)\s*$", "", t).strip(" ،")
+        en_words = len((en or "").split())
+        fa_compact = t.strip(" !?؟.,،~")
+        # After killing a stock phrase, leftover filler is still garbage
+        if removed_leak and (not fa_compact or fa_compact in self._FILLER_FA):
+            return ""
+        # Pure filler for a multi-word English line → force retry
+        if en_words >= 3 and fa_compact in self._FILLER_FA:
+            return ""
+        if en_words >= 6 and len(fa_compact) < 4:
+            return ""
         return t
 
     def _translation_ok(
@@ -636,16 +717,23 @@ class HuggingFaceTranslator(Translator):
                 return False, "no_persian"
         if fa.strip() == en.strip():
             return False, "identical"
-        # Hallucinated stock lines from old few-shots
+        if re.search(r"(?i)\bEN\s*:", fa) or re.search(r"(?i)\bFA\s*:", fa):
+            return False, "hallucinated_example"
+        fa_l = fa.lower()
+        for leak_en in self._LEAKED_EN:
+            if leak_en in fa_l and leak_en not in (en or "").lower():
+                return False, "hallucinated_example"
         for leak in self._LEAKED_FA:
-            if leak in fa:
-                en_l = (en or "").lower()
-                related = any(
-                    k in en_l
-                    for k in ("rascal", "sleep", "pain", "jewel", "did great")
-                )
-                if not related:
-                    return False, "hallucinated_example"
+            if leak in fa and not self._en_related_to_leak(en, leak):
+                return False, "hallucinated_example"
+        en_words = max(1, len(en.split()))
+        fa_words = max(1, len(fa.split()))
+        fa_compact = fa.strip(" !?؟.,،~")
+        if en_words >= 3 and fa_compact in self._FILLER_FA:
+            return False, "hallucinated_example"
+        # Colloquial FA is often shorter — extreme cuts are soft only
+        if en_words >= 12 and fa_words < max(2, int(en_words * 0.2)):
+            return True, "soft_too_short"
         if placeholders:
             missing_ph = [ph for ph in placeholders if ph not in fa]
             if missing_ph:
@@ -765,12 +853,17 @@ class HuggingFaceTranslator(Translator):
                     fa = self._translate_causal_one(
                         protected, src, tgt, keep_names=keep_ph or None, strict=False
                     )
+                    fa = self._sanitize_fa_output(fa, protected)
                     if self.validate:
                         ok, reason = self._translation_ok(
                             protected, fa, glossary, tgt, placeholders=ph_map
                         )
-                        # Only hard-retry real failures (not soft name issues)
-                        hard = reason in ("empty_fa", "no_persian", "identical")
+                        hard = reason in (
+                            "empty_fa",
+                            "no_persian",
+                            "identical",
+                            "hallucinated_example",
+                        )
                         retries = 0
                         while hard and not ok and retries < self.max_retries:
                             logger.warning(
@@ -779,10 +872,16 @@ class HuggingFaceTranslator(Translator):
                             fa = self._translate_causal_one(
                                 protected, src, tgt, keep_names=keep_ph or None, strict=True
                             )
+                            fa = self._sanitize_fa_output(fa, protected)
                             ok, reason = self._translation_ok(
                                 protected, fa, glossary, tgt, placeholders=ph_map
                             )
-                            hard = reason in ("empty_fa", "no_persian", "identical")
+                            hard = reason in (
+                                "empty_fa",
+                                "no_persian",
+                                "identical",
+                                "hallucinated_example",
+                            )
                             retries += 1
                         if reason.startswith("soft_"):
                             logger.debug(f"Translation soft QA: {reason}")
@@ -791,7 +890,6 @@ class HuggingFaceTranslator(Translator):
                                 f"Translation QA still failing ({reason}) — keeping best attempt"
                             )
                     fa = self._restore_names(fa, ph_map)
-                    # If placeholders were dropped, still apply leftover EN glossary keys
                     results_text.append(self._apply_glossary(fa, glossary))
             else:
                 protected_list: List[str] = []
