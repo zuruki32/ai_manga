@@ -1,0 +1,54 @@
+﻿pipeline:
+  version: "0.1.0"
+  source_language: "en"
+  target_language: "fa"
+  force: true
+
+preprocessing:
+  convert_to_rgb: true
+  max_dimension: 1600
+  validate: true
+
+detection:
+  backend: "easyocr"
+  languages: ["en"]
+  confidence_threshold: 0.22
+  min_size: 10
+  paragraph: false
+  detect_max_dimension: 1600
+
+ocr:
+  backend: "easyocr"
+  languages: ["en"]
+  confidence_threshold: 0.25
+
+translation:
+  backend: "huggingface"
+  model: "models/m2m100-en2fa"
+  batch_size: 8
+  max_length: 200
+  glossary:
+    "Jennette": "جنت"
+
+masking:
+  dilation_px: 6
+  blur_radius: 1
+  residual_expand: false
+
+inpainting:
+  backend: "opencv"
+  tile_size: 768
+  overlap: 64
+  fallback_to_cpu: true
+
+device:
+  preferred: "cuda"
+  device_id: 0
+  unload_after_stage: true
+
+cache:
+  enabled: true
+
+logging:
+  level: "INFO"
+  structured: true

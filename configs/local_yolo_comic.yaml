@@ -1,0 +1,56 @@
+# YOLO comic bubble detector + EasyOCR on crops + M2M100 page FA
+# Requires: pip install ultralytics
+# Model: python scripts/download_comic_yolo.py
+
+pipeline:
+  version: "0.1.0"
+  source_language: "en"
+  target_language: "fa"
+  force: true
+
+preprocessing:
+  convert_to_rgb: true
+  max_dimension: 1600
+  validate: true
+
+detection:
+  backend: "yolo_comic"
+  model: "models/comic-yolo.pt"
+  confidence_threshold: 0.25
+  imgsz: 1280
+
+ocr:
+  backend: "easyocr"
+  languages: ["en"]
+  confidence_threshold: 0.3
+
+translation:
+  backend: "huggingface"
+  model: "models/m2m100-en2fa"
+  batch_size: 4
+  max_length: 256
+  glossary:
+    "Jennette": "جنت"
+    "Claude": "کلود"
+
+masking:
+  dilation_px: 6
+  blur_radius: 1
+  use_polygon: true
+  residual_expand: false
+
+inpainting:
+  backend: "opencv"
+  fallback_to_cpu: true
+
+device:
+  preferred: "cuda"
+  device_id: 0
+  unload_after_stage: true
+
+cache:
+  enabled: true
+
+logging:
+  level: "INFO"
+  structured: true

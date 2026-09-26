@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "manga-ai"
+version = "0.1.0"
+description = "Manga / Manhwa AI Cleaning & Translation Pipeline"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Manga AI Team"}
+]
+dependencies = [
+    "pyyaml>=6.0",
+    "pillow>=10.0.0",
+    "numpy>=1.24.0",
+    "pydantic>=2.0",
+    "click>=8.1.0",
+    "python-dotenv>=1.0.0",
+    "tqdm>=4.65.0",
+    "opencv-python-headless>=4.8.0",
+    "httpx>=0.25.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+]
+gpu = [
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+]
+ocr = [
+    "paddlepaddle>=2.5.0",
+    "paddleocr>=2.7.0",
+]
+easyocr = [
+    "easyocr>=1.7.0",
+]
+manga-ocr = [
+    "manga-ocr>=0.1.0",
+]
+translation-local = [
+    "transformers>=4.36.0",
+    "sentencepiece>=0.1.99",
+    "sacremoses>=0.0.53",
+]
+lama = [
+    "simple-lama-inpainting>=0.1.0",
+]
+local = [
+    "manga-ai[gpu,easyocr,translation-local]",
+]
+all = [
+    "manga-ai[dev,gpu,ocr,easyocr,manga-ocr,translation-local,lama]",
+]
+
+[project.scripts]
+manga-ai = "manga_ai.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["manga_ai*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

@@ -1,0 +1,53 @@
+# mshojaei77/gemma-3-4b-persian-v0 — Gemma 3 4B Persian SFT (4-bit)
+# pip install "transformers>=4.50" accelerate bitsandbytes torch
+# huggingface-cli download mshojaei77/gemma-3-4b-persian-v0 --local-dir models/gemma-3-4b-persian
+
+pipeline:
+  version: "0.1.0"
+  source_language: "en"
+  target_language: "fa"
+  force: false
+
+preprocessing:
+  convert_to_rgb: true
+  max_dimension: 2048
+  validate: true
+
+detection:
+  backend: "mock"
+  confidence_threshold: 0.5
+
+ocr:
+  backend: "easyocr"
+  languages: ["en"]
+  confidence_threshold: 0.3
+
+translation:
+  backend: "huggingface"
+  model: "mshojaei77/gemma-3-4b-persian-v0"
+  load_in_4bit: true
+  batch_size: 1
+  max_new_tokens: 128
+  glossary: {}
+
+masking:
+  dilation_px: 8
+  blur_radius: 1
+  use_polygon: true
+
+inpainting:
+  backend: "opencv"
+  tile_size: 768
+  overlap: 64
+
+device:
+  preferred: "cuda"
+  device_id: 0
+  unload_after_stage: true
+
+cache:
+  enabled: true
+
+logging:
+  level: "INFO"
+  structured: true

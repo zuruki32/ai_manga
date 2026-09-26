@@ -1,0 +1,77 @@
+# Fully LOCAL pipeline – no OpenAI API key needed
+# English → Persian via Hugging Face (Helsinki-NLP/opus-mt-en-fa)
+# OCR: EasyOCR or Paddle (both download models once, then offline)
+#
+# Install once:
+#   pip install transformers sentencepiece sacremoses torch
+#   pip install easyocr
+#   # optional: pip install paddlepaddle paddleocr
+#
+# First run downloads models (~300MB for opus-mt-en-fa).
+
+pipeline:
+  version: "0.1.0"
+  source_language: "en"      # change to ko/ja if needed
+  target_language: "fa"
+  force: false
+
+preprocessing:
+  convert_to_rgb: true
+  max_dimension: 2048
+  validate: true
+
+detection:
+  backend: "mock"            # or paddle after: pip install paddleocr
+  confidence_threshold: 0.5
+  min_box_area: 100
+
+ocr:
+  backend: "easyocr"         # local OCR – or paddle / manga_ocr / router
+  confidence_threshold: 0.3
+  languages: ["en"]          # EasyOCR: en, ko, ja, ch_sim, fa
+  language_map:
+    ja: "manga_ocr"
+    ko: "paddle"
+    zh: "paddle"
+    en: "easyocr"
+
+translation:
+  backend: "huggingface"     # LOCAL – no API key
+  model: "Helsinki-NLP/opus-mt-en-fa"
+  # For Korean manhwa → Persian (pivot ko→en→fa):
+  #   source_language: ko
+  #   model: Helsinki-NLP/opus-mt-en-fa
+  #   pivot_model: Helsinki-NLP/opus-mt-ko-en
+  max_length: 256
+  batch_size: 4              # keep small on 6GB
+  glossary: {}
+
+masking:
+  dilation_px: 8
+  blur_radius: 1
+  use_polygon: true
+
+inpainting:
+  backend: "opencv"          # or lama after: pip install simple-lama-inpainting
+  tile_size: 768
+  overlap: 64
+  precision: "fp16"
+  fallback_to_cpu: true
+
+device:
+  preferred: "cuda"
+  device_id: 0
+  unload_after_stage: true
+
+cache:
+  enabled: true
+
+logging:
+  level: "INFO"
+  structured: true
+
+quality:
+  check_empty_detections: true
+  check_empty_ocr: true
+  check_missing_translations: true
+  check_output_dimensions: true

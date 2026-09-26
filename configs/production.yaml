@@ -1,0 +1,59 @@
+# Production config – set real backends after installing deps
+# pip install paddlepaddle paddleocr
+# pip install manga-ocr
+# pip install simple-lama-inpainting
+# Set TRANSLATION_* in .env
+
+pipeline:
+  version: "0.1.0"
+  source_language: "ko"
+  target_language: "fa"
+  force: false
+
+preprocessing:
+  convert_to_rgb: true
+  max_dimension: 2048
+  validate: true
+
+detection:
+  backend: "paddle"
+  confidence_threshold: 0.5
+
+ocr:
+  backend: "router"
+  confidence_threshold: 0.3
+  language_map:
+    ja: "manga_ocr"
+    ko: "paddle"
+    zh: "paddle"
+    en: "paddle"
+
+translation:
+  backend: "openai_compatible"
+  temperature: 0.2
+  max_retries: 3
+  glossary: {}
+
+masking:
+  dilation_px: 10
+  blur_radius: 1
+  use_polygon: true
+
+inpainting:
+  backend: "lama"
+  tile_size: 768
+  overlap: 64
+  precision: "fp16"
+  fallback_to_cpu: true
+
+device:
+  preferred: "cuda"
+  device_id: 0
+  unload_after_stage: true
+
+cache:
+  enabled: true
+
+logging:
+  level: "INFO"
+  structured: true

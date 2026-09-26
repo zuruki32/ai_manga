@@ -1,0 +1,53 @@
+# Sheikhaei/llama-3.2-1b-english-persian-translator — dedicated EN↔FA
+# pip install transformers accelerate torch
+# huggingface-cli download Sheikhaei/llama-3.2-1b-english-persian-translator --local-dir models/llama-en-fa
+
+pipeline:
+  version: "0.1.0"
+  source_language: "en"
+  target_language: "fa"
+  force: false
+
+preprocessing:
+  convert_to_rgb: true
+  max_dimension: 2048
+  validate: true
+
+detection:
+  backend: "mock"
+  confidence_threshold: 0.5
+
+ocr:
+  backend: "easyocr"
+  languages: ["en"]
+  confidence_threshold: 0.3
+
+translation:
+  backend: "huggingface"
+  model: "Sheikhaei/llama-3.2-1b-english-persian-translator"
+  load_in_4bit: false
+  batch_size: 1
+  max_new_tokens: 128
+  glossary: {}
+
+masking:
+  dilation_px: 8
+  blur_radius: 1
+  use_polygon: true
+
+inpainting:
+  backend: "opencv"
+  tile_size: 768
+  overlap: 64
+
+device:
+  preferred: "cuda"
+  device_id: 0
+  unload_after_stage: true
+
+cache:
+  enabled: true
+
+logging:
+  level: "INFO"
+  structured: true

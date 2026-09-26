@@ -1,0 +1,72 @@
+# Default configuration for manga-ai pipeline
+
+pipeline:
+  version: "0.1.0"
+  source_language: "auto"  # auto | ko | ja | zh | en
+  target_language: "fa"
+  force: false
+
+preprocessing:
+  convert_to_rgb: true
+  max_dimension: null  # null = no resize
+  validate: true
+
+detection:
+  backend: "mock"  # mock | paddle
+  confidence_threshold: 0.5
+  min_box_area: 100
+
+ocr:
+  backend: "mock"  # mock | paddle | manga_ocr | router
+  confidence_threshold: 0.3
+  language_map:
+    ja: "manga_ocr"
+    ko: "paddle"
+    zh: "paddle"
+    en: "paddle"
+
+translation:
+  backend: "mock"  # mock | huggingface | openai_compatible
+  # --- local HF (no API key) ---
+  # model: Helsinki-NLP/opus-mt-en-fa
+  # pivot_model: null   # e.g. Helsinki-NLP/opus-mt-ko-en for ko→fa
+  # max_length: 256
+  # batch_size: 4
+  # --- OpenAI-compatible API (optional) ---
+  base_url: null  # only for openai_compatible backend
+  api_key: null
+  model: null
+  temperature: 0.2
+  max_retries: 3
+  glossary: {}
+
+masking:
+  dilation_px: 8
+  blur_radius: 1
+  use_polygon: true
+
+inpainting:
+  backend: "mock"  # mock | lama | opencv
+  tile_size: 1024
+  overlap: 64
+  precision: "fp16"
+  fallback_to_cpu: true
+
+device:
+  preferred: "cuda"  # cuda | cpu
+  device_id: 0
+  unload_after_stage: true
+
+cache:
+  enabled: true
+  dir: ".cache"
+
+logging:
+  level: "INFO"
+  structured: true
+
+quality:
+  check_empty_detections: true
+  check_empty_ocr: true
+  check_missing_translations: true
+  check_output_dimensions: true

@@ -1,0 +1,66 @@
+# Optimized for NVIDIA RTX 2060 (6 GB VRAM)
+
+pipeline:
+  version: "0.1.0"
+  source_language: "auto"
+  target_language: "fa"
+  force: false
+
+preprocessing:
+  convert_to_rgb: true
+  max_dimension: 2048
+  validate: true
+
+detection:
+  backend: "mock"  # change to paddle when installed
+  confidence_threshold: 0.5
+  min_box_area: 100
+  batch_size: 1
+
+ocr:
+  backend: "mock"  # paddle | router when installed
+  confidence_threshold: 0.3
+  language_map:
+    ja: "manga_ocr"
+    ko: "paddle"
+    zh: "paddle"
+    en: "paddle"
+  batch_size: 1
+
+translation:
+  backend: "mock"  # openai_compatible when API key set
+  temperature: 0.2
+  max_retries: 3
+  glossary: {}
+
+masking:
+  dilation_px: 8
+  blur_radius: 1
+  use_polygon: true
+
+inpainting:
+  backend: "opencv"  # lama when simple-lama-inpainting installed
+  tile_size: 768
+  overlap: 64
+  precision: "fp16"
+  fallback_to_cpu: true
+  max_vram_mb: 5200
+
+device:
+  preferred: "cuda"
+  device_id: 0
+  unload_after_stage: true
+
+cache:
+  enabled: true
+  dir: ".cache"
+
+logging:
+  level: "INFO"
+  structured: true
+
+quality:
+  check_empty_detections: true
+  check_empty_ocr: true
+  check_missing_translations: true
+  check_output_dimensions: true

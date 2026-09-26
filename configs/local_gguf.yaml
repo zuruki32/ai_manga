@@ -1,0 +1,61 @@
+# GGUF via llama-cpp-python (GPU offload, no Ollama)
+#
+# Install:
+#   pip install llama-cpp-python
+#   # CUDA: https://github.com/abetlen/llama-cpp-python#installation-with-cuda
+#
+# Download GGUF:
+#   python scripts/download_models.py --model gemma_gguf
+# Then set translation.model to the actual .gguf path under models/
+
+pipeline:
+  version: "0.1.0"
+  source_language: "en"
+  target_language: "fa"
+  force: false
+
+preprocessing:
+  convert_to_rgb: true
+  max_dimension: 2048
+  validate: true
+
+detection:
+  backend: "mock"
+  confidence_threshold: 0.5
+
+ocr:
+  backend: "easyocr"
+  languages: ["en"]
+  confidence_threshold: 0.3
+
+translation:
+  backend: "llama_cpp"
+  # Change this to the real .gguf path after download:
+  model: "models/gemma-3-4b-persian-gguf/gemma-3-4b-persian-v0-abliterated-q8_0.gguf"
+  n_gpu_layers: -1
+  n_ctx: 2048
+  max_tokens: 128
+  temperature: 0.1
+  glossary: {}
+
+masking:
+  dilation_px: 8
+  blur_radius: 1
+  use_polygon: true
+
+inpainting:
+  backend: "opencv"
+  tile_size: 768
+  overlap: 64
+
+device:
+  preferred: "cuda"
+  device_id: 0
+  unload_after_stage: true
+
+cache:
+  enabled: true
+
+logging:
+  level: "INFO"
+  structured: true
