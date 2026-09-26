@@ -161,10 +161,14 @@ def mask(chapter_dir: str, config: Optional[str], force: bool) -> None:
 @click.option("--backend", type=str, default=None)
 @click.option("--force", is_flag=True)
 def clean(chapter_dir: str, config: Optional[str], backend: Optional[str], force: bool) -> None:
-    """Run inpainting / text removal only."""
+    """Run inpainting / text removal only (alias: manga-ai inpaint)."""
     cfg = _resolve_config(config, backend, force)
     setup_logging(level=cfg.get("logging.level", "INFO"))
     Pipeline(cfg, chapter_dir).run_stage("inpainting")
+
+
+# Alias used in docs / muscle memory
+main.add_command(clean, name="inpaint")
 
 
 @main.command("benchmark")
