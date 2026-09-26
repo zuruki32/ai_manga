@@ -62,12 +62,20 @@ manga-ai process ./data/chapters/my_chapter --config configs/local_ko_fa.yaml
 
 ### 3) OCR options (all local)
 
-| Backend    | Install              | Good for        |
-|------------|----------------------|-----------------|
-| `easyocr`  | `pip install easyocr`| EN, KO, JA, ZH  |
-| `paddle`   | `pip install paddleocr` | KO, ZH, EN   |
-| `manga_ocr`| `pip install manga-ocr` | Japanese manga |
-| `router`   | both                 | auto by language|
+| Backend       | Install                                      | Good for              |
+|---------------|----------------------------------------------|-----------------------|
+| `easyocr`     | `pip install easyocr`                        | EN, KO, JA, ZH        |
+| `paddle`      | `pip install paddleocr`                      | KO, ZH, EN (per-crop) |
+| `manga_ocr`   | `pip install manga-ocr`                      | Japanese manga        |
+| `hybrid_qwen` | `pip install -e ".[gpu,hybrid-qwen]"`         | EN comics via Qwen-VL |
+| `router`      | paddle + manga-ocr                           | auto by language      |
+
+Hybrid Qwen (detector boxes + Qwen2.5-VL crop OCR):
+
+```bash
+pip install -e ".[gpu,ocr,hybrid-qwen]"
+manga-ai process ./data/chapters/my_chapter --config configs/hybrid_qwen_en.yaml
+```
 
 ### OpenAI API (optional only)
 
@@ -133,14 +141,15 @@ chapter_001/
 
 ## Backends (all swappable via config)
 
-| Stage        | Options                                      |
-|--------------|----------------------------------------------|
-| Detection    | `mock`, `paddle`                             |
-| OCR          | `mock`, `paddle`, `manga_ocr`, `router`      |
-| Translation  | `mock`, `openai_compatible`                  |
-| Inpainting   | `mock`, `opencv`, `lama`                     |
+| Stage        | Options                                                        |
+|--------------|----------------------------------------------------------------|
+| Detection    | `mock`, `paddle`, `easyocr`, `yolo_comic`                      |
+| OCR          | `mock`, `paddle`, `easyocr`, `manga_ocr`, `hybrid_qwen`, `router` |
+| Translation  | `mock`, `openai_compatible`, `huggingface`, `llama_cpp`        |
+| Inpainting   | `mock`, `opencv`, `lama`                                       |
 
-`router` OCR: Japanese → Manga-OCR, Korean/Chinese/English → PaddleOCR.
+`router` OCR: Japanese → Manga-OCR, Korean/Chinese/English → PaddleOCR.  
+`hybrid_qwen` OCR: any detector’s boxes → Qwen2.5-VL recognition on each crop.
 
 ## 6 GB VRAM policy
 

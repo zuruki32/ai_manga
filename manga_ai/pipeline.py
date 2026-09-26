@@ -131,10 +131,20 @@ class Pipeline:
                 self._ocr = create_ocr(
                     backend,
                     use_gpu=self.use_gpu,
+                    device=self.device,
                     language_map=self.config.get("ocr.language_map"),
                     default_lang=self.config.get("pipeline.source_language", "ko"),
-                    lang=self.config.get("pipeline.source_language", "ko"),
+                    lang=self.config.get("ocr.lang")
+                    or self.config.get("pipeline.source_language", "ko"),
                     languages=self.config.get("ocr.languages"),
+                    model=self.config.get("ocr.model"),
+                    prompt=self.config.get("ocr.prompt"),
+                    max_new_tokens=self.config.get("ocr.max_new_tokens", 128),
+                    load_in_4bit=self.config.get("ocr.load_in_4bit", False),
+                    load_in_8bit=self.config.get("ocr.load_in_8bit", False),
+                    pad_px=self.config.get("ocr.pad_px", 4),
+                    min_pixels=self.config.get("ocr.min_pixels"),
+                    max_pixels=self.config.get("ocr.max_pixels"),
                 )
             except Exception as e:
                 logger.warning(f"OCR '{backend}' failed ({e}), using mock")

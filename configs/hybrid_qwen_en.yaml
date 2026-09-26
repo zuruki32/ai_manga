@@ -1,0 +1,74 @@
+# Hybrid OCR: classical detector boxes + Qwen2.5-VL recognition on crops
+# Requires:
+#   pip install paddlepaddle paddleocr
+#   pip install 'transformers>=4.49.0' accelerate bitsandbytes qwen-vl-utils
+#   pip install torch torchvision
+#
+# First run downloads Qwen/Qwen2.5-VL-3B-Instruct (~7GB). Use load_in_4bit on 6GB GPUs.
+
+pipeline:
+  version: "0.1.0"
+  source_language: "en"
+  target_language: "fa"
+  force: true
+
+preprocessing:
+  convert_to_rgb: true
+  max_dimension: 1600
+  validate: true
+
+detection:
+  backend: "paddle"
+  lang: "en"
+  confidence_threshold: 0.45
+
+ocr:
+  backend: "hybrid_qwen"
+  model: "Qwen/Qwen2.5-VL-3B-Instruct"
+  lang: "en"
+  confidence_threshold: 0.3
+  load_in_4bit: true
+  max_new_tokens: 96
+  pad_px: 6
+  prompt: >
+    Read all English text in this comic speech bubble or caption.
+    Output only the transcribed text, nothing else.
+    If there is no readable text, output an empty string.
+
+translation:
+  backend: "huggingface"
+  model: "models/m2m100-en2fa"
+  batch_size: 4
+  max_length: 256
+  glossary:
+    "Jennette": "جنت"
+    "JENNETTE": "جنت"
+    "Claude": "کلود"
+    "CLAUDE": "کلود"
+    "Your Highness": "علیاحضرت"
+    "Princess": "شاهزاده"
+
+masking:
+  dilation_px: 16
+  blur_radius: 2
+  use_polygon: true
+  residual_expand: true
+  residual_thresh: 140
+
+inpainting:
+  backend: "opencv"
+  tile_size: 768
+  overlap: 64
+  fallback_to_cpu: true
+
+device:
+  preferred: "cuda"
+  device_id: 0
+  unload_after_stage: true
+
+cache:
+  enabled: true
+
+logging:
+  level: "INFO"
+  structured: true
