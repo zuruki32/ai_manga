@@ -194,6 +194,7 @@ class HuggingFaceTranslator(Translator):
         local_files_only: bool = False,
         validate: bool = True,
         max_retries: int = 1,
+        style: str = "colloquial_fa",
         **kwargs: Any,
     ):
         self.model_name = model
@@ -208,6 +209,7 @@ class HuggingFaceTranslator(Translator):
         self.max_new_tokens = max_new_tokens
         self.validate = validate
         self.max_retries = max(0, int(max_retries))
+        self.style = (style or "colloquial_fa").lower()
         if local_files_only:
             self.local_files_only = True
         elif model and Path(model).expanduser().exists():
@@ -472,27 +474,52 @@ class HuggingFaceTranslator(Translator):
                     uniq.append(n)
             if uniq:
                 name_line = (
-                    "Keep these character/proper names EXACTLY as written "
-                    f"(do not translate, drop, or paraphrase them): {', '.join(uniq)}.\n"
+                    "این اسم‌ها رو عیناً نگه دار (ترجمه/حذف/خلاصه‌سازی نکن): "
+                    f"{', '.join(uniq)}\n"
                 )
         strict_line = ""
         if strict:
             strict_line = (
-                "CRITICAL: Previous attempt dropped names or summarized. "
-                "Translate EVERY clause. Preserve every listed name verbatim.\n"
+                "هشدار: ترجمه قبلی اسم‌ها رو انداخت یا زیادی کوتاه شد. "
+                "این بار هر جمله رو کامل و با همون اسم‌ها برگردون.\n"
             )
-        user_msg = (
-            f"You are a professional manhwa/comic dialogue translator.\n"
-            f"{strict_line}"
-            f"Translate the following {src_name} dialogue into natural colloquial {tgt_name}.\n"
-            f"{name_line}"
-            f"Rules:\n"
-            f"- Translate the FULL meaning; do NOT summarize or shorten.\n"
-            f"- Return ONLY the translation text, nothing else.\n"
-            f"- Keep punctuation and speaker tone (hesitation, shouting).\n"
-            f"- If a word looks like OCR garbage, skip that word only.\n\n"
-            f"{text}"
-        )
+
+        if self.style in ("colloquial_fa", "scanlation", "manhwa_fa", "fa_colloquial"):
+            # Tone target: Iranian manhwa scanlation (spoken, punchy, not literary)
+            user_msg = (
+                "تو مترجم حرفه‌ای مانها/وب‌تون به فارسی محاوره‌ای ایرانی هستی.\n"
+                f"{strict_line}"
+                "لحن هدف: گفت‌وگوی روزمره، خودمونی، طبیعی — مثل ساب‌های اسکنلیشن فارسی، "
+                "نه فارسی کتابی/رسمی.\n"
+                "نمونه‌ی لحن (فقط الگو، کپی نکن):\n"
+                "EN: You did great, Jewel.\n"
+                "FA: خیلی خوب از پسش براومدی، جوول.\n"
+                "EN: How could I sleep when you were in so much pain?\n"
+                "FA: چطوری می‌تونستم بخوابم اونم وقتی داشتی این همه درد می‌کشیدی؟\n"
+                "EN: Oh my god, you little rascals!\n"
+                "FA: وای خدای من، شما شیطونای کوچولو!\n"
+                f"{name_line}"
+                "قوانین:\n"
+                "- فقط متن ترجمه رو برگردون؛ توضیح، ایموجی، یا پیشوند EN/FA نذار.\n"
+                "- کامل ترجمه کن؛ خلاصه نکن و کوتاهش نکن.\n"
+                "- محاوره: می‌تونم، مگه نه، خب، وای، واقعاً، چی؟! — از «می‌باشم/خواهند بود» ادبی پرهیز کن.\n"
+                "- لحن فریاد/لکنت/شوخی رو حفظ کن.\n"
+                "- اگه کلمه‌ای OCR خراب به نظر میاد، فقط همون کلمه رو رد کن.\n\n"
+                f"{text}"
+            )
+        else:
+            user_msg = (
+                f"You are a professional manhwa/comic dialogue translator.\n"
+                f"{strict_line}"
+                f"Translate the following {src_name} dialogue into natural colloquial {tgt_name}.\n"
+                f"{name_line}"
+                f"Rules:\n"
+                f"- Translate the FULL meaning; do NOT summarize or shorten.\n"
+                f"- Return ONLY the translation text, nothing else.\n"
+                f"- Keep punctuation and speaker tone (hesitation, shouting).\n"
+                f"- If a word looks like OCR garbage, skip that word only.\n\n"
+                f"{text}"
+            )
         if self._is_gemma3_mm:
             return [{"role": "user", "content": [{"type": "text", "text": user_msg}]}]
         return [{"role": "user", "content": user_msg}]

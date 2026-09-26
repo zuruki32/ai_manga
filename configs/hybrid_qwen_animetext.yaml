@@ -38,13 +38,18 @@ translation:
   batch_size: 1
   validate: true
   max_retries: 1
+
+  style: "colloquial_fa"
+  unit: "region"
+  output_format: "scanlation"
   glossary:
     "Jennette": "جنت"
     "JENNETTE": "جنت"
     "Claude": "کلود"
     "CLAUDE": "کلود"
     "Your Highness": "علیاحضرت"
-    "Princess": "شاهزاده"
+    "Princess": "پرنسس"
+    "PRINCESS": "پرنسس"
 
 masking:
   dilation_px: 16

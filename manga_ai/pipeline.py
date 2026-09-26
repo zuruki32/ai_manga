@@ -177,6 +177,7 @@ class Pipeline:
                     max_new_tokens=self.config.get("translation.max_new_tokens", 128),
                     local_files_only=self.config.get("translation.local_files_only", False),
                     validate=self.config.get("translation.validate", True),
+                    style=self.config.get("translation.style", "colloquial_fa"),
                     n_gpu_layers=self.config.get("translation.n_gpu_layers", -1),
                     n_ctx=self.config.get("translation.n_ctx", 2048),
                     max_tokens=self.config.get("translation.max_tokens", 128),
@@ -605,9 +606,17 @@ class Pipeline:
         kept = [w for w in t.split() if not self._is_gibberish_token(w)]
         return " ".join(kept).strip()
     def run_translation(self, regions: List[TextRegion]) -> List[TextRegion]:
-        """Merge OCR lines per page → translate page passages → write EN+FA chapter files."""
+        """Translate dialogue (per-bubble by default) → write scanlation-style EN/FA files."""
         stage = "translation"
-        log_stage(logger, stage, "Starting page-level chapter translation")
+        unit = str(self.config.get("translation.unit", "region") or "region").lower()
+        output_format = str(
+            self.config.get("translation.output_format", "scanlation") or "scanlation"
+        ).lower()
+        log_stage(
+            logger,
+            stage,
+            f"Starting chapter translation (unit={unit}, format={output_format})",
+        )
         started = time.perf_counter()
         backend_name = self.config.get("translation.backend", "mock")
         meta = StageMetadata(
@@ -630,7 +639,6 @@ class Pipeline:
 
         errors: List[str] = []
         try:
-            # --- 1) Group regions by page, merge EN in reading order ---
             from collections import defaultdict
             import re
 
@@ -638,85 +646,150 @@ class Pipeline:
             for r in regions:
                 by_page[str(r.page)].append(r)
 
-            def merge_en(lines: List[str]) -> str:
-                parts = []
-                for t in lines:
-                    t = self._clean_ocr_line(t)
-                    if not t or self._is_junk_ocr(t):
-                        continue
-                    if re.fullmatch(r"[\W\d_#]+", t):
-                        continue
-                    # skip very low-signal fragments
-                    if len(t) < 2:
-                        continue
-                    parts.append(t)
-                if not parts:
+            def clean_line(t: str) -> str:
+                t = self._clean_ocr_line(t)
+                if not t or self._is_junk_ocr(t):
                     return ""
-                text = " ".join(parts)
-                text = re.sub(r"\s+", " ", text)
-                text = re.sub(r"\s+([,.!?])", r"\1", text)
-                # drop leftover site fragments mid-sentence
+                if re.fullmatch(r"[\W\d_#]+", t):
+                    return ""
+                if len(t) < 2:
+                    return ""
                 for bad in ("LUACOMIC", "LuaComic", "LUA SCANS", "LUASCAN"):
-                    text = text.replace(bad, "")
-                text = re.sub(r"\s+", " ", text).strip(" -;,.|_")
-                return text.strip()
+                    t = t.replace(bad, "")
+                return re.sub(r"\s+", " ", t).strip(" -;,.|_")
+
+            def sort_key(r: TextRegion):
+                bb = r.bbox or [0, 0, 0, 0]
+                return (float(bb[1]), float(bb[0]), str(r.region_id))
 
             page_ids = sorted(by_page.keys(), key=lambda p: (len(p), p))
-            page_en: Dict[str, str] = {}
-            for page in page_ids:
-                items = sorted(
-                    by_page[page],
-                    key=lambda r: (
-                        float((r.bbox or [0, 0, 0, 0])[1]),
-                        float((r.bbox or [0, 0, 0, 0])[0]),
-                    ),
-                )
-                page_en[page] = merge_en([r.source_text or "" for r in items])
-
-            # --- 2) Translate each page as ONE passage (better quality) ---
             context = {
                 "source_language": source_lang,
                 "target_language": target_lang,
                 "glossary": glossary,
                 "chapter_context": [],
             }
+
+            line_rows: List[Dict[str, Any]] = []
+            page_en: Dict[str, str] = {}
             page_fa: Dict[str, str] = {}
-            batch = []
-            for page in page_ids:
-                en = page_en.get(page) or ""
-                if not en:
-                    page_fa[page] = ""
-                    continue
-                batch.append({"region_id": f"page_{page}", "source_text": en, "page": page})
 
-            translations = translator.translate_chapter(batch, context) if batch else []
-            for t in translations:
-                rid = t.get("region_id", "")
-                page = rid.replace("page_", "", 1) if rid.startswith("page_") else rid
-                page_fa[page] = (t.get("text") or "").strip()
+            if unit in ("region", "line", "bubble"):
+                batch = []
+                meta_rows = []
+                for page in page_ids:
+                    for r in sorted(by_page[page], key=sort_key):
+                        en = clean_line(r.source_text or "")
+                        if not en:
+                            r.translated_text = ""
+                            continue
+                        batch.append(
+                            {
+                                "region_id": r.region_id,
+                                "source_text": en,
+                                "page": page,
+                            }
+                        )
+                        meta_rows.append((r, page, en))
 
-            # Fill region-level FA with the page passage (for JSON completeness)
-            for r in regions:
-                r.target_language = target_lang
-                r.translated_text = page_fa.get(str(r.page), "")
+                translations = translator.translate_chapter(batch, context) if batch else []
+                by_rid = {
+                    t.get("region_id"): (t.get("text") or "").strip() for t in translations
+                }
 
-            # --- 3) Write readable chapter files ---
+                for r, page, en in meta_rows:
+                    fa = by_rid.get(r.region_id, "")
+                    r.target_language = target_lang
+                    r.translated_text = fa
+                    line_rows.append(
+                        {
+                            "page": page,
+                            "region_id": r.region_id,
+                            "en": en,
+                            "fa": fa,
+                        }
+                    )
+
+                for page in page_ids:
+                    ens = [x["en"] for x in line_rows if x["page"] == page]
+                    fas = [x["fa"] for x in line_rows if x["page"] == page and x["fa"]]
+                    page_en[page] = " ".join(ens)
+                    page_fa[page] = " ".join(fas)
+            else:
+                batch = []
+                for page in page_ids:
+                    items = sorted(by_page[page], key=sort_key)
+                    parts = [clean_line(r.source_text or "") for r in items]
+                    en = " ".join(p for p in parts if p)
+                    page_en[page] = en
+                    if en:
+                        batch.append(
+                            {
+                                "region_id": f"page_{page}",
+                                "source_text": en,
+                                "page": page,
+                            }
+                        )
+                translations = translator.translate_chapter(batch, context) if batch else []
+                for t in translations:
+                    rid = t.get("region_id", "")
+                    page = rid.replace("page_", "", 1) if rid.startswith("page_") else rid
+                    page_fa[page] = (t.get("text") or "").strip()
+                for r in regions:
+                    r.target_language = target_lang
+                    r.translated_text = page_fa.get(str(r.page), "")
+                    en = clean_line(r.source_text or "")
+                    if en:
+                        line_rows.append(
+                            {
+                                "page": str(r.page),
+                                "region_id": r.region_id,
+                                "en": en,
+                                "fa": r.translated_text or "",
+                            }
+                        )
+
             ensure_dir(self.translation_dir)
             passages = []
             en_blocks, fa_blocks, both_blocks = [], [], []
+            scanlation_fa: List[str] = [f"#ترجمه {self.chapter_id}", ""]
+            scanlation_both: List[str] = [f"#ترجمه {self.chapter_id}", ""]
+
             for page in page_ids:
+                page_lines = [x for x in line_rows if x["page"] == page]
                 en = page_en.get(page) or ""
                 fa = page_fa.get(page) or ""
-                if not en and not fa:
+                if not page_lines and not en and not fa:
                     continue
-                passages.append({"page": page, "en": en, "fa": fa, "n_regions": len(by_page[page])})
+                passages.append(
+                    {
+                        "page": page,
+                        "en": en,
+                        "fa": fa,
+                        "n_regions": len(by_page[page]),
+                        "lines": page_lines,
+                    }
+                )
                 en_blocks.append(f"=== Page {page} ===\n{en}\n")
                 fa_blocks.append(f"=== صفحه {page} ===\n{fa}\n")
-                both_blocks.append(
-                    f"=== Page {page} ===\n"
-                    f"EN: {en}\n"
-                    f"FA: {fa}\n"
-                )
+                both_blocks.append(f"=== Page {page} ===\nEN: {en}\nFA: {fa}\n")
+
+                scanlation_fa.append(f"#صفحه {page}")
+                scanlation_both.append(f"#صفحه {page}")
+                for row in page_lines:
+                    fa_line = (row.get("fa") or "").strip()
+                    en_line = (row.get("en") or "").strip()
+                    if not fa_line and not en_line:
+                        continue
+                    if output_format in ("scanlation", "at", "@"):
+                        scanlation_fa.append(f"@{fa_line}" if fa_line else "@")
+                        scanlation_both.append(f"@{en_line}")
+                        scanlation_both.append(f"@{fa_line}" if fa_line else "@")
+                    else:
+                        scanlation_fa.append(fa_line)
+                        scanlation_both.append(f"{en_line}\n{fa_line}")
+                scanlation_fa.append("")
+                scanlation_both.append("")
 
             (self.translation_dir / "chapter_en_fa.txt").write_text(
                 "\n".join(both_blocks), encoding="utf-8"
@@ -727,11 +800,19 @@ class Pipeline:
             (self.translation_dir / "chapter_fa.txt").write_text(
                 "\n".join(fa_blocks), encoding="utf-8"
             )
+            (self.translation_dir / "chapter_scanlation_fa.txt").write_text(
+                "\n".join(scanlation_fa).strip() + "\n", encoding="utf-8"
+            )
+            (self.translation_dir / "chapter_scanlation_en_fa.txt").write_text(
+                "\n".join(scanlation_both).strip() + "\n", encoding="utf-8"
+            )
             (self.translation_dir / "chapter_full_en.txt").write_text(
-                "\n\n".join(p["en"] for p in passages if p["en"]), encoding="utf-8"
+                "\n\n".join(f"@{x['en']}" for x in line_rows if x.get("en")),
+                encoding="utf-8",
             )
             (self.translation_dir / "chapter_full_fa.txt").write_text(
-                "\n\n".join(p["fa"] for p in passages if p["fa"]), encoding="utf-8"
+                "\n\n".join(f"@{x['fa']}" for x in line_rows if x.get("fa")),
+                encoding="utf-8",
             )
             (self.translation_dir / "chapter_passages.json").write_text(
                 json.dumps(
@@ -739,6 +820,8 @@ class Pipeline:
                         "chapter_id": self.chapter_id,
                         "source_language": source_lang,
                         "target_language": target_lang,
+                        "unit": unit,
+                        "output_format": output_format,
                         "passages": passages,
                     },
                     indent=2,
@@ -751,6 +834,7 @@ class Pipeline:
                 "chapter_id": self.chapter_id,
                 "source_language": source_lang,
                 "target_language": target_lang,
+                "unit": unit,
                 "passages": passages,
                 "regions": [r.model_dump() for r in regions],
             }
@@ -761,12 +845,13 @@ class Pipeline:
             log_stage(
                 logger,
                 stage,
-                f"{len(passages)} page passages translated "
-                f"({sum(1 for p in passages if p['en'])} non-empty EN)",
+                f"{len(line_rows)} lines / {len(passages)} pages translated "
+                f"({sum(1 for x in line_rows if x.get('fa'))} non-empty FA)",
             )
             logger.info(
-                f"Readable output: {self.translation_dir / 'chapter_en_fa.txt'}"
+                f"Scanlation FA: {self.translation_dir / 'chapter_scanlation_fa.txt'}"
             )
+            logger.info(f"Readable QA: {self.translation_dir / 'chapter_en_fa.txt'}")
         except Exception as e:
             msg = str(e)
             errors.append(msg)
