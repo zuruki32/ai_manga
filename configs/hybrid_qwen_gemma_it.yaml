@@ -55,8 +55,9 @@ translation:
   max_length: 512
   batch_size: 1
   validate: true
-  max_retries: 2
-  # Stock Instruct + colloquial prompt (no Persian SFT). No EN:/FA: few-shots.
+  max_retries: 3
+  # Stock Instruct: short EN system prompt + Latin-ban retry (FA instructions → English replies).
+  # No EN:/FA: few-shots. Persian SFT still uses the FA colloquial prompt.
   style: "colloquial_fa"
   # Neighbouring bubbles shown to the model as context (not translated)
   context_window: 1
