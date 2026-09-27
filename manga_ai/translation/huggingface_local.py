@@ -42,6 +42,12 @@ def _is_hunyuan_mt(model_name: str) -> bool:
     return "hunyuan-mt" in low or "hunyuan_mt" in low
 
 
+def _is_persian_sft(model_name: str) -> bool:
+    """Persian-tuned chat models (e.g. mshojaei77 gemma-3-4b-persian)."""
+    low = (model_name or "").lower().replace("\\", "/")
+    return "persian" in low or "farsi" in low or "en-fa" in low or "en2fa" in low
+
+
 def _is_gemma3(model_name: str) -> bool:
     low = (model_name or "").lower().replace("\\", "/")
     return "gemma-3" in low or "gemma3" in low or "gemma_3" in low
@@ -225,6 +231,7 @@ class HuggingFaceTranslator(Translator):
         self.max_retries = max(0, int(max_retries))
         self.style = (style or "colloquial_fa").lower()
         self.extra_instructions = (extra_instructions or "").strip()
+        self._persian_sft = _is_persian_sft(model or "")
         if local_files_only:
             self.local_files_only = True
         elif model and Path(model).expanduser().exists():
@@ -483,36 +490,96 @@ class HuggingFaceTranslator(Translator):
         next_text: str = "",
     ) -> Any:
         name_line = ""
+        keep_list: List[str] = []
         if keep_names:
-            uniq = []
             seen = set()
             for n in keep_names:
                 key = n.lower()
                 if n and key not in seen:
                     seen.add(key)
-                    uniq.append(n)
-            if uniq:
+                    keep_list.append(n)
+
+        # Stock Instruct (non-Persian SFT) follows English instructions far more
+        # reliably; Persian prompts often make it reply in English → no_persian /
+        # latin_leftover QA failures.
+        use_en_prompt = not self._persian_sft
+
+        if keep_list:
+            if use_en_prompt:
+                name_line = (
+                    "Keep every ⟦N⟧ token EXACTLY as written (do not translate or drop them). "
+                    f"They will be replaced with names later: {', '.join(keep_list)}\n"
+                )
+            else:
                 name_line = (
                     "توکن‌های داخل ⟦ ⟧ رو عیناً تو خروجی نگه دار و ترجمه/حذف نکن "
-                    f"(بعداً با اسم جایگزین می‌شن): {', '.join(uniq)}\n"
+                    f"(بعداً با اسم جایگزین می‌شن): {', '.join(keep_list)}\n"
                 )
+
         strict_line = ""
         if strict:
-            strict_line = (
-                "هشدار: ترجمه قبلی ناقص بود یا کلمه انگلیسی داشت. "
-                "این بار همه‌ی معنی رو کامل و فقط با حروف فارسی برگردون.\n"
+            if use_en_prompt:
+                strict_line = (
+                    "WARNING: Your previous reply had English or no Persian. "
+                    "This time rewrite the FULL meaning using ONLY Persian (Farsi) letters. "
+                    "Zero Latin letters except ⟦ ⟧ tokens. No explanations.\n"
+                )
+            else:
+                strict_line = (
+                    "هشدار: ترجمه قبلی ناقص بود یا کلمه انگلیسی داشت. "
+                    "این بار همه‌ی معنی رو کامل و فقط با حروف فارسی برگردون.\n"
+                )
+
+        colloquial = self.style in (
+            "colloquial_fa",
+            "scanlation",
+            "manhwa_fa",
+            "fa_colloquial",
+        )
+
+        if colloquial and use_en_prompt:
+            context_block = ""
+            if prev_text or next_text:
+                context_block = "Dialogue context (for meaning only — do NOT translate these):\n"
+                if prev_text:
+                    context_block += f"- previous bubble: {prev_text}\n"
+                if next_text:
+                    context_block += f"- next bubble: {next_text}\n"
+                context_block += "\n"
+            user_msg = (
+                "You are a manhwa dialogue translator. Translate English → natural "
+                "colloquial Iranian Persian (Farsi).\n"
+                f"{strict_line}"
+                "CRITICAL OUTPUT RULES:\n"
+                "- Reply with Persian script ONLY. Do not write any English words "
+                "(except ⟦N⟧ tokens).\n"
+                "- Translate this one English line only; full meaning, spoken tone, not bookish.\n"
+                "- Interjections/fillers only when the English has them.\n"
+                "- No EN:/FA: prefixes, no quotes around the answer, no commentary.\n"
+                f"{name_line}"
             )
-
-        context_block = ""
-        if prev_text or next_text:
-            context_block = "بافت گفتگو (فقط برای فهم معنی — اینا رو ترجمه نکن):\n"
-            if prev_text:
-                context_block += f"- حباب قبلی: {prev_text}\n"
-            if next_text:
-                context_block += f"- حباب بعدی: {next_text}\n"
-            context_block += "\n"
-
-        if self.style in ("colloquial_fa", "scanlation", "manhwa_fa", "fa_colloquial"):
+            tips = self._safe_extra_instructions()
+            if tips:
+                user_msg += f"Extra tone tips (no sample dialogue):\n{tips}\n"
+            user_msg += (
+                "Forbidden:\n"
+                "- Inventing new dialogue or copying memorized examples\n"
+                "- Summarizing or dropping meaning\n"
+                "- Translating ⟦N⟧ tokens\n\n"
+                f"{context_block}"
+                f"English:\n{text}\n\n"
+                "Persian only:"
+            )
+        elif colloquial:
+            # Persian-SFT: keep FA instructions (model expects Persian chat style)
+            context_block = ""
+            if prev_text or next_text:
+                context_block = "بافت گفتگو (فقط برای فهم معنی — اینا رو ترجمه نکن):\n"
+                if prev_text:
+                    context_block += f"- حباب قبلی: {prev_text}\n"
+                if next_text:
+                    context_block += f"- حباب بعدی: {next_text}\n"
+                context_block += "\n"
             # Don't list sample filler words here — Gemma sprinkles them into every line
             user_msg = (
                 "نقش تو: مترجم دیالوگ مانهوا از انگلیسی به فارسی محاوره‌ای ایرانی.\n"
@@ -1003,13 +1070,32 @@ class HuggingFaceTranslator(Translator):
                             logger.warning(
                                 f"Translation QA failed ({reason}); retrying"
                             )
-                            # Greedy MT would repeat itself; sample instead of a stricter prompt
-                            fa = attempt(strict=not is_mt, sample=is_mt)
+                            # Greedy MT would repeat itself; sample instead of a stricter prompt.
+                            # For chat models: 1st retry = strict greedy; later retries sample
+                            # so identical greedy failures can escape.
+                            use_strict = not is_mt
+                            use_sample = is_mt or retries >= 1 or reason in (
+                                "no_persian",
+                                "latin_leftover",
+                            )
+                            fa = attempt(strict=use_strict, sample=use_sample)
                             ok, reason = self._translation_ok(
                                 protected, fa, glossary, tgt, placeholders=ph_map
                             )
                             if fa and (ok or not best):
                                 best = fa
+                            elif fa and not ok:
+                                # Prefer any Persian-script attempt over English-only
+                                import re as _re
+
+                                best_has_fa = bool(
+                                    _re.search(r"[\u0600-\u06FF]", best or "")
+                                )
+                                fa_has_fa = bool(
+                                    _re.search(r"[\u0600-\u06FF]", fa or "")
+                                )
+                                if fa_has_fa and not best_has_fa:
+                                    best = fa
                             retries += 1
                         if ok:
                             best = fa
