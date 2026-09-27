@@ -65,17 +65,27 @@ def process(chapter_dir: str, config: Optional[str], backend: Optional[str], for
     """Run the full pipeline on a chapter directory."""
     cfg = _resolve_config(config, backend, force)
     setup_logging(level=cfg.get("logging.level", "INFO"))
+    # Make misconfigured GGUF obvious before burning OCR time
+    logger.info(
+        "Config translation: backend=%r model=%r",
+        cfg.get("translation.backend"),
+        cfg.get("translation.model"),
+    )
     pipe = Pipeline(cfg, chapter_dir)
     manifest = pipe.process()
+    done = (
+        f"\nDone. Manifest: {pipe.manifest_path}\n"
+        f"Pages: {len(manifest.pages)}\n"
+        f"Regions: {len(manifest.regions)}"
+    )
+    # Windows often closes the console handle after long GPU runs (error 6)
     try:
-        click.echo(f"\nDone. Manifest: {pipe.manifest_path}")
-        click.echo(f"Pages: {len(manifest.pages)}")
-        click.echo(f"Regions: {len(manifest.regions)}")
-    except OSError:
-        # Windows console handle can already be closed; don't crash after success
-        print(f"\nDone. Manifest: {pipe.manifest_path}")
-        print(f"Pages: {len(manifest.pages)}")
-        print(f"Regions: {len(manifest.regions)}")
+        click.echo(done)
+    except Exception:
+        try:
+            print(done, flush=True)
+        except Exception:
+            pass
 
 
 @main.command()
@@ -161,10 +171,14 @@ def mask(chapter_dir: str, config: Optional[str], force: bool) -> None:
 @click.option("--backend", type=str, default=None)
 @click.option("--force", is_flag=True)
 def clean(chapter_dir: str, config: Optional[str], backend: Optional[str], force: bool) -> None:
-    """Run inpainting / text removal only."""
+    """Run inpainting / text removal only (alias: manga-ai inpaint)."""
     cfg = _resolve_config(config, backend, force)
     setup_logging(level=cfg.get("logging.level", "INFO"))
     Pipeline(cfg, chapter_dir).run_stage("inpainting")
+
+
+# Alias used in docs / muscle memory
+main.add_command(clean, name="inpaint")
 
 
 @main.command("benchmark")

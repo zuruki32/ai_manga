@@ -29,6 +29,20 @@ def review_translation_prompt(text: str) -> Dict[str, Any]:
     for pat in _BAD:
         if re.search(pat, low):
             reasons.append(f"blocked_pattern:{pat}")
+    # Few-shot EN/FA pairs poison Gemma (it copies them into every bubble)
+    if re.search(r"(?im)^\s*EN\s*:", t) or re.search(r"(?im)^\s*FA\s*:", t):
+        reasons.append("few_shot_examples_forbidden")
+    if re.search(r"(?i)\bEN\s*:.*\bFA\s*:", t):
+        reasons.append("few_shot_examples_forbidden")
+    leaked = (
+        "شیطونای کوچولو",
+        "چطوری می‌تونستم بخوابم",
+        "جوول",
+        "دردسرساز",
+        "اشکات رو بریزم",
+    )
+    if any(x in t for x in leaked):
+        reasons.append("stock_example_phrase")
     # Must look like translation/style guidance
     style_hints = (
         "ترجم", "لحن", "محاوره", "اسم", "نام", "dialogue", "tone", "style",

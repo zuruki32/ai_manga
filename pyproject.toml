@@ -62,6 +62,10 @@ translation-local = [
 telegram = [
     "python-telegram-bot>=21.0",
 ]
+# High-quality text removal (optional; OpenCV used automatically if missing)
+lama = [
+    "simple-lama-inpainting>=0.1.0",
+]
 local = [
     "manga-ai[gpu,easyocr,translation-local]",
 ]

@@ -160,12 +160,14 @@ class Pipeline:
     def _get_translator(self) -> Translator:
         if self._translator is None:
             backend = self.config.get("translation.backend", "mock")
+            model = self.config.get("translation.model")
+            logger.info(f"Creating translator backend={backend!r} model={model!r}")
             try:
                 self._translator = create_translator(
                     backend,
                     base_url=self.config.get("translation.base_url"),
                     api_key=self.config.get("translation.api_key"),
-                    model=self.config.get("translation.model"),
+                    model=model,
                     temperature=self.config.get("translation.temperature", 0.2),
                     max_retries=self.config.get("translation.max_retries", 1),
                     device=self.device,
@@ -181,6 +183,8 @@ class Pipeline:
                     validate=self.config.get("translation.validate", True),
                     style=self.config.get("translation.style", "colloquial_fa"),
                     extra_instructions=self.config.get("translation.extra_instructions", "") or "",
+                    context_window=self.config.get("translation.context_window", 1),
+                    mt_target_label=self.config.get("translation.mt_target_label", "Persian"),
                     n_gpu_layers=self.config.get("translation.n_gpu_layers", -1),
                     n_ctx=self.config.get("translation.n_ctx", 2048),
                     max_tokens=self.config.get("translation.max_tokens", 128),
@@ -570,6 +574,8 @@ class Pipeline:
         r"only\s+official\s+domain", r"any\s+other\s+domain", r"scam",
         r"carrotoon", r"carro+o+n", r"kwbooks", r"twitter", r"join\s+our",
         r"toomics", r"webtoon", r"tapas",
+        r"\bluaco", r"read\s+at\s+lua", r"copyright", r"fastest\s+re",
+        r"official\s+(domain|ave|site)", r"other\s+domain", r"^\s*\d+\s*won\b",
     )
 
     def _is_gibberish_token(self, token: str) -> bool:
@@ -995,6 +1001,27 @@ class Pipeline:
         inpainter = self._get_inpainter()
         errors: List[str] = []
 
+        def _opencv_fallback(reason: str) -> Inpainter:
+            nonlocal inpainter
+            logger.warning(f"{reason} — switching chapter to OpenCV inpainting")
+            meta.warnings.append(reason)
+            meta.backend = "opencv"
+            from manga_ai.inpainting import create_inpainter
+            try:
+                inpainter.unload()
+            except Exception:
+                pass
+            inpainter = create_inpainter(
+                "opencv",
+                radius=self.config.get("inpainting.radius", 7),
+                method=self.config.get("inpainting.method", "telea"),
+                passes=self.config.get("inpainting.passes", 2),
+                soft_edge=self.config.get("inpainting.soft_edge", 3),
+                bg_fill=self.config.get("inpainting.bg_fill", True),
+            )
+            self._inpainter = inpainter
+            return inpainter
+
         for img_path in images:
             page = page_id_from_path(img_path)
             try:
@@ -1008,13 +1035,15 @@ class Pipeline:
 
                 try:
                     cleaned = inpainter.inpaint(arr, mask)
+                except ImportError as e:
+                    # LaMa lazy-import failed mid-chapter (should be rare after create_inpainter probe)
+                    _opencv_fallback(f"LaMa unavailable ({e})")
+                    cleaned = inpainter.inpaint(arr, mask)
                 except RuntimeError as e:
                     if "out of memory" in str(e).lower():
-                        logger.warning(f"OOM on page {page}, clearing CUDA and falling back to OpenCV")
                         clear_cuda()
-                        from manga_ai.inpainting.opencv_backend import OpenCVInpainter
-                        cleaned = OpenCVInpainter().inpaint(arr, mask)
-                        meta.warnings.append(f"page={page}: OOM fallback to opencv")
+                        _opencv_fallback(f"page={page}: OOM on LaMa")
+                        cleaned = inpainter.inpaint(arr, mask)
                     else:
                         raise
 

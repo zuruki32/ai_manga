@@ -2,7 +2,8 @@
 #
 # Local weights (no Hub download):
 #   OCR:         D:/projects/models/Qwen3-VL-8B-Instruct
-#   Translation: models/gemma-3-4b-persian   (complete HF folder, NOT gguf)
+# Translation: models/gemma-3-4b-persian   (Persian SFT)
+# Alt (often more faithful): configs/hybrid_qwen_gemma_it.yaml → models/gemma-3-4b-it
 #
 # Setup:
 #   pip install ultralytics huggingface_hub
@@ -53,9 +54,12 @@ translation:
   max_length: 512
   batch_size: 1
   validate: true
-  max_retries: 1
+  max_retries: 2
   # Match Iranian manhwa scanlation tone + @ per bubble
+  # IMPORTANT: do NOT put EN:/FA: few-shot lines in extra_instructions (Gemma copies them)
   style: "colloquial_fa"
+  # Neighbouring bubbles shown to the model as context (not translated)
+  context_window: 1
   unit: "region"
   output_format: "scanlation"
   glossary:
@@ -78,8 +82,9 @@ masking:
 
 inpainting:
   # Best quality (same stack as manga-image-translator / PanelCleaner / manga-text-cleaner):
-  #   pip install simple-lama-inpainting --no-deps
-  # Falls back to improved OpenCV if LaMa missing / OOM.
+  #   pip install 'manga-ai[lama]'
+  #   # or: pip install simple-lama-inpainting --no-deps
+  # Auto-falls back to improved OpenCV if LaMa missing / OOM (no per-page hard fail).
   backend: "lama"
   radius: 7
   method: "telea"

@@ -13,8 +13,10 @@ Usage (from repo root):
   python scripts/download_models.py --model m2m100
   python scripts/download_models.py --model llama_en_fa
   python scripts/download_models.py --model gemma_persian
+  python scripts/download_models.py --model gemma_it
   python scripts/download_models.py --model gemma_gguf
   python scripts/download_models.py --model opus
+  python scripts/download_models.py --model hunyuan_mt
 
 Models are saved under ./models/
 """
@@ -45,6 +47,12 @@ CATALOG = {
         "gemma-3-4b-persian",
         False,
     ),
+    # Stock Gemma-3 4B Instruct (often better at following translation prompts than Persian SFT)
+    "gemma_it": (
+        "google/gemma-3-4b-it",
+        "gemma-3-4b-it",
+        False,
+    ),
     "gemma_gguf": (
         # Official Q8 GGUF mirror (larger). Prefer Q4 if you convert yourself.
         "PersianML/gemma-3-4b-persian-abliterated-gguf",
@@ -54,6 +62,12 @@ CATALOG = {
     "opus": (
         "Helsinki-NLP/opus-mt-en-fa",
         "opus-mt-en-fa",
+        False,
+    ),
+    # Dedicated 7B translator (33 languages incl. Persian); ~5 GB VRAM in 4-bit
+    "hunyuan_mt": (
+        "tencent/Hunyuan-MT-7B",
+        "Hunyuan-MT-7B",
         False,
     ),
 }
