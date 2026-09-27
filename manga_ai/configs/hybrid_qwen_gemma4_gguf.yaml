@@ -1,0 +1,101 @@
+# Hybrid OCR (local Qwen3-VL) + Gemma-4 E4B Instruct GGUF (llama.cpp)
+#
+# Uses the Q4_K_M file you already have (no HF download):
+#   models/gemma-4-E4B-it-Q4_K_M.gguf
+#
+# Needs a recent llama-cpp-python (Gemma-4 chat template):
+#   pip install -U llama-cpp-python
+#   # CUDA wheel if needed: https://github.com/abetlen/llama-cpp-python#installation-with-cuda
+#
+# If load fails, prefer HF stock Instruct: configs/hybrid_qwen_gemma_it.yaml
+
+pipeline:
+  version: "0.1.0"
+  source_language: "en"
+  target_language: "fa"
+  force: true
+
+preprocessing:
+  convert_to_rgb: true
+  max_dimension: 1600
+  validate: true
+
+detection:
+  backend: "yolo_comic"
+  model: "models/comic-yolo.pt"
+  variant: "textseg"
+  confidence_threshold: 0.25
+  imgsz: 1024
+
+ocr:
+  backend: "hybrid_qwen"
+  model: "D:/projects/models/Qwen3-VL-8B-Instruct"
+  local_files_only: true
+  lang: "en"
+  confidence_threshold: 0.3
+  load_in_4bit: true
+  max_new_tokens: 96
+  pad_px: 6
+  max_pixels: 3211264
+  prompt: >
+    Read all English text in this comic speech bubble or caption.
+    Output only the transcribed text, nothing else.
+    If there is no readable text, output an empty string.
+
+translation:
+  backend: "llama_cpp"
+  model: "models/gemma-4-E4B-it-Q4_K_M.gguf"
+  n_gpu_layers: -1
+  n_ctx: 2048
+  max_tokens: 192
+  temperature: 0.1
+  chat_format: "gemma"
+  # Same scanlation pipeline settings as HF configs
+  style: "colloquial_fa"
+  context_window: 1
+  unit: "region"
+  output_format: "scanlation"
+  glossary:
+    "Jennette": "جنت"
+    "JENNETTE": "جنت"
+    "Claude": "کلود"
+    "CLAUDE": "کلود"
+    "Your Highness": "علیاحضرت"
+    "Princess": "پرنسس"
+    "PRINCESS": "پرنسس"
+
+masking:
+  dilation_px: 18
+  blur_radius: 2
+  use_polygon: true
+  residual_expand: true
+  residual_thresh: 140
+  bubble_inflate: true
+  bubble_pad_px: 10
+
+inpainting:
+  # Best quality (same stack as manga-image-translator / PanelCleaner / manga-text-cleaner):
+  #   pip install 'manga-ai[lama]'
+  #   # or: pip install simple-lama-inpainting --no-deps
+  # Auto-falls back to improved OpenCV if LaMa missing / OOM (no per-page hard fail).
+  backend: "lama"
+  radius: 7
+  method: "telea"
+  passes: 2
+  soft_edge: 3
+  bg_fill: true
+  tile_size: 768
+  overlap: 64
+  fallback_to_cpu: true
+
+device:
+  preferred: "cuda"
+  device_id: 0
+  unload_after_stage: true
+
+cache:
+  enabled: true
+
+logging:
+  level: "INFO"
+  structured: true
