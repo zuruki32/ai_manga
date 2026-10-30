@@ -567,16 +567,22 @@ class HuggingFaceTranslator(Translator):
             if tips:
                 system += f" Tone tips: {tips}"
 
-            user_bits: List[str] = []
+            # Context goes in the SYSTEM message as reference only — never in the
+            # user turn — otherwise the model translates the neighbouring bubbles
+            # too and their Persian leaks into this line's output.
             if prev_text or next_text:
+                system += (
+                    " The surrounding dialogue below is ONLY background context: "
+                    "never translate it and never include it in your reply. "
+                    "Translate ONLY the single line in the user message, on one line."
+                )
                 if prev_text:
-                    user_bits.append(f"(previous bubble, do not translate): {prev_text}")
+                    system += f"\nContext (previous line, do NOT translate): {prev_text}"
                 if next_text:
-                    user_bits.append(f"(next bubble, do not translate): {next_text}")
-            user_bits.append(text)
+                    system += f"\nContext (next line, do NOT translate): {next_text}"
             messages = [
                 {"role": "system", "content": self._wrap_msg_content(system)},
-                {"role": "user", "content": self._wrap_msg_content("\n".join(user_bits))},
+                {"role": "user", "content": self._wrap_msg_content(text)},
             ]
             return messages
 
@@ -695,12 +701,20 @@ class HuggingFaceTranslator(Translator):
         return out, mapping, keep_tokens
 
     def _restore_names(self, text: str, mapping: Dict[str, str]) -> str:
+        import re
+
         out = text or ""
         for ph, fa in mapping.items():
             out = out.replace(ph, fa)
             # model sometimes strips brackets
             bare = ph.strip("⟦⟧")
             out = out.replace(f"[{bare}]", fa).replace(f"({bare})", fa)
+        # Clean up any placeholder the model mangled (e.g. ⟦N⟧, [N]) and never
+        # got restored — a single-name mapping is the best guess, else drop it.
+        if re.search(r"⟦[^⟧]*⟧|[\[(]N[\])]", out):
+            fallback = next(iter(mapping.values()), "") if len(mapping) == 1 else ""
+            out = re.sub(r"⟦[^⟧]*⟧|[\[(]N[\])]", fallback, out)
+            out = re.sub(r"\s{2,}", " ", out).strip()
         return out
 
     # Stock FA from old few-shots / model regurgitation (must never appear unless EN matches)

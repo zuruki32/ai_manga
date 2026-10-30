@@ -60,7 +60,7 @@ translation:
   # No EN:/FA: few-shots. Persian SFT still uses the FA colloquial prompt.
   style: "colloquial_fa"
   # Neighbouring bubbles shown to the model as context (not translated)
-  context_window: 1
+  context_window: 0  # 0 = translate each bubble alone (avoids neighbor-context leak)
   unit: "region"
   output_format: "scanlation"
   glossary:
