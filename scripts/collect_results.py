@@ -1,18 +1,24 @@
-"""Collect a small, git-shareable snapshot of a pipeline run.
+"""Collect a small, git-shareable snapshot of a pipeline run for QUALITY REVIEW.
 
 The pipeline writes its real outputs under ``data/chapters/<ch>/{cleaned,
-translation,masks,debug,...}``, all of which are git-ignored (and the images
-are large). This script copies a compact subset into a tracked ``results/``
-folder so it can be committed and pulled by a reviewer:
+translation,masks,debug,...}`` (all git-ignored and large). This copies a
+compact subset into a tracked ``results/`` folder so a reviewer can judge
+*every* stage:
 
   results/latest/
-    SUMMARY.md                 # stage status, counts, warnings, translation head
-    translation/               # all translation text files (small)
-    samples/<page>_triptych.jpg# original | mask preview | cleaned, downscaled
+    SUMMARY.md                  # stage table (+ which backend each used), counts, warnings
+    translation/                # all translation text files
+    samples/<page>_panels.jpg   # ORIGINAL | DETECT(boxes) | MASK | CLEANED (processed coords)
+    ocr_crops/NN_<page>.jpg      # high-res bubble crops ...
+    ocr_crops/index.md          # ... paired with the EN (OCR) text and FA translation
+
+Coordinates: detection boxes are in *preprocessed* image coordinates, so this
+rebuilds the preprocessed image (same Preprocessor/config the pipeline used) to
+draw boxes and cut crops that line up with the mask/cleaned panels.
 
 Usage:
     python scripts/collect_results.py --chapter "data/chapters/Ch.133 - ..." \
-        --config hybrid_qwen_gemma_it --out results/latest --samples 6
+        --config hybrid_qwen_gemma_it --out results/latest --samples 6 --crops 16
 """
 
 from __future__ import annotations
@@ -20,30 +26,48 @@ from __future__ import annotations
 import argparse
 import json
 import shutil
+import sys
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
+
+# Allow `python scripts/collect_results.py` to import the manga_ai package
+# (running a script puts its own dir on sys.path, not the repo root).
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import cv2
 import numpy as np
 
-TILE_WIDTH = 430          # per-panel width in a triptych
-JPEG_QUALITY = 80
+TILE_WIDTH = 460
+JPEG_QUALITY = 82
+CROP_MAX_W = 600
+CROP_PAD = 10
 IMG_EXTS = (".png", ".jpg", ".jpeg", ".webp", ".bmp")
 
 
+# --------------------------------------------------------------------------- #
+# helpers
+# --------------------------------------------------------------------------- #
 def _find(dir_: Path, stem: str) -> Optional[Path]:
-    """Find <stem>.<img-ext> in dir_ (case-insensitive extension)."""
     if not dir_.is_dir():
         return None
     for ext in IMG_EXTS:
         p = dir_ / f"{stem}{ext}"
         if p.exists():
             return p
-    # fallback: any file whose stem matches
     for p in dir_.glob(f"{stem}.*"):
         if p.suffix.lower() in IMG_EXTS:
             return p
     return None
+
+
+def _load_processed(preprocessor, path: Path) -> Optional[np.ndarray]:
+    """Return a BGR uint8 image in the same coords the detector saw."""
+    try:
+        arr, _ = preprocessor.load(path)  # RGB
+        return cv2.cvtColor(arr, cv2.COLOR_RGB2BGR)
+    except Exception:
+        img = cv2.imread(str(path))
+        return img
 
 
 def _panel(img: Optional[np.ndarray], label: str, width: int, height: int) -> np.ndarray:
@@ -63,30 +87,30 @@ def _panel(img: Optional[np.ndarray], label: str, width: int, height: int) -> np
     return canvas
 
 
-def make_triptych(original: Optional[Path], mask: Optional[Path], cleaned: Optional[Path]) -> Optional[np.ndarray]:
-    imgs = []
-    for p in (original, mask, cleaned):
-        imgs.append(cv2.imread(str(p)) if p and p.exists() else None)
-    heights = [im.shape[0] * TILE_WIDTH / im.shape[1] for im in imgs if im is not None]
-    if not heights:
-        return None
-    panel_h = int(min(max(heights), 1600)) + 24  # cap very tall webtoon panels
-    panels = [
-        _panel(imgs[0], "ORIGINAL", TILE_WIDTH, panel_h),
-        _panel(imgs[1], "MASK", TILE_WIDTH, panel_h),
-        _panel(imgs[2], "CLEANED", TILE_WIDTH, panel_h),
-    ]
-    return np.hstack(panels)
+def _region_box(region: Dict[str, Any]) -> Optional[tuple]:
+    poly = region.get("polygon")
+    if poly and len(poly) >= 3:
+        pts = np.array(poly, dtype=np.int32)
+        x1, y1 = pts[:, 0].min(), pts[:, 1].min()
+        x2, y2 = pts[:, 0].max(), pts[:, 1].max()
+        return int(x1), int(y1), int(x2), int(y2)
+    bb = region.get("bbox")
+    if bb and len(bb) == 4:
+        return int(bb[0]), int(bb[1]), int(bb[2]), int(bb[3])
+    return None
 
 
-def pick_pages(pages: List[str], cleaned_dir: Path, n: int) -> List[str]:
-    have = [p for p in pages if _find(cleaned_dir, p)]
-    if not have:
-        have = pages
-    if len(have) <= n:
-        return have
-    step = len(have) / n
-    return [have[int(i * step)] for i in range(n)]
+def _draw_detect(proc: np.ndarray, regions: List[Dict[str, Any]]) -> np.ndarray:
+    out = proc.copy()
+    for i, r in enumerate(regions):
+        box = _region_box(r)
+        if not box:
+            continue
+        x1, y1, x2, y2 = box
+        cv2.rectangle(out, (x1, y1), (x2, y2), (0, 0, 255), 2)
+        cv2.putText(out, str(i), (x1 + 2, max(14, y1 + 16)), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.6, (0, 0, 255), 2, cv2.LINE_AA)
+    return out
 
 
 def head(path: Path, n_lines: int) -> str:
@@ -102,15 +126,18 @@ def head(path: Path, n_lines: int) -> str:
 def count_nonempty(path: Path) -> int:
     if not path.exists():
         return 0
-    return sum(1 for ln in path.read_text(encoding="utf-8", errors="replace").splitlines() if ln.strip() and ln.strip() != "@")
+    return sum(1 for ln in path.read_text(encoding="utf-8", errors="replace").splitlines()
+               if ln.strip() and ln.strip() != "@")
 
 
+# --------------------------------------------------------------------------- #
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--chapter", required=True)
     ap.add_argument("--config", default="")
     ap.add_argument("--out", default="results/latest")
     ap.add_argument("--samples", type=int, default=6)
+    ap.add_argument("--crops", type=int, default=16)
     args = ap.parse_args()
 
     chapter = Path(args.chapter)
@@ -119,18 +146,32 @@ def main() -> None:
         shutil.rmtree(out)
     (out / "translation").mkdir(parents=True, exist_ok=True)
     (out / "samples").mkdir(parents=True, exist_ok=True)
+    (out / "ocr_crops").mkdir(parents=True, exist_ok=True)
 
-    # 1) translation text (small, the point of the translation check)
+    # preprocessor matching the run (so boxes/crops line up with mask/cleaned)
+    preprocessor = None
+    try:
+        from manga_ai.config import Config, resolve_config_path
+        from manga_ai.preprocessing import Preprocessor
+        resolved = resolve_config_path(args.config) if args.config else None
+        cfg = Config.load(config_path=str(resolved) if resolved else None)
+        preprocessor = Preprocessor(
+            convert_to_rgb=cfg.get("preprocessing.convert_to_rgb", True),
+            max_dimension=cfg.get("preprocessing.max_dimension"),
+            validate=False,
+        )
+    except Exception as e:
+        print(f"(preprocessor unavailable, using raw images: {e})")
+
+    # 1) translation text
     tdir = chapter / "translation"
-    copied_tx = []
     if tdir.is_dir():
         for f in sorted(tdir.glob("*")):
             if f.suffix.lower() in (".txt", ".json"):
                 shutil.copy2(f, out / "translation" / f.name)
-                copied_tx.append(f.name)
 
-    # 2) manifest / stage status
-    manifest = {}
+    # 2) manifest + regions (source of truth for bbox/OCR/FA)
+    manifest: Dict[str, Any] = {}
     mpath = chapter / "manifest.json"
     if mpath.exists():
         try:
@@ -139,37 +180,136 @@ def main() -> None:
         except Exception:
             pass
 
-    pages = manifest.get("pages") or [p.stem for p in sorted((chapter / "cleaned").glob("*.png"))] if (chapter / "cleaned").is_dir() else manifest.get("pages", [])
+    regions: List[Dict[str, Any]] = list(manifest.get("regions") or [])
+    # fallback: read per-page ocr json
+    if not regions and (chapter / "ocr").is_dir():
+        for jp in sorted((chapter / "ocr").glob("*.json")):
+            try:
+                regions.extend(json.loads(jp.read_text(encoding="utf-8")))
+            except Exception:
+                pass
+
+    by_page: Dict[str, List[Dict[str, Any]]] = {}
+    for r in regions:
+        by_page.setdefault(str(r.get("page")), []).append(r)
+
+    pages = manifest.get("pages") or sorted(by_page.keys())
     if not pages:
         pages = [p.stem for p in sorted((chapter / "original").glob("*")) if p.suffix.lower() in IMG_EXTS]
 
-    # 3) sample triptychs
-    sample_pages = pick_pages(list(pages), chapter / "cleaned", args.samples)
-    made = []
+    # choose sample pages: prefer pages that have text regions AND a cleaned output
+    cleaned_dir = chapter / "cleaned"
+    scored = []
+    for p in pages:
+        has_txt = len(by_page.get(str(p), []))
+        has_clean = 1 if _find(cleaned_dir, str(p)) else 0
+        scored.append((has_clean, has_txt, p))
+    scored.sort(key=lambda t: (t[0], t[1]), reverse=True)
+    sample_pages = [t[2] for t in scored[: max(args.samples, 1)]] if scored else []
+
+    made_panels = []
     for pg in sample_pages:
-        trip = make_triptych(
-            _find(chapter / "original", pg) or _find(chapter, pg),
-            _find(chapter / "debug", f"{pg}_mask_preview") or _find(chapter / "masks", pg),
-            _find(chapter / "cleaned", pg),
-        )
-        if trip is not None:
-            dest = out / "samples" / f"{pg}_triptych.jpg"
-            cv2.imwrite(str(dest), trip, [cv2.IMWRITE_JPEG_QUALITY, JPEG_QUALITY])
-            made.append(dest.name)
+        orig_path = _find(chapter / "original", str(pg)) or _find(chapter, str(pg))
+        proc = _load_processed(preprocessor, orig_path) if (preprocessor and orig_path) else (
+            cv2.imread(str(orig_path)) if orig_path else None)
+        regs = by_page.get(str(pg), [])
+        detect_img = _draw_detect(proc, regs) if proc is not None else None
+        mask_img = None
+        mp = _find(chapter / "masks", str(pg))
+        if mp:
+            mask_img = cv2.imread(str(mp))
+        cleaned_img = None
+        cp = _find(cleaned_dir, str(pg))
+        if cp:
+            cleaned_img = cv2.imread(str(cp))
+
+        heights = [im.shape[0] * TILE_WIDTH / im.shape[1]
+                   for im in (proc, detect_img, mask_img, cleaned_img) if im is not None]
+        if not heights:
+            continue
+        panel_h = int(min(max(heights), 1700)) + 24
+        panels = [
+            _panel(proc, "ORIGINAL", TILE_WIDTH, panel_h),
+            _panel(detect_img, f"DETECT ({len(regs)})", TILE_WIDTH, panel_h),
+            _panel(mask_img, "MASK", TILE_WIDTH, panel_h),
+            _panel(cleaned_img, "CLEANED", TILE_WIDTH, panel_h),
+        ]
+        dest = out / "samples" / f"{pg}_panels.jpg"
+        cv2.imwrite(str(dest), np.hstack(panels), [cv2.IMWRITE_JPEG_QUALITY, JPEG_QUALITY])
+        made_panels.append(dest.name)
+
+    # 3) OCR crops: most informative regions (longest text), spread across pages
+    crop_rows = []
+    cache_proc: Dict[str, Optional[np.ndarray]] = {}
+    ranked = sorted(
+        [r for r in regions if (r.get("source_text") or "").strip()],
+        key=lambda r: len(r.get("source_text") or ""),
+        reverse=True,
+    )
+    per_page_count: Dict[str, int] = {}
+    picked = []
+    for r in ranked:
+        pg = str(r.get("page"))
+        if per_page_count.get(pg, 0) >= 3:
+            continue
+        picked.append(r)
+        per_page_count[pg] = per_page_count.get(pg, 0) + 1
+        if len(picked) >= args.crops:
+            break
+
+    for idx, r in enumerate(picked):
+        pg = str(r.get("page"))
+        if pg not in cache_proc:
+            op = _find(chapter / "original", pg) or _find(chapter, pg)
+            cache_proc[pg] = _load_processed(preprocessor, op) if (preprocessor and op) else (
+                cv2.imread(str(op)) if op else None)
+        proc = cache_proc[pg]
+        box = _region_box(r)
+        crop_name = ""
+        if proc is not None and box:
+            h, w = proc.shape[:2]
+            x1, y1, x2, y2 = box
+            x1 = max(0, x1 - CROP_PAD); y1 = max(0, y1 - CROP_PAD)
+            x2 = min(w, x2 + CROP_PAD); y2 = min(h, y2 + CROP_PAD)
+            if x2 > x1 and y2 > y1:
+                crop = proc[y1:y2, x1:x2]
+                if crop.shape[1] > CROP_MAX_W:
+                    s = CROP_MAX_W / crop.shape[1]
+                    crop = cv2.resize(crop, (CROP_MAX_W, max(1, int(crop.shape[0] * s))), interpolation=cv2.INTER_AREA)
+                crop_name = f"{idx:02d}_{pg}.jpg"
+                cv2.imwrite(str(out / "ocr_crops" / crop_name), crop, [cv2.IMWRITE_JPEG_QUALITY, 88])
+        crop_rows.append({
+            "idx": idx,
+            "page": pg,
+            "crop": crop_name,
+            "ocr_conf": round(float(r.get("ocr_confidence") or 0), 2),
+            "en": (r.get("source_text") or "").strip(),
+            "fa": (r.get("translated_text") or "").strip(),
+        })
+
+    # ocr_crops/index.md
+    ci = ["# OCR crops — read the crop image, compare to EN, judge FA", ""]
+    for row in crop_rows:
+        ci.append(f"### [{row['idx']:02d}] page {row['page']}  (ocr_conf={row['ocr_conf']})")
+        if row["crop"]:
+            ci.append(f"![crop](ocr_crops/{row['crop']})")
+        ci.append(f"- **OCR (EN)**: {row['en'] or '(empty)'}")
+        ci.append(f"- **FA**: {row['fa'] or '(empty)'}")
+        ci.append("")
+    (out / "ocr_crops" / "index.md").write_text("\n".join(ci), encoding="utf-8")
 
     # 4) SUMMARY.md
     stages = manifest.get("stages", {})
-    lines = ["# Run summary", ""]
+    lines = ["# Run summary — full-pipeline quality review", ""]
     lines.append(f"- **chapter**: `{chapter.name}`")
     lines.append(f"- **config**: `{args.config}`")
-    lines.append(f"- **pipeline_version**: {manifest.get('pipeline_version', '?')}")
-    lines.append(f"- **pages**: {len(pages)}  |  **regions**: {len(manifest.get('regions', []))}")
+    lines.append(f"- **pages**: {len(pages)}  |  **regions (text)**: {len(regions)}")
     fa_lines = count_nonempty(out / "translation" / "chapter_full_fa.txt")
     en_lines = count_nonempty(out / "translation" / "chapter_full_en.txt")
     lines.append(f"- **translated lines (FA / EN)**: {fa_lines} / {en_lines}")
     lines.append("")
-    lines.append("## Stage status")
-    lines.append("| stage | backend | status | time (ms) | warnings | errors |")
+    lines.append("## Stage status (watch the `backend` column — `mock` = model missing/failed)")
+    lines.append("| stage | backend | status | time(ms) | warn | err |")
     lines.append("|---|---|---|---|---|---|")
     for name, s in stages.items():
         if not isinstance(s, dict):
@@ -179,18 +319,19 @@ def main() -> None:
             f"{round(s.get('duration_ms') or s.get('execution_time_ms') or 0)} | "
             f"{len(s.get('warnings') or [])} | {len(s.get('errors') or [])} |"
         )
-    # surface actual warnings/errors
     for name, s in stages.items():
         if not isinstance(s, dict):
             continue
-        for w in (s.get("warnings") or [])[:20]:
+        for w in (s.get("warnings") or [])[:15]:
             lines.append(f"- ⚠️ `{name}`: {w}")
-        for e in (s.get("errors") or [])[:20]:
+        for e in (s.get("errors") or [])[:15]:
             lines.append(f"- ❌ `{name}`: {e}")
     lines.append("")
-    lines.append(f"## Samples ({len(made)})")
-    for m in made:
-        lines.append(f"- `samples/{m}` — original | mask | cleaned")
+    lines.append(f"## Sample pages ({len(made_panels)}) — `samples/*.jpg` = ORIGINAL | DETECT | MASK | CLEANED")
+    for m in made_panels:
+        lines.append(f"- `samples/{m}`")
+    lines.append("")
+    lines.append(f"## OCR verification ({len(crop_rows)} crops) — see `ocr_crops/index.md`")
     lines.append("")
     lines.append("## Translation preview (chapter_scanlation_en_fa.txt)")
     lines.append("```")
@@ -199,9 +340,11 @@ def main() -> None:
     (out / "SUMMARY.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     print(f"Collected -> {out}")
-    print(f"  translation files: {len(copied_tx)}")
-    print(f"  sample triptychs : {len(made)}")
-    print(f"  FA/EN lines      : {fa_lines}/{en_lines}")
+    print(f"  sample panels : {len(made_panels)}")
+    print(f"  ocr crops     : {sum(1 for r in crop_rows if r['crop'])}")
+    print(f"  FA/EN lines   : {fa_lines}/{en_lines}")
+    print(f"  stages        : " + ", ".join(
+        f"{n}={s.get('backend')}" for n, s in stages.items() if isinstance(s, dict)))
 
 
 if __name__ == "__main__":

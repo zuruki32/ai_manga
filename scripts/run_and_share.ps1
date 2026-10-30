@@ -12,9 +12,10 @@ Examples:
 param(
   [string]$Chapter = "data/chapters/Ch.133 - Suddenly Became A Princess One Day",
   [string]$Config  = "hybrid_qwen_gemma_it",
-  [ValidateSet("full","detect","ocr","translate","mask","clean")]
+  [ValidateSet("full","detect","ocr","translate","mask","clean","transtest")]
   [string]$Stage   = "full",
   [int]$Samples    = 6,
+  [int]$Crops      = 16,
   [switch]$Force,
   [switch]$NoPush,
   [string]$Python  = "python"
@@ -23,6 +24,38 @@ $ErrorActionPreference = "Continue"
 
 # cd to repo root (parent of this script dir)
 Set-Location (Join-Path $PSScriptRoot "..")
+
+$Branch0 = (git rev-parse --abbrev-ref HEAD) 2>$null
+if (-not $Branch0) { $Branch0 = "main" }
+
+# Special: translator-only smoke test (no OCR / chapter output needed)
+if ($Stage -eq "transtest") {
+  Write-Host "== repo:    $(Get-Location)"; Write-Host "== branch:  $Branch0"
+  Write-Host "== stage:   transtest (translator smoke test)"; Write-Host "== config:  $Config"
+  git pull --rebase --autostash origin $Branch0
+  if (Test-Path results/latest) { Remove-Item results/latest -Recurse -Force }
+  New-Item -ItemType Directory -Force -Path results/latest | Out-Null
+  $log = [System.IO.Path]::GetTempFileName()
+  & $Python scripts/smoke_translate.py -c $Config --out results/latest 2>&1 | Tee-Object -FilePath $log
+  $rc = $LASTEXITCODE
+  Copy-Item $log results/latest/run.txt -Force -ErrorAction SilentlyContinue
+  Remove-Item $log -ErrorAction SilentlyContinue
+  if (-not $NoPush) {
+    git add -A results/
+    git diff --cached --quiet
+    if ($LASTEXITCODE -ne 0) {
+      $stamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+      git commit -m "transtest: $Config @ $stamp" | Out-Null
+      for ($i=1; $i -le 4; $i++) {
+        git push origin "HEAD:$Branch0"
+        if ($LASTEXITCODE -eq 0) { Write-Host "-- pushed"; break }
+        git pull --rebase --autostash origin $Branch0; Start-Sleep -Seconds ([math]::Pow(2,$i))
+      }
+    }
+  }
+  Write-Host "== done (transtest rc=$rc). See results/latest/translation_smoke.txt"
+  exit $rc
+}
 
 $cmdMap = @{ full="process"; detect="detect"; ocr="ocr"; translate="translate"; mask="mask"; clean="clean" }
 $Cmd = $cmdMap[$Stage]
@@ -50,7 +83,7 @@ Write-Host "-- pipeline exit code: $runRc"
 
 # 3) collect a small shareable snapshot
 Write-Host "-- collecting results"
-& $Python scripts/collect_results.py --chapter $Chapter --config $Config --out results/latest --samples $Samples
+& $Python scripts/collect_results.py --chapter $Chapter --config $Config --out results/latest --samples $Samples --crops $Crops
 if (Test-Path results/latest) { Copy-Item $log results/latest/run.txt -Force -ErrorAction SilentlyContinue }
 Remove-Item $log -ErrorAction SilentlyContinue
 

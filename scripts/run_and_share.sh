@@ -15,8 +15,10 @@ set -uo pipefail
 # ---- defaults (edit these) ------------------------------------------------
 CHAPTER="data/chapters/Ch.133 - Suddenly Became A Princess One Day"
 CONFIG="hybrid_qwen_gemma_it"     # bare config name under configs/
-STAGE="full"                      # full | detect | ocr | translate | mask | clean
+# transtest = translator-only smoke test (no OCR needed); others run the pipeline
+STAGE="full"                      # full | detect | ocr | translate | mask | clean | transtest
 SAMPLES=6
+CROPS=16
 PUSH=1
 FORCE=""
 PYTHON="${PYTHON:-python}"
@@ -28,6 +30,7 @@ while [[ $# -gt 0 ]]; do
     --config)  CONFIG="$2";  shift 2;;
     --stage)   STAGE="$2";   shift 2;;
     --samples) SAMPLES="$2"; shift 2;;
+    --crops)   CROPS="$2"; shift 2;;
     --force)   FORCE="--force"; shift;;
     --no-push) PUSH=0; shift;;
     --python)  PYTHON="$2"; shift 2;;
@@ -38,6 +41,34 @@ done
 
 # cd to repo root (parent of this script's dir)
 cd "$(dirname "$0")/.." || exit 1
+
+# Special: translator-only smoke test (no OCR / chapter output needed)
+if [[ "$STAGE" == "transtest" ]]; then
+  BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo main)"
+  echo "== repo:   $(pwd)"; echo "== branch: $BRANCH"
+  echo "== stage:  transtest (translator smoke test)"; echo "== config: $CONFIG"
+  echo "-- git pull --rebase --autostash origin $BRANCH"
+  git pull --rebase --autostash origin "$BRANCH" || echo "!! pull failed — continuing"
+  rm -rf results/latest && mkdir -p results/latest
+  LOG="$(mktemp)"
+  set -o pipefail
+  $PYTHON scripts/smoke_translate.py -c "$CONFIG" --out results/latest 2>&1 | tee "$LOG"
+  RC=${PIPESTATUS[0]}
+  cp "$LOG" results/latest/run.txt 2>/dev/null || true
+  rm -f "$LOG"
+  if [[ "$PUSH" -eq 1 ]]; then
+    git add -A results/
+    if git diff --cached --quiet; then echo "-- nothing to commit"; else
+      git commit -m "transtest: $CONFIG @ $(date -u +%Y-%m-%dT%H:%M:%SZ)" >/dev/null
+      for i in 1 2 3 4; do
+        git push origin "HEAD:$BRANCH" && { echo "-- pushed"; break; } \
+          || { echo "!! push retry $i"; git pull --rebase --autostash origin "$BRANCH" || true; sleep $((2 ** i)); }
+      done
+    fi
+  fi
+  echo "== done (transtest rc=$RC). See results/latest/translation_smoke.txt"
+  exit "$RC"
+fi
 
 # map stage -> CLI subcommand
 case "$STAGE" in
@@ -71,7 +102,7 @@ echo "-- pipeline exit code: $RUN_RC"
 
 # 3) collect a small shareable snapshot
 echo "-- collecting results"
-$PYTHON scripts/collect_results.py --chapter "$CHAPTER" --config "$CONFIG" --out results/latest --samples "$SAMPLES" || {
+$PYTHON scripts/collect_results.py --chapter "$CHAPTER" --config "$CONFIG" --out results/latest --samples "$SAMPLES" --crops "$CROPS" || {
   echo "!! collect_results.py failed" >&2; }
 cp "$LOG" results/latest/run.txt 2>/dev/null || true
 rm -f "$LOG"
