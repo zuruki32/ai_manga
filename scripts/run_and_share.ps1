@@ -37,7 +37,9 @@ if ($Stage -eq "transtest") {
   if (Test-Path results/latest) { Remove-Item results/latest -Recurse -Force }
   New-Item -ItemType Directory -Force -Path results/latest | Out-Null
   $log = [System.IO.Path]::GetTempFileName()
-  & $Python scripts/smoke_translate.py -c $Config --out results/latest 2>&1 | Tee-Object -FilePath $log
+  # ForEach-Object { "$_" } turns native stderr records into plain strings, so
+  # normal library logs/progress aren't shown as red PowerShell "errors".
+  & $Python scripts/smoke_translate.py -c $Config --out results/latest 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $log
   $rc = $LASTEXITCODE
   (Get-Content $log -Raw -ErrorAction SilentlyContinue) | Set-Content results/latest/run.txt -Encoding utf8 -ErrorAction SilentlyContinue
   Remove-Item $log -ErrorAction SilentlyContinue
@@ -82,7 +84,9 @@ if ($Cmd -eq "process" -and $Limit -gt 0) { $limitArg = @("--limit", $Limit) }
 # 2) run the pipeline, capturing a log
 $log = [System.IO.Path]::GetTempFileName()
 Write-Host "-- running: $Python -m manga_ai $Cmd `"$Chapter`" -c $Config $($forceArg -join ' ') $($limitArg -join ' ')"
-& $Python -m manga_ai $Cmd $Chapter -c $Config @forceArg @limitArg 2>&1 | Tee-Object -FilePath $log
+# ForEach-Object { "$_" } turns native stderr records into plain strings, so
+# normal library logs/progress aren't shown as red PowerShell "errors".
+& $Python -m manga_ai $Cmd $Chapter -c $Config @forceArg @limitArg 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $log
 $runRc = $LASTEXITCODE
 Write-Host "-- pipeline exit code: $runRc"
 
