@@ -10,12 +10,26 @@ from manga_ai.logging import get_logger
 
 logger = get_logger("manga_ai.inpainting")
 
-__all__ = ["Inpainter", "MockInpainter", "create_inpainter", "lama_available"]
+__all__ = [
+    "Inpainter",
+    "MockInpainter",
+    "create_inpainter",
+    "lama_available",
+    "iopaint_available",
+]
 
 
 def lama_available() -> bool:
     try:
         import simple_lama_inpainting  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
+def iopaint_available() -> bool:
+    try:
+        import iopaint  # noqa: F401
         return True
     except ImportError:
         return False
@@ -38,6 +52,27 @@ def create_inpainter(backend: str = "mock", **kwargs) -> Inpainter:
     if backend == "opencv":
         from manga_ai.inpainting.opencv_backend import OpenCVInpainter
         return OpenCVInpainter(**_opencv_kwargs(kwargs))
+    if backend in ("iopaint", "manga"):
+        if not iopaint_available():
+            logger.warning(
+                "IOPaint requested but not installed — using OpenCV cleaner "
+                "(low quality on manga). Install with: "
+                "pip install 'manga-ai[iopaint]'   # or: pip install iopaint"
+            )
+            from manga_ai.inpainting.opencv_backend import OpenCVInpainter
+            return OpenCVInpainter(**_opencv_kwargs(kwargs))
+        from manga_ai.inpainting.iopaint_backend import IOPaintInpainter
+        # backend "manga" is shorthand for iopaint + the manga model
+        default_model = "manga" if backend == "manga" else kwargs.get("model", "manga")
+        return IOPaintInpainter(
+            model_name=kwargs.get("model", default_model),
+            device=kwargs.get("device", "cuda"),
+            crop_trigger_size=int(kwargs.get("crop_trigger_size", 1024)),
+            crop_margin=int(kwargs.get("crop_margin", 128)),
+            resize_limit=int(kwargs.get("resize_limit", 2048)),
+            hd_strategy=kwargs.get("hd_strategy", "crop"),
+            result_is_bgr=bool(kwargs.get("result_is_bgr", True)),
+        )
     if backend == "lama":
         if not lama_available():
             logger.warning(

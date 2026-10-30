@@ -212,6 +212,13 @@ class Pipeline:
                     passes=self.config.get("inpainting.passes", 2),
                     soft_edge=self.config.get("inpainting.soft_edge", 3),
                     bg_fill=self.config.get("inpainting.bg_fill", True),
+                    # IOPaint ("iopaint" / "manga") options
+                    model=self.config.get("inpainting.model"),
+                    crop_trigger_size=self.config.get("inpainting.crop_trigger_size", 1024),
+                    crop_margin=self.config.get("inpainting.crop_margin", 128),
+                    resize_limit=self.config.get("inpainting.resize_limit", 2048),
+                    hd_strategy=self.config.get("inpainting.hd_strategy", "crop"),
+                    result_is_bgr=self.config.get("inpainting.result_is_bgr", True),
                 )
             except Exception as e:
                 logger.warning(f"Inpainter '{backend}' failed ({e}), falling back to opencv")

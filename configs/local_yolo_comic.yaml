@@ -42,7 +42,12 @@ masking:
   residual_expand: false
 
 inpainting:
-  backend: "opencv"
+  model: "manga"
+  hd_strategy: "crop"
+  crop_trigger_size: 1024
+  crop_margin: 128
+  resize_limit: 2048
+  backend: "iopaint"  # manga-finetuned LaMa via IOPaint
   fallback_to_cpu: true
 
 device:
