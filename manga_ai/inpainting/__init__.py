@@ -28,10 +28,14 @@ def lama_available() -> bool:
 
 
 def iopaint_available() -> bool:
+    # Catch any import-time failure (e.g. a huggingface-hub version clash),
+    # not just ImportError, so a broken install degrades gracefully to OpenCV
+    # instead of crashing the pipeline.
     try:
         import iopaint  # noqa: F401
         return True
-    except ImportError:
+    except Exception as e:  # pragma: no cover - env dependent
+        logger.warning("IOPaint import failed (%s) — cleaning will use OpenCV", e)
         return False
 
 

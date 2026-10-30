@@ -1032,6 +1032,17 @@ class Pipeline:
         self._set_stage_meta(stage, meta)
 
         inpainter = self._get_inpainter()
+        # Record the backend that ACTUALLY loaded (create_inpainter may have
+        # fallen back to OpenCV if IOPaint/LaMa was unavailable), so the
+        # manifest/summary never mislabels the cleaner that ran.
+        actual = getattr(inpainter, "name", backend_name)
+        if actual != backend_name:
+            meta.warnings.append(f"requested '{backend_name}' but using '{actual}'")
+        meta.backend = actual
+        model_name = getattr(inpainter, "model_name", None)
+        if model_name:
+            meta.model = model_name
+        self._set_stage_meta(stage, meta)
         errors: List[str] = []
 
         def _opencv_fallback(reason: str) -> Inpainter:
