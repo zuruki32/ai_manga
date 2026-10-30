@@ -18,60 +18,188 @@
 [INFO] VRAM peak detection: 274 MB
 [INFO] YOLO comic detector unloaded
 [INFO] [ocr] Starting OCR
-python.exe : The cache for model files in Transformers v4.22.0 has been updated. Migrating your old cache. This is 
-a one-time only operation. You can interrupt this and resume the migration later on by calling 
-`transformers.utils.move_cache()`.
+[INFO] Loading Hybrid Qwen OCR model=D:\projects\models\Qwen3-VL-8B-Instruct device=cuda:0 4bit=True local_files_only=True
+python.exe : W1031 00:51:15.592000 13948 Lib\site-packages\torch\utils\flop_counter.py:113] triton not found; flop 
+counting will not work for triton kernels
 At D:\projects\manga-ai\scripts\run_and_share.ps1:85 char:1
 + & $Python -m manga_ai $Cmd $Chapter -c $Config @forceArg @limitArg 2> ...
 + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (The cache for m....move_cache()`.:String) [], RemoteException
+    + CategoryInfo          : NotSpecified: (W1031 00:51:15.... triton kernels:String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
  
 
-0it [00:00, ?it/s]
-0it [00:00, ?it/s]
-WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
-I0000 00:00:1793394586.469092   11912 port.cc:153] oneDNN custom operations are on. You may see slightly different 
-numerical results due to floating-point round-off errors from different computation orders. To turn them off, set 
-the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
-WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
-I0000 00:00:1793394595.173482   11912 port.cc:153] oneDNN custom operations are on. You may see slightly different 
-numerical results due to floating-point round-off errors from different computation orders. To turn them off, set 
-the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
-[INFO] Loading Hybrid Qwen OCR model=D:\projects\models\Qwen3-VL-8B-Instruct device=cuda:0 4bit=True local_files_only=True
-[ERROR] stage=ocr | page=001 | error="The checkpoint you are trying to load has model type `qwen3_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.
-
-You can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`"
-[INFO] Loading Hybrid Qwen OCR model=D:\projects\models\Qwen3-VL-8B-Instruct device=cuda:0 4bit=True local_files_only=True
-[ERROR] stage=ocr | page=002 | error="The checkpoint you are trying to load has model type `qwen3_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.
-
-You can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`"
-[INFO] Loading Hybrid Qwen OCR model=D:\projects\models\Qwen3-VL-8B-Instruct device=cuda:0 4bit=True local_files_only=True
-[ERROR] stage=ocr | page=003 | error="The checkpoint you are trying to load has model type `qwen3_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.
-
-You can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`"
-[INFO] Loading Hybrid Qwen OCR model=D:\projects\models\Qwen3-VL-8B-Instruct device=cuda:0 4bit=True local_files_only=True
-[ERROR] stage=ocr | page=004 | error="The checkpoint you are trying to load has model type `qwen3_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.
-
-You can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`"
-[INFO] Loading Hybrid Qwen OCR model=D:\projects\models\Qwen3-VL-8B-Instruct device=cuda:0 4bit=True local_files_only=True
-[ERROR] stage=ocr | page=005 | error="The checkpoint you are trying to load has model type `qwen3_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.
-
-You can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`"
+Loading weights:   0%|          | 0/750 [00:00<?, ?it/s]
+Loading weights:   0%|          | 1/750 [00:01<18:17,  1.47s/it]
+Loading weights:   0%|          | 2/750 [00:02<18:21,  1.47s/it]
+Loading weights:   1%|          | 4/750 [00:03<07:18,  1.70it/s]
+Loading weights:   1%|          | 5/750 [00:03<05:28,  2.26it/s]
+Loading weights:   1%|1         | 9/750 [00:03<02:11,  5.65it/s]
+Loading weights:   2%|2         | 15/750 [00:03<01:06, 11.13it/s]
+Loading weights:   2%|2         | 18/750 [00:03<01:00, 12.03it/s]
+Loading weights:   3%|3         | 26/750 [00:03<00:36, 19.83it/s]
+Loading weights:   4%|4         | 30/750 [00:03<00:34, 20.76it/s]
+Loading weights:   5%|4         | 37/750 [00:04<00:27, 26.21it/s]
+Loading weights:   5%|5         | 41/750 [00:04<00:27, 25.50it/s]
+Loading weights:   6%|6         | 48/750 [00:04<00:22, 30.58it/s]
+Loading weights:   7%|6         | 52/750 [00:04<00:23, 29.09it/s]
+Loading weights:   8%|7         | 59/750 [00:04<00:20, 32.93it/s]
+Loading weights:   8%|8         | 63/750 [00:04<00:23, 29.64it/s]
+Loading weights:   9%|9         | 70/750 [00:05<00:20, 33.40it/s]
+Loading weights:  10%|9         | 74/750 [00:05<00:21, 31.60it/s]
+Loading weights:  11%|#         | 81/750 [00:05<00:18, 36.05it/s]
+Loading weights:  11%|#1        | 85/750 [00:05<00:19, 33.39it/s]
+Loading weights:  12%|#2        | 92/750 [00:05<00:16, 38.72it/s]
+Loading weights:  13%|#2        | 96/750 [00:05<00:18, 36.10it/s]
+Loading weights:  14%|#3        | 103/750 [00:05<00:15, 40.59it/s]
+Loading weights:  14%|#4        | 108/750 [00:06<00:16, 38.42it/s]
+Loading weights:  15%|#5        | 114/750 [00:06<00:15, 40.83it/s]
+Loading weights:  16%|#5        | 119/750 [00:06<00:16, 38.70it/s]
+Loading weights:  17%|#6        | 125/750 [00:06<00:15, 40.53it/s]
+Loading weights:  17%|#7        | 130/750 [00:06<00:15, 38.89it/s]
+Loading weights:  18%|#8        | 136/750 [00:06<00:14, 41.66it/s]
+Loading weights:  19%|#8        | 141/750 [00:06<00:15, 40.40it/s]
+Loading weights:  20%|#9        | 147/750 [00:07<00:14, 42.56it/s]
+Loading weights:  20%|##        | 152/750 [00:07<00:14, 40.58it/s]
+Loading weights:  21%|##1       | 158/750 [00:07<00:14, 42.00it/s]
+Loading weights:  22%|##1       | 163/750 [00:07<00:14, 39.98it/s]
+Loading weights:  23%|##2       | 169/750 [00:07<00:13, 43.10it/s]
+Loading weights:  23%|##3       | 174/750 [00:07<00:14, 41.00it/s]
+Loading weights:  24%|##4       | 180/750 [00:07<00:13, 43.51it/s]
+Loading weights:  25%|##4       | 185/750 [00:07<00:13, 41.12it/s]
+Loading weights:  25%|##5       | 191/750 [00:08<00:12, 43.18it/s]
+Loading weights:  26%|##6       | 196/750 [00:08<00:13, 41.52it/s]
+Loading weights:  27%|##6       | 202/750 [00:08<00:12, 43.54it/s]
+Loading weights:  28%|##7       | 207/750 [00:08<00:13, 41.24it/s]
+Loading weights:  28%|##8       | 213/750 [00:08<00:12, 43.17it/s]
+Loading weights:  29%|##9       | 218/750 [00:08<00:12, 41.74it/s]
+Loading weights:  30%|##9       | 224/750 [00:08<00:12, 43.10it/s]
+Loading weights:  31%|###       | 229/750 [00:09<00:13, 39.93it/s]
+Loading weights:  31%|###1      | 235/750 [00:09<00:12, 42.55it/s]
+Loading weights:  32%|###2      | 240/750 [00:09<00:12, 41.03it/s]
+Loading weights:  33%|###2      | 246/750 [00:09<00:11, 43.25it/s]
+Loading weights:  33%|###3      | 251/750 [00:09<00:12, 40.68it/s]
+Loading weights:  34%|###4      | 257/750 [00:09<00:11, 43.42it/s]
+Loading weights:  35%|###4      | 262/750 [00:09<00:12, 38.21it/s]
+Loading weights:  36%|###5      | 268/750 [00:09<00:11, 41.21it/s]
+Loading weights:  36%|###6      | 273/750 [00:10<00:12, 39.60it/s]
+Loading weights:  37%|###7      | 279/750 [00:10<00:11, 41.91it/s]
+Loading weights:  38%|###7      | 284/750 [00:10<00:11, 41.38it/s]
+Loading weights:  39%|###8      | 290/750 [00:10<00:10, 42.24it/s]
+Loading weights:  39%|###9      | 295/750 [00:10<00:11, 39.91it/s]
+Loading weights:  40%|####      | 301/750 [00:10<00:11, 40.33it/s]
+Loading weights:  41%|####      | 306/750 [00:10<00:12, 34.90it/s]
+Loading weights:  42%|####1     | 312/750 [00:11<00:12, 35.05it/s]
+Loading weights:  42%|####2     | 316/750 [00:11<00:12, 33.72it/s]
+Loading weights:  43%|####3     | 323/750 [00:11<00:10, 39.42it/s]
+Loading weights:  44%|####3     | 328/750 [00:11<00:10, 39.06it/s]
+Loading weights:  45%|####4     | 334/750 [00:11<00:09, 41.68it/s]
+Loading weights:  45%|####5     | 339/750 [00:11<00:10, 38.21it/s]
+Loading weights:  46%|####6     | 345/750 [00:11<00:09, 41.04it/s]
+Loading weights:  47%|####6     | 350/750 [00:12<00:10, 38.96it/s]
+Loading weights:  47%|####7     | 356/750 [00:12<00:09, 42.63it/s]
+Loading weights:  48%|####8     | 361/750 [00:12<00:10, 38.74it/s]
+Loading weights:  49%|####8     | 367/750 [00:12<00:09, 41.36it/s]
+Loading weights:  50%|####9     | 372/750 [00:12<00:09, 38.69it/s]
+Loading weights:  50%|#####     | 378/750 [00:12<00:08, 41.68it/s]
+Loading weights:  51%|#####1    | 383/750 [00:12<00:09, 39.18it/s]
+Loading weights:  52%|#####1    | 389/750 [00:13<00:09, 38.58it/s]
+Loading weights:  52%|#####2    | 393/750 [00:13<00:10, 34.14it/s]
+Loading weights:  56%|#####5    | 417/750 [00:13<00:04, 79.93it/s]
+Loading weights:  62%|######2   | 467/750 [00:13<00:01, 179.40it/s]
+Loading weights:  70%|######9   | 523/750 [00:13<00:00, 274.56it/s]
+Loading weights:  77%|#######6  | 575/750 [00:13<00:00, 332.65it/s]
+Loading weights:  84%|########4 | 633/750 [00:13<00:00, 397.51it/s]
+Loading weights:  92%|#########2| 691/750 [00:13<00:00, 437.96it/s]
+Loading weights:  98%|#########8| 737/750 [00:14<00:00, 347.42it/s]
+Loading weights: 100%|##########| 750/750 [00:14<00:00, 53.00it/s] 
+D:\projects\Lib\site-packages\transformers\models\qwen2_vl\image_processing_qwen2_vl.py:129: FutureWarning: 
+Passing `min_pixels` and `max_pixels` to a processor call is deprecated and will be removed in v5.23. Pass in 
+`size={'longest_edge': xxx, 'shortest_edge': xxx} to override the target size.`
+  warnings.warn(
+D:\projects\Lib\site-packages\bitsandbytes\backends\cuda\ops.py:957: UserWarning: inner dimension (4304) is not 
+aligned for fast kernel with blocksize=64, falling back to slower implementation.
+  warn(
+[INFO] [ocr] Page 001: 4/4 successful
+[INFO] [ocr] Page 002: 1/1 successful
+[INFO] [ocr] Page 003: 1/1 successful
+[INFO] [ocr] Page 004: 4/4 successful
+[INFO] [ocr] Page 005: 1/1 successful
 [INFO] [ocr] Page 006: 0/0 successful
 [INFO] [ocr] Page 007: 0/0 successful
 [INFO] [ocr] Page 008: 0/0 successful
 [INFO] [ocr] Page 009: 0/0 successful
-[INFO] Loading Hybrid Qwen OCR model=D:\projects\models\Qwen3-VL-8B-Instruct device=cuda:0 4bit=True local_files_only=True
-[ERROR] stage=ocr | page=010 | error="The checkpoint you are trying to load has model type `qwen3_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.
-
-You can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`"
-[INFO] VRAM peak ocr: 136 MB
+[INFO] [ocr] Page 010: 1/1 successful
+[INFO] VRAM peak ocr: 6605 MB
 [INFO] Hybrid Qwen OCR unloaded
 [INFO] [translation] Starting chapter translation (unit=region, format=scanlation)
 [INFO] Creating translator backend='huggingface' model='models/gemma-3-4b-it'
 [INFO] Translator backend=huggingface model=models/gemma-3-4b-it
-[INFO] [translation] 0 lines / 0 pages translated (0 non-empty FA)
+[INFO] Using Gemma3ForConditionalGeneration (architectures=['Gemma3ForConditionalGeneration'])
+[INFO] Loading causal/VLM model: models/gemma-3-4b-it via Gemma3ForConditionalGeneration (4bit=True, 8bit=False, local_files_only=True, multimodal=True)
+
+Loading weights:   0%|          | 0/883 [00:00<?, ?it/s]
+Loading weights:   0%|          | 1/883 [00:01<22:45,  1.55s/it]
+Loading weights:   0%|          | 4/883 [00:01<04:41,  3.13it/s]
+Loading weights:   2%|1         | 16/883 [00:01<00:56, 15.26it/s]
+Loading weights:   2%|2         | 22/883 [00:01<00:41, 20.92it/s]
+Loading weights:   3%|3         | 30/883 [00:02<00:30, 28.34it/s]
+Loading weights:   5%|4         | 42/883 [00:02<00:19, 43.41it/s]
+Loading weights:   6%|5         | 50/883 [00:02<00:17, 48.60it/s]
+Loading weights:   7%|6         | 58/883 [00:02<00:16, 49.93it/s]
+Loading weights:   8%|7         | 69/883 [00:02<00:13, 59.63it/s]
+Loading weights:   9%|9         | 81/883 [00:02<00:11, 68.56it/s]
+Loading weights:  10%|#         | 89/883 [00:02<00:11, 68.33it/s]
+Loading weights:  11%|#         | 97/883 [00:02<00:12, 60.69it/s]
+Loading weights:  12%|#2        | 108/883 [00:03<00:11, 66.80it/s]
+Loading weights:  14%|#3        | 120/883 [00:03<00:10, 72.83it/s]
+Loading weights:  14%|#4        | 128/883 [00:03<00:10, 72.80it/s]
+Loading weights:  15%|#5        | 136/883 [00:03<00:11, 63.66it/s]
+Loading weights:  17%|#6        | 147/883 [00:03<00:10, 69.74it/s]
+Loading weights:  18%|#8        | 159/883 [00:03<00:09, 76.48it/s]
+Loading weights:  19%|#8        | 167/883 [00:03<00:09, 75.20it/s]
+Loading weights:  20%|#9        | 175/883 [00:04<00:10, 69.08it/s]
+Loading weights:  21%|##1       | 186/883 [00:04<00:09, 71.67it/s]
+Loading weights:  22%|##2       | 198/883 [00:04<00:08, 76.18it/s]
+Loading weights:  23%|##3       | 206/883 [00:04<00:09, 74.02it/s]
+Loading weights:  24%|##4       | 214/883 [00:04<00:10, 62.39it/s]
+Loading weights:  25%|##5       | 225/883 [00:04<00:09, 69.04it/s]
+Loading weights:  27%|##6       | 237/883 [00:04<00:08, 73.75it/s]
+Loading weights:  28%|##7       | 245/883 [00:04<00:08, 71.04it/s]
+Loading weights:  29%|##8       | 253/883 [00:05<00:10, 62.15it/s]
+Loading weights:  30%|##9       | 264/883 [00:05<00:09, 66.75it/s]
+Loading weights:  31%|###1      | 276/883 [00:05<00:08, 75.68it/s]
+Loading weights:  32%|###2      | 284/883 [00:05<00:08, 70.76it/s]
+Loading weights:  33%|###3      | 292/883 [00:05<00:09, 62.67it/s]
+Loading weights:  34%|###4      | 303/883 [00:05<00:08, 68.58it/s]
+Loading weights:  36%|###5      | 315/883 [00:06<00:07, 72.17it/s]
+Loading weights:  37%|###6      | 323/883 [00:06<00:08, 68.29it/s]
+Loading weights:  37%|###7      | 330/883 [00:06<00:09, 57.49it/s]
+Loading weights:  39%|###8      | 342/883 [00:06<00:08, 63.75it/s]
+Loading weights:  40%|####      | 354/883 [00:06<00:07, 67.48it/s]
+Loading weights:  41%|####      | 361/883 [00:06<00:08, 64.62it/s]
+Loading weights:  42%|####1     | 368/883 [00:06<00:08, 60.69it/s]
+Loading weights:  43%|####3     | 380/883 [00:07<00:07, 66.15it/s]
+Loading weights:  44%|####3     | 387/883 [00:07<00:07, 63.33it/s]
+Loading weights:  45%|####4     | 394/883 [00:07<00:08, 58.83it/s]
+Loading weights:  46%|####5     | 406/883 [00:07<00:07, 63.61it/s]
+Loading weights:  47%|####6     | 413/883 [00:07<00:07, 59.49it/s]
+Loading weights:  47%|####7     | 419/883 [00:07<00:07, 58.19it/s]
+Loading weights:  48%|####8     | 425/883 [00:07<00:08, 51.79it/s]
+Loading weights:  49%|####8     | 432/883 [00:08<00:08, 53.66it/s]
+Loading weights:  50%|####9     | 438/883 [00:08<00:08, 50.35it/s]
+Loading weights:  53%|#####3    | 471/883 [00:08<00:03, 114.32it/s]
+Loading weights:  59%|#####8    | 517/883 [00:08<00:01, 197.24it/s]
+Loading weights:  64%|######4   | 569/883 [00:08<00:01, 269.14it/s]
+Loading weights:  71%|#######   | 625/883 [00:08<00:00, 343.17it/s]
+Loading weights:  76%|#######5  | 667/883 [00:08<00:00, 363.60it/s]
+Loading weights:  81%|########  | 713/883 [00:08<00:00, 386.42it/s]
+Loading weights:  86%|########5 | 759/883 [00:08<00:00, 404.25it/s]
+Loading weights:  92%|#########1| 809/883 [00:09<00:00, 411.80it/s]
+Loading weights:  97%|#########7| 857/883 [00:09<00:00, 430.39it/s]
+Loading weights: 100%|##########| 883/883 [00:09<00:00, 96.43it/s] 
+[INFO] Weight check OK (lm_head.weight, total_tensors=2884)
+[INFO] Generate smoke test OK
+[INFO] [translation] 11 lines / 6 pages translated (11 non-empty FA)
 [INFO] Scanlation FA: D:\projects\manga-ai\data\chapters\Ch.133 - Suddenly Became A Princess One Day\translation\chapter_scanlation_fa.txt
 [INFO] Readable QA: D:\projects\manga-ai\data\chapters\Ch.133 - Suddenly Became A Princess One Day\translation\chapter_en_fa.txt
 [INFO] HF translator unloaded
@@ -87,6 +215,10 @@ You can update Transformers with the command `pip install --upgrade transformers
 [INFO] [masking] Page 009: mask generated
 [INFO] [masking] Page 010: mask generated
 [INFO] [inpainting] Starting inpainting / text removal
+[WARNING] LaMa unavailable (IOPaint is required for the 'iopaint' backend. Install it with:
+    pip install 'manga-ai[iopaint]'
+    # or: pip install iopaint
+(original error: cannot import name 'cached_download' from 'huggingface_hub' (D:\projects\Lib\site-packages\huggingface_hub\__init__.py))) ΓÇö switching chapter to OpenCV inpainting
 [INFO] [inpainting] Page 001: cleaned
 [INFO] [inpainting] Page 002: cleaned
 [INFO] [inpainting] Page 003: cleaned
@@ -97,10 +229,10 @@ You can update Transformers with the command `pip install --upgrade transformers
 [INFO] [inpainting] Page 008: cleaned
 [INFO] [inpainting] Page 009: cleaned
 [INFO] [inpainting] Page 010: cleaned
-[INFO] VRAM peak inpainting: 32 MB
+[INFO] VRAM peak inpainting: 5677 MB
 [INFO] [pipeline] Completed
 
 Done. Manifest: D:\projects\manga-ai\data\chapters\Ch.133 - Suddenly Became A Princess One Day\manifest.json
 Pages: 10
-Regions: 0
+Regions: 12
 

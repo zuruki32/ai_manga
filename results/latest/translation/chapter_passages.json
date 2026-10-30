@@ -4,5 +4,120 @@
   "target_language": "fa",
   "unit": "region",
   "output_format": "scanlation",
-  "passages": []
+  "passages": [
+    {
+      "page": "001",
+      "en": "GENTLE I'M PERFECTLY FINE IT DOES EAT HAM THOUGH It hit my hand!",
+      "fa": "راحتم ⟦N⟧\nآرام آرام باش\nحالا گوشت می‌زنه ولی\nمن خوبم خیالم ندارم\nدستم خورد!\nولی خب، گوشت می‌زنه، در کل. خوردش به دستم!\nکجا هستیم؟",
+      "n_regions": 4,
+      "lines": [
+        {
+          "page": "001",
+          "region_id": "001_0000",
+          "en": "GENTLE",
+          "fa": "راحتم ⟦N⟧\nآرام"
+        },
+        {
+          "page": "001",
+          "region_id": "001_0001",
+          "en": "I'M PERFECTLY FINE",
+          "fa": "آرام باش\nحالا گوشت می‌زنه ولی\nمن خوبم"
+        },
+        {
+          "page": "001",
+          "region_id": "001_0002",
+          "en": "IT DOES EAT HAM THOUGH",
+          "fa": "خیالم ندارم\nدستم خورد!\nولی خب، گوشت می‌زنه، در کل."
+        },
+        {
+          "page": "001",
+          "region_id": "001_0003",
+          "en": "It hit my hand!",
+          "fa": "خوردش به دستم!\nکجا هستیم؟"
+        }
+      ]
+    },
+    {
+      "page": "002",
+      "en": "WHERE ARE WE?",
+      "fa": "جنت... خودش اینو ساخت؟\nکجا هستیم؟",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "002",
+          "region_id": "002_0000",
+          "en": "WHERE ARE WE?",
+          "fa": "جنت... خودش اینو ساخت؟\nکجا هستیم؟"
+        }
+      ]
+    },
+    {
+      "page": "003",
+      "en": "JENNETTE... MADE THIS?",
+      "fa": "کجا هستیم؟\nآیا این رو بانوان جامعه خیلی به چشم‌شون می‌خورد؟\n... این رو کی ساخت؟",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "003",
+          "region_id": "003_0000",
+          "en": "JENNETTE... MADE THIS?",
+          "fa": "کجا هستیم؟\nآیا این رو بانوان جامعه خیلی به چشم‌شون می‌خورد؟\n... این رو کی ساخت؟"
+        }
+      ]
+    },
+    {
+      "page": "004",
+      "en": "THAT THE LADIES OF SOCIETY WOULD BE VERY INTERESTED IF THEY SAW THIS? I'M THINKING OF TAKING IT TO THE SUMMER PARTY, SURELY IT'LL BECOME A HOT TOPIC Wait, what workshop made this?",
+      "fa": "آخ... این خودش دستِ جنت بوده؟\nفکر می‌کنم برم تو مهمونی تابستونی، حتماً یه بحث داغه‌ست که خانم‌های جامعه اگه ببینن خیلی بهش توجه می‌کنن. آیا بانوان جامعه اگه این رو می‌دیدن خیلی بهشون می‌گفت؟\nکاش می‌دونیم این کارگاه‌چی این رو درست کرده؟\nفکر می‌کنم برم باهاش به مهمونی تابستونی ببرمش، حتماً یه بحث داغ میشه. به نظرم برم مهمونی تابستونی، حتماً یه موضوع داغ میشه.\nبعد من فقط موادشو می‌گیرم بیرون.",
+      "n_regions": 4,
+      "lines": [
+        {
+          "page": "004",
+          "region_id": "004_0000",
+          "en": "THAT THE LADIES OF SOCIETY WOULD BE VERY INTERESTED IF THEY SAW THIS?",
+          "fa": "آخ... این خودش دستِ جنت بوده؟\nفکر می‌کنم برم تو مهمونی تابستونی، حتماً یه بحث داغه‌ست که خانم‌های جامعه اگه ببینن خیلی بهش توجه می‌کنن."
+        },
+        {
+          "page": "004",
+          "region_id": "004_0001",
+          "en": "I'M THINKING OF TAKING IT TO THE SUMMER PARTY, SURELY IT'LL BECOME A HOT TOPIC",
+          "fa": "آیا بانوان جامعه اگه این رو می‌دیدن خیلی بهشون می‌گفت؟\nکاش می‌دونیم این کارگاه‌چی این رو درست کرده؟\nفکر می‌کنم برم باهاش به مهمونی تابستونی ببرمش، حتماً یه بحث داغ میشه."
+        },
+        {
+          "page": "004",
+          "region_id": "004_0002",
+          "en": "Wait, what workshop made this?",
+          "fa": "به نظرم برم مهمونی تابستونی، حتماً یه موضوع داغ میشه.\nبعد من فقط موادشو می‌گیرم بیرون."
+        }
+      ]
+    },
+    {
+      "page": "005",
+      "en": "THEN, I'LL JUST TAKE OUT THE FILLING",
+      "fa": "کجا این کارگاه این‌ها رو درست کرده؟\nتو داری اینو نگه داری.\nفقط من پرش رو بردارم.",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "005",
+          "region_id": "005_0000",
+          "en": "THEN, I'LL JUST TAKE OUT THE FILLING",
+          "fa": "کجا این کارگاه این‌ها رو درست کرده؟\nتو داری اینو نگه داری.\nفقط من پرش رو بردارم."
+        }
+      ]
+    },
+    {
+      "page": "010",
+      "en": "YOU'RE HOLDING IT",
+      "fa": "بگیر.",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "010",
+          "region_id": "010_0000",
+          "en": "YOU'RE HOLDING IT",
+          "fa": "بگیر."
+        }
+      ]
+    }
+  ]
 }
