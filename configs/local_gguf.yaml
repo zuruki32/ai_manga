@@ -44,12 +44,8 @@ masking:
   use_polygon: true
 
 inpainting:
-  model: "manga"
-  hd_strategy: "crop"
-  crop_trigger_size: 1024
   crop_margin: 128
-  resize_limit: 2048
-  backend: "iopaint"  # manga-finetuned LaMa via IOPaint
+  backend: "anime-lama"  # color anime/manga LaMa (vendored, no iopaint deps)
   tile_size: 768
   overlap: 64
 

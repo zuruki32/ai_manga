@@ -56,6 +56,14 @@ def create_inpainter(backend: str = "mock", **kwargs) -> Inpainter:
     if backend == "opencv":
         from manga_ai.inpainting.opencv_backend import OpenCVInpainter
         return OpenCVInpainter(**_opencv_kwargs(kwargs))
+    if backend in ("anime-lama", "lama-anime", "animelama", "anime_lama"):
+        # Self-contained color anime/manga LaMa — no iopaint/diffusers/hub deps.
+        from manga_ai.inpainting.anime_lama import AnimeLaMaInpainter
+        return AnimeLaMaInpainter(
+            device=kwargs.get("device", "cuda"),
+            crop_margin=int(kwargs.get("crop_margin", 128)),
+            model_path=kwargs.get("model_path"),
+        )
     if backend in ("iopaint", "manga"):
         if not iopaint_available():
             logger.warning(
