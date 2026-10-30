@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import time
 import urllib.request
 from pathlib import Path
 from typing import Any, List, Optional
@@ -112,24 +113,47 @@ class AnimeLaMaInpainter(Inpainter):
         self._torch = None
 
     # ------------------------------------------------------------------
+    def _download_once(self, dest: Path) -> None:
+        """One download attempt; prefer torch's hardened streaming downloader."""
+        try:
+            import torch
+
+            torch.hub.download_url_to_file(ANIME_LAMA_URL, str(dest), progress=False)
+            return
+        except Exception as e:
+            # fall back to urllib if torch.hub is unavailable/unhappy
+            logger.info("torch.hub download failed (%s); trying urllib", e)
+            urllib.request.urlretrieve(ANIME_LAMA_URL, str(dest))
+
     def _ensure_downloaded(self) -> Path:
         p = self.model_path
         if p.exists() and (not ANIME_LAMA_MD5 or _md5(p) == ANIME_LAMA_MD5):
             return p
         p.parent.mkdir(parents=True, exist_ok=True)
         tmp = p.with_suffix(p.suffix + ".part")
-        logger.info("Downloading anime-lama model from %s", ANIME_LAMA_URL)
-        urllib.request.urlretrieve(ANIME_LAMA_URL, tmp)
-        if ANIME_LAMA_MD5 and _md5(tmp) != ANIME_LAMA_MD5:
-            got = _md5(tmp)
-            tmp.unlink(missing_ok=True)
-            raise RuntimeError(
-                f"anime-lama checksum mismatch (got {got}, want {ANIME_LAMA_MD5}). "
-                "Delete any partial file and retry, or set ANIME_LAMA_MODEL_MD5."
-            )
-        tmp.replace(p)
-        logger.info("Saved anime-lama model to %s", p)
-        return p
+        last: Optional[Exception] = None
+        # Retry: the GitHub CDN occasionally drops the TLS record mid-transfer
+        # ([SSL: DECRYPTION_FAILED_OR_BAD_RECORD_MAC]); a fresh connection fixes it.
+        for attempt in range(1, 5):
+            try:
+                tmp.unlink(missing_ok=True)
+                logger.info("Downloading anime-lama model (attempt %d) from %s", attempt, ANIME_LAMA_URL)
+                self._download_once(tmp)
+                if ANIME_LAMA_MD5 and _md5(tmp) != ANIME_LAMA_MD5:
+                    raise RuntimeError(f"checksum mismatch (got {_md5(tmp)}, want {ANIME_LAMA_MD5})")
+                tmp.replace(p)
+                logger.info("Saved anime-lama model to %s", p)
+                return p
+            except Exception as e:
+                last = e
+                logger.warning("anime-lama download attempt %d failed: %s", attempt, e)
+                time.sleep(2 ** attempt)
+        tmp.unlink(missing_ok=True)
+        raise RuntimeError(
+            f"Failed to download anime-lama after retries: {last}. "
+            f"Download it manually from {ANIME_LAMA_URL} and place it at {p} "
+            f"(or set MANGA_AI_MODEL_DIR / ANIME_LAMA_MODEL_URL)."
+        )
 
     def _ensure_model(self) -> None:
         if self._model is not None:
