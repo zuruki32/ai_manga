@@ -1,0 +1,1048 @@
+{
+  "schema_version": "1.0",
+  "chapter_id": "Ch.133 - Suddenly Became A Princess One Day",
+  "source_language": "en",
+  "target_language": "fa",
+  "created_at": "2026-10-30T20:29:26.829728+00:00Z",
+  "updated_at": "2026-10-30T20:29:26.829728Z",
+  "pipeline_version": "0.1.0",
+  "pages": [
+    "001",
+    "002",
+    "003",
+    "004",
+    "005",
+    "006",
+    "007",
+    "008",
+    "009",
+    "010",
+    "011",
+    "012",
+    "013",
+    "014",
+    "015",
+    "016",
+    "017",
+    "018",
+    "019",
+    "020",
+    "021",
+    "022",
+    "023",
+    "024",
+    "025",
+    "026",
+    "027",
+    "028",
+    "029",
+    "030",
+    "031",
+    "032",
+    "033",
+    "034",
+    "035",
+    "036",
+    "037",
+    "038",
+    "039",
+    "040",
+    "041",
+    "042",
+    "043",
+    "044",
+    "045",
+    "046",
+    "047",
+    "048",
+    "049",
+    "050",
+    "051",
+    "052",
+    "053",
+    "054",
+    "055",
+    "056",
+    "057",
+    "058",
+    "059",
+    "060",
+    "061",
+    "062",
+    "063",
+    "064",
+    "065",
+    "066",
+    "067",
+    "068",
+    "069",
+    "070",
+    "071",
+    "072",
+    "073",
+    "074",
+    "075",
+    "076",
+    "077",
+    "078",
+    "079",
+    "080",
+    "081",
+    "082",
+    "083",
+    "084",
+    "085",
+    "086",
+    "087",
+    "088",
+    "089",
+    "090",
+    "091",
+    "092",
+    "093",
+    "094",
+    "095",
+    "096",
+    "097",
+    "098",
+    "099",
+    "100",
+    "101",
+    "102",
+    "103",
+    "104",
+    "105",
+    "106",
+    "107",
+    "108",
+    "109",
+    "110",
+    "111",
+    "112",
+    "113",
+    "114",
+    "115",
+    "116",
+    "117",
+    "118",
+    "119",
+    "120",
+    "121",
+    "122",
+    "123",
+    "124",
+    "125",
+    "126",
+    "127",
+    "128",
+    "129",
+    "130",
+    "131",
+    "132",
+    "133",
+    "134",
+    "135",
+    "000"
+  ],
+  "page_status": [
+    {
+      "page": "001",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "002",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "003",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "004",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "005",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "006",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "007",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "008",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "009",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "010",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "011",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "012",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "013",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "014",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "015",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "016",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "017",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "018",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "019",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "020",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "021",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "022",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "023",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "024",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "025",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "026",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "027",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "028",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "029",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "030",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "031",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "032",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "033",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "034",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "035",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "036",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "037",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "038",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "039",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "040",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "041",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "042",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "043",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "044",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "045",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "046",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "047",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "048",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "049",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "050",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "051",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "052",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "053",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "054",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "055",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "056",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "057",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "058",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "059",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "060",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "061",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "062",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "063",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "064",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "065",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "066",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "067",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "068",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "069",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "070",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "071",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "072",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "073",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "074",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "075",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "076",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "077",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "078",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "079",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "080",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "081",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "082",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "083",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "084",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "085",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "086",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "087",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "088",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "089",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "090",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "091",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "092",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "093",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "094",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "095",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "096",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "097",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "098",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "099",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "100",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "101",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "102",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "103",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "104",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "105",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "106",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "107",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "108",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "109",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "110",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "111",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "112",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "113",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "114",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "115",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "116",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "117",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "118",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "119",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "120",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "121",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "122",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "123",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "124",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "125",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "126",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "127",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "128",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "129",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "130",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "131",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "132",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "133",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "134",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "135",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    },
+    {
+      "page": "000",
+      "status": "pending",
+      "stage": null,
+      "error": null
+    }
+  ],
+  "stages": {},
+  "regions": [],
+  "config": {
+    "detection": {
+      "backend": "yolo_comic",
+      "confidence_threshold": 0.25,
+      "min_box_area": 100,
+      "model": "models/comic-yolo.pt",
+      "variant": "textseg",
+      "imgsz": 1024
+    },
+    "ocr": {
+      "backend": "hybrid_qwen",
+      "confidence_threshold": 0.3,
+      "language_map": {
+        "ja": "manga_ocr",
+        "ko": "paddle",
+        "zh": "paddle",
+        "en": "paddle"
+      },
+      "model": "D:/projects/models/Qwen3-VL-8B-Instruct",
+      "local_files_only": true,
+      "lang": "en",
+      "load_in_4bit": true,
+      "max_new_tokens": 96,
+      "pad_px": 6,
+      "max_pixels": 3211264,
+      "prompt": "Read all English text in this comic speech bubble or caption. Output only the transcribed text, nothing else. If there is no readable text, output an empty string.\n"
+    },
+    "translation": {
+      "backend": "huggingface",
+      "base_url": null,
+      "model": "models/gemma-3-4b-it",
+      "temperature": 0.2,
+      "max_retries": 3,
+      "glossary": {
+        "Jennette": "جنت",
+        "JENNETTE": "جنت",
+        "Claude": "کلود",
+        "CLAUDE": "کلود",
+        "Your Highness": "علیاحضرت",
+        "Princess": "پرنسس",
+        "PRINCESS": "پرنسس"
+      },
+      "local_files_only": true,
+      "load_in_4bit": true,
+      "max_new_tokens": 192,
+      "max_length": 512,
+      "batch_size": 1,
+      "validate": true,
+      "style": "colloquial_fa",
+      "context_window": 1,
+      "unit": "region",
+      "output_format": "scanlation"
+    },
+    "masking": {
+      "dilation_px": 18,
+      "blur_radius": 2,
+      "use_polygon": true,
+      "residual_expand": true,
+      "residual_thresh": 140,
+      "bubble_inflate": true,
+      "bubble_pad_px": 10
+    },
+    "inpainting": {
+      "backend": "iopaint",
+      "tile_size": 768,
+      "overlap": 64,
+      "precision": "fp16",
+      "fallback_to_cpu": true,
+      "model": "manga",
+      "hd_strategy": "crop",
+      "crop_trigger_size": 1024,
+      "crop_margin": 128,
+      "resize_limit": 2048,
+      "radius": 7,
+      "method": "telea",
+      "passes": 2,
+      "soft_edge": 3,
+      "bg_fill": true
+    }
+  },
+  "cache_keys": {}
+}
