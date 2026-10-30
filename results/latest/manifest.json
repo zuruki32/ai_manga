@@ -1,0 +1,298 @@
+{
+  "schema_version": "1.0",
+  "chapter_id": "Ch.133 - Suddenly Became A Princess One Day",
+  "source_language": "en",
+  "target_language": "fa",
+  "created_at": "2026-10-30T21:09:38.319835+00:00Z",
+  "updated_at": "2026-10-30T21:09:59.976343Z",
+  "pipeline_version": "0.1.0",
+  "pages": [
+    "001",
+    "002",
+    "003",
+    "004",
+    "005",
+    "006",
+    "007",
+    "008",
+    "009",
+    "010"
+  ],
+  "page_status": [
+    {
+      "page": "001",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "002",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "003",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "004",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "005",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "006",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "007",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "008",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "009",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "010",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    }
+  ],
+  "stages": {
+    "detection": {
+      "stage": "detection",
+      "backend": "yolo_comic",
+      "model": "yolo_comic",
+      "model_version": null,
+      "device": "cuda:0",
+      "precision": null,
+      "input_resolution": null,
+      "output_resolution": null,
+      "execution_time_ms": 5111.674000043422,
+      "peak_vram_mb": 273.7333984375,
+      "status": "success",
+      "errors": [],
+      "warnings": [
+        "page=006: No text regions detected",
+        "page=007: No text regions detected",
+        "page=008: No text regions detected",
+        "page=009: No text regions detected"
+      ],
+      "config_hash": "b86adc9689746372",
+      "input_hash": null,
+      "output_hash": "b11e96a26da3a60b70453d9ebde4b598d56f699650450a75b3b8ce174726b5c8",
+      "started_at": "2026-10-30T21:09:38.319835Z",
+      "finished_at": "2026-10-30T21:09:43.435147Z",
+      "duration_ms": 5111.674000043422,
+      "extra": {}
+    },
+    "ocr": {
+      "stage": "ocr",
+      "backend": "hybrid_qwen",
+      "model": "hybrid_qwen",
+      "model_version": null,
+      "device": "cuda:0",
+      "precision": null,
+      "input_resolution": null,
+      "output_resolution": null,
+      "execution_time_ms": 15788.825300056487,
+      "peak_vram_mb": 136.14208984375,
+      "status": "failed",
+      "errors": [
+        "page=001: The checkpoint you are trying to load has model type `qwen3_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`",
+        "page=002: The checkpoint you are trying to load has model type `qwen3_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`",
+        "page=003: The checkpoint you are trying to load has model type `qwen3_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`",
+        "page=004: The checkpoint you are trying to load has model type `qwen3_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`",
+        "page=005: The checkpoint you are trying to load has model type `qwen3_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`",
+        "page=010: The checkpoint you are trying to load has model type `qwen3_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`"
+      ],
+      "warnings": [],
+      "config_hash": "b86adc9689746372",
+      "input_hash": null,
+      "output_hash": null,
+      "started_at": "2026-10-30T21:09:43.437158Z",
+      "finished_at": "2026-10-30T21:09:59.212566Z",
+      "duration_ms": 15788.825300056487,
+      "extra": {}
+    },
+    "translation": {
+      "stage": "translation",
+      "backend": "huggingface",
+      "model": "models/gemma-3-4b-it",
+      "model_version": null,
+      "device": "cpu",
+      "precision": null,
+      "input_resolution": null,
+      "output_resolution": null,
+      "execution_time_ms": 3.349200007505715,
+      "peak_vram_mb": null,
+      "status": "success",
+      "errors": [],
+      "warnings": [],
+      "config_hash": "b86adc9689746372",
+      "input_hash": null,
+      "output_hash": null,
+      "started_at": "2026-10-30T21:09:59.228599Z",
+      "finished_at": "2026-10-30T21:09:59.243258Z",
+      "duration_ms": 3.349200007505715,
+      "extra": {}
+    },
+    "masking": {
+      "stage": "masking",
+      "backend": "polygon_mask",
+      "model": null,
+      "model_version": null,
+      "device": "cpu",
+      "precision": null,
+      "input_resolution": null,
+      "output_resolution": null,
+      "execution_time_ms": 478.0954000307247,
+      "peak_vram_mb": null,
+      "status": "success",
+      "errors": [],
+      "warnings": [],
+      "config_hash": "b86adc9689746372",
+      "input_hash": null,
+      "output_hash": null,
+      "started_at": "2026-10-30T21:09:59.243258Z",
+      "finished_at": "2026-10-30T21:09:59.720996Z",
+      "duration_ms": 478.0954000307247,
+      "extra": {}
+    },
+    "inpainting": {
+      "stage": "inpainting",
+      "backend": "iopaint",
+      "model": "iopaint",
+      "model_version": null,
+      "device": "cuda:0",
+      "precision": null,
+      "input_resolution": null,
+      "output_resolution": null,
+      "execution_time_ms": 266.9926000526175,
+      "peak_vram_mb": 32.0,
+      "status": "success",
+      "errors": [],
+      "warnings": [],
+      "config_hash": "b86adc9689746372",
+      "input_hash": null,
+      "output_hash": null,
+      "started_at": "2026-10-30T21:09:59.720996Z",
+      "finished_at": "2026-10-30T21:09:59.976343Z",
+      "duration_ms": 266.9926000526175,
+      "extra": {
+        "tile_size": 768,
+        "overlap": 64
+      }
+    }
+  },
+  "regions": [],
+  "config": {
+    "detection": {
+      "backend": "yolo_comic",
+      "confidence_threshold": 0.25,
+      "min_box_area": 100,
+      "model": "models/comic-yolo.pt",
+      "variant": "textseg",
+      "imgsz": 1024
+    },
+    "ocr": {
+      "backend": "hybrid_qwen",
+      "confidence_threshold": 0.3,
+      "language_map": {
+        "ja": "manga_ocr",
+        "ko": "paddle",
+        "zh": "paddle",
+        "en": "paddle"
+      },
+      "model": "D:/projects/models/Qwen3-VL-8B-Instruct",
+      "local_files_only": true,
+      "lang": "en",
+      "load_in_4bit": true,
+      "max_new_tokens": 96,
+      "pad_px": 6,
+      "max_pixels": 3211264,
+      "prompt": "Read all English text in this comic speech bubble or caption. Output only the transcribed text, nothing else. If there is no readable text, output an empty string.\n"
+    },
+    "translation": {
+      "backend": "huggingface",
+      "base_url": null,
+      "model": "models/gemma-3-4b-it",
+      "temperature": 0.2,
+      "max_retries": 3,
+      "glossary": {
+        "Jennette": "جنت",
+        "JENNETTE": "جنت",
+        "Claude": "کلود",
+        "CLAUDE": "کلود",
+        "Your Highness": "علیاحضرت",
+        "Princess": "پرنسس",
+        "PRINCESS": "پرنسس"
+      },
+      "local_files_only": true,
+      "load_in_4bit": true,
+      "max_new_tokens": 192,
+      "max_length": 512,
+      "batch_size": 1,
+      "validate": true,
+      "style": "colloquial_fa",
+      "context_window": 1,
+      "unit": "region",
+      "output_format": "scanlation"
+    },
+    "masking": {
+      "dilation_px": 18,
+      "blur_radius": 2,
+      "use_polygon": true,
+      "residual_expand": true,
+      "residual_thresh": 140,
+      "bubble_inflate": true,
+      "bubble_pad_px": 10
+    },
+    "inpainting": {
+      "backend": "iopaint",
+      "tile_size": 768,
+      "overlap": 64,
+      "precision": "fp16",
+      "fallback_to_cpu": true,
+      "model": "manga",
+      "hd_strategy": "crop",
+      "crop_trigger_size": 1024,
+      "crop_margin": 128,
+      "resize_limit": 2048,
+      "radius": 7,
+      "method": "telea",
+      "passes": 2,
+      "soft_edge": 3,
+      "bg_fill": true
+    }
+  },
+  "cache_keys": {
+    "detection": "2fdb4f6cf6dc883dae6a7db9",
+    "ocr": "c7a0ba3b6d2f2a50fc928988",
+    "translation": "4781331c48dcd77c75141627",
+    "masking": "634a4214589764d7e3d521c5",
+    "inpainting": "69b8bcf470f3aa8020adb988"
+  }
+}
