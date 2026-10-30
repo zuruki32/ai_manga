@@ -3,8 +3,8 @@
   "chapter_id": "Ch.133 - Suddenly Became A Princess One Day",
   "source_language": "en",
   "target_language": "fa",
-  "created_at": "2026-10-30T21:51:23.502769+00:00Z",
-  "updated_at": "2026-10-30T21:53:09.205046Z",
+  "created_at": "2026-10-30T22:09:07.826399+00:00Z",
+  "updated_at": "2026-10-30T22:09:09.869328Z",
   "pipeline_version": "0.1.0",
   "pages": [
     "001",
@@ -16,7 +16,133 @@
     "007",
     "008",
     "009",
-    "010"
+    "010",
+    "011",
+    "012",
+    "013",
+    "014",
+    "015",
+    "016",
+    "017",
+    "018",
+    "019",
+    "020",
+    "021",
+    "022",
+    "023",
+    "024",
+    "025",
+    "026",
+    "027",
+    "028",
+    "029",
+    "030",
+    "031",
+    "032",
+    "033",
+    "034",
+    "035",
+    "036",
+    "037",
+    "038",
+    "039",
+    "040",
+    "041",
+    "042",
+    "043",
+    "044",
+    "045",
+    "046",
+    "047",
+    "048",
+    "049",
+    "050",
+    "051",
+    "052",
+    "053",
+    "054",
+    "055",
+    "056",
+    "057",
+    "058",
+    "059",
+    "060",
+    "061",
+    "062",
+    "063",
+    "064",
+    "065",
+    "066",
+    "067",
+    "068",
+    "069",
+    "070",
+    "071",
+    "072",
+    "073",
+    "074",
+    "075",
+    "076",
+    "077",
+    "078",
+    "079",
+    "080",
+    "081",
+    "082",
+    "083",
+    "084",
+    "085",
+    "086",
+    "087",
+    "088",
+    "089",
+    "090",
+    "091",
+    "092",
+    "093",
+    "094",
+    "095",
+    "096",
+    "097",
+    "098",
+    "099",
+    "100",
+    "101",
+    "102",
+    "103",
+    "104",
+    "105",
+    "106",
+    "107",
+    "108",
+    "109",
+    "110",
+    "111",
+    "112",
+    "113",
+    "114",
+    "115",
+    "116",
+    "117",
+    "118",
+    "119",
+    "120",
+    "121",
+    "122",
+    "123",
+    "124",
+    "125",
+    "126",
+    "127",
+    "128",
+    "129",
+    "130",
+    "131",
+    "132",
+    "133",
+    "134",
+    "135",
+    "000"
   ],
   "page_status": [
     {
@@ -78,102 +204,765 @@
       "status": "success",
       "stage": "inpainting",
       "error": null
+    },
+    {
+      "page": "011",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "012",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "013",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "014",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "015",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "016",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "017",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "018",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "019",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "020",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "021",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "022",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "023",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "024",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "025",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "026",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "027",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "028",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "029",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "030",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "031",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "032",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "033",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "034",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "035",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "036",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "037",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "038",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "039",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "040",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "041",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "042",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "043",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "044",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "045",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "046",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "047",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "048",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "049",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "050",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "051",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "052",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "053",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "054",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "055",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "056",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "057",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "058",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "059",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "060",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "061",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "062",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "063",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "064",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "065",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "066",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "067",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "068",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "069",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "070",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "071",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "072",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "073",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "074",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "075",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "076",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "077",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "078",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "079",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "080",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "081",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "082",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "083",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "084",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "085",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "086",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "087",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "088",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "089",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "090",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "091",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "092",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "093",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "094",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "095",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "096",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "097",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "098",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "099",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "100",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "101",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "102",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "103",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "104",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "105",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "106",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "107",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "108",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "109",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "110",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "111",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "112",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "113",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "114",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "115",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "116",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "117",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "118",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "119",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "120",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "121",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "122",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "123",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "124",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "125",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "126",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "127",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "128",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "129",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "130",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "131",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "132",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "133",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "134",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "135",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
+    },
+    {
+      "page": "000",
+      "status": "success",
+      "stage": "inpainting",
+      "error": null
     }
   ],
   "stages": {
-    "detection": {
-      "stage": "detection",
-      "backend": "yolo_comic",
-      "model": "yolo_comic",
-      "model_version": null,
-      "device": "cuda:0",
-      "precision": null,
-      "input_resolution": null,
-      "output_resolution": null,
-      "execution_time_ms": 2373.8298000534996,
-      "peak_vram_mb": 273.7333984375,
-      "status": "success",
-      "errors": [],
-      "warnings": [
-        "page=006: No text regions detected",
-        "page=007: No text regions detected",
-        "page=008: No text regions detected",
-        "page=009: No text regions detected"
-      ],
-      "config_hash": "1c960fae83853f7e",
-      "input_hash": null,
-      "output_hash": "b11e96a26da3a60b70453d9ebde4b598d56f699650450a75b3b8ce174726b5c8",
-      "started_at": "2026-10-30T21:51:23.502769Z",
-      "finished_at": "2026-10-30T21:51:25.870995Z",
-      "duration_ms": 2373.8298000534996,
-      "extra": {}
-    },
-    "ocr": {
-      "stage": "ocr",
-      "backend": "hybrid_qwen",
-      "model": "hybrid_qwen",
-      "model_version": null,
-      "device": "cuda:0",
-      "precision": null,
-      "input_resolution": null,
-      "output_resolution": null,
-      "execution_time_ms": 34260.70730003994,
-      "peak_vram_mb": 6605.1318359375,
-      "status": "success",
-      "errors": [],
-      "warnings": [],
-      "config_hash": "1c960fae83853f7e",
-      "input_hash": null,
-      "output_hash": null,
-      "started_at": "2026-10-30T21:51:25.878587Z",
-      "finished_at": "2026-10-30T21:52:00.137421Z",
-      "duration_ms": 34260.70730003994,
-      "extra": {}
-    },
-    "translation": {
-      "stage": "translation",
-      "backend": "huggingface",
-      "model": "models/gemma-3-4b-it",
-      "model_version": null,
-      "device": "cpu",
-      "precision": null,
-      "input_resolution": null,
-      "output_resolution": null,
-      "execution_time_ms": 62500.43039990123,
-      "peak_vram_mb": null,
-      "status": "success",
-      "errors": [],
-      "warnings": [],
-      "config_hash": "1c960fae83853f7e",
-      "input_hash": null,
-      "output_hash": null,
-      "started_at": "2026-10-30T21:52:00.162883Z",
-      "finished_at": "2026-10-30T21:53:02.648961Z",
-      "duration_ms": 62500.43039990123,
-      "extra": {}
-    },
-    "masking": {
-      "stage": "masking",
-      "backend": "polygon_mask",
-      "model": null,
-      "model_version": null,
-      "device": "cpu",
-      "precision": null,
-      "input_resolution": null,
-      "output_resolution": null,
-      "execution_time_ms": 706.0370000544935,
-      "peak_vram_mb": null,
-      "status": "success",
-      "errors": [],
-      "warnings": [],
-      "config_hash": "1c960fae83853f7e",
-      "input_hash": null,
-      "output_hash": null,
-      "started_at": "2026-10-30T21:53:02.714224Z",
-      "finished_at": "2026-10-30T21:53:03.422329Z",
-      "duration_ms": 706.0370000544935,
-      "extra": {}
-    },
     "inpainting": {
       "stage": "inpainting",
       "backend": "anime-lama",
@@ -183,445 +972,24 @@
       "precision": null,
       "input_resolution": null,
       "output_resolution": null,
-      "execution_time_ms": 5792.39850002341,
-      "peak_vram_mb": 5676.55908203125,
+      "execution_time_ms": 2039.7088000318035,
+      "peak_vram_mb": 0.0,
       "status": "success",
       "errors": [],
       "warnings": [],
-      "config_hash": "1c960fae83853f7e",
+      "config_hash": "2bed0abf6d6f0e51",
       "input_hash": null,
       "output_hash": null,
-      "started_at": "2026-10-30T21:53:03.422329Z",
-      "finished_at": "2026-10-30T21:53:09.205046Z",
-      "duration_ms": 5792.39850002341,
+      "started_at": "2026-10-30T22:09:07.829650Z",
+      "finished_at": "2026-10-30T22:09:09.869328Z",
+      "duration_ms": 2039.7088000318035,
       "extra": {
         "tile_size": 768,
         "overlap": 64
       }
     }
   },
-  "regions": [
-    {
-      "region_id": "001_0000",
-      "page": "001",
-      "bbox": [
-        426.0,
-        0.0,
-        619.0,
-        46.0
-      ],
-      "polygon": [
-        [
-          426.0,
-          0.0
-        ],
-        [
-          619.0,
-          0.0
-        ],
-        [
-          619.0,
-          46.0
-        ],
-        [
-          426.0,
-          46.0
-        ]
-      ],
-      "region_type": "text",
-      "detection_confidence": 0.8466481566429138,
-      "source_text": "GENTLE...",
-      "ocr_confidence": 0.85,
-      "source_language": "en",
-      "translated_text": "ببین، این‌طوری می‌گه: «آخ جون، این چه وضعشه؟»\n«هی، داری چیکار می‌کنی؟»\n«واقعا؟ مگه میشه؟»\n«چرا نمی‌تونی این کار رو بکنی؟»\n«اوه، این بد نیست، مگه؟»\n«چی شده؟»\n«فکر کنم یه کم خجالت می‌کشی، مگه؟»\n«هیچ اشکالی نداره، آروم باش.»\n«آره، منم همین‌طور فکر می‌کنم.»\n«چی می‌گی؟»\n«اگه می‌خوای، می‌تونیم یه کاری کنیم.»\n«خیلی خب، باشه.»\n«فکر نکن که من نمی‌دونم چی می‌گی.»\n«آره، منم همین‌طور می‌فهمم.»\n«چی می‌گی؟»\n«اگه",
-      "target_language": "fa"
-    },
-    {
-      "region_id": "001_0001",
-      "page": "001",
-      "bbox": [
-        75.0,
-        21.0,
-        316.0,
-        103.0
-      ],
-      "polygon": [
-        [
-          75.0,
-          21.0
-        ],
-        [
-          316.0,
-          21.0
-        ],
-        [
-          316.0,
-          103.0
-        ],
-        [
-          75.0,
-          103.0
-        ]
-      ],
-      "region_type": "text",
-      "detection_confidence": 0.9174589514732361,
-      "source_text": "I'M PERFECTLY\nFINE.",
-      "ocr_confidence": 0.85,
-      "source_language": "en",
-      "translated_text": "خیلی خوبم.",
-      "target_language": "fa"
-    },
-    {
-      "region_id": "001_0002",
-      "page": "001",
-      "bbox": [
-        126.0,
-        263.0,
-        397.0,
-        346.0
-      ],
-      "polygon": [
-        [
-          126.0,
-          263.0
-        ],
-        [
-          397.0,
-          263.0
-        ],
-        [
-          397.0,
-          346.0
-        ],
-        [
-          126.0,
-          346.0
-        ]
-      ],
-      "region_type": "text",
-      "detection_confidence": 0.9250160455703735,
-      "source_text": "IT DOES EAT HAM\nTHOUGH.",
-      "ocr_confidence": 0.85,
-      "source_language": "en",
-      "translated_text": "می‌خوره، ولی.",
-      "target_language": "fa"
-    },
-    {
-      "region_id": "001_0003",
-      "page": "001",
-      "bbox": [
-        152.0,
-        504.0,
-        362.0,
-        556.0
-      ],
-      "polygon": [
-        [
-          152.0,
-          504.0
-        ],
-        [
-          362.0,
-          504.0
-        ],
-        [
-          362.0,
-          556.0
-        ],
-        [
-          152.0,
-          556.0
-        ]
-      ],
-      "region_type": "text",
-      "detection_confidence": 0.8636107444763184,
-      "source_text": "It hit my hand!",
-      "ocr_confidence": 0.85,
-      "source_language": "en",
-      "translated_text": "آه! به دستم خورد!",
-      "target_language": "fa"
-    },
-    {
-      "region_id": "002_0000",
-      "page": "002",
-      "bbox": [
-        471.0,
-        783.0,
-        692.0,
-        883.0
-      ],
-      "polygon": [
-        [
-          471.0,
-          783.0
-        ],
-        [
-          692.0,
-          783.0
-        ],
-        [
-          692.0,
-          883.0
-        ],
-        [
-          471.0,
-          883.0
-        ]
-      ],
-      "region_type": "text",
-      "detection_confidence": 0.922061562538147,
-      "source_text": "WHERE ARE WE?",
-      "ocr_confidence": 0.85,
-      "source_language": "en",
-      "translated_text": "کجا هستیم؟",
-      "target_language": "fa"
-    },
-    {
-      "region_id": "003_0000",
-      "page": "003",
-      "bbox": [
-        85.0,
-        265.0,
-        284.0,
-        344.0
-      ],
-      "polygon": [
-        [
-          85.0,
-          265.0
-        ],
-        [
-          284.0,
-          265.0
-        ],
-        [
-          284.0,
-          344.0
-        ],
-        [
-          85.0,
-          344.0
-        ]
-      ],
-      "region_type": "text",
-      "detection_confidence": 0.9051179885864258,
-      "source_text": "JENNETTE...\nMADE THIS?",
-      "ocr_confidence": 0.85,
-      "source_language": "en",
-      "translated_text": "جنت... اینو کی ساخت؟",
-      "target_language": "fa"
-    },
-    {
-      "region_id": "004_0000",
-      "page": "004",
-      "bbox": [
-        57.0,
-        0.0,
-        447.0,
-        146.0
-      ],
-      "polygon": [
-        [
-          57.0,
-          0.0
-        ],
-        [
-          447.0,
-          0.0
-        ],
-        [
-          447.0,
-          146.0
-        ],
-        [
-          57.0,
-          146.0
-        ]
-      ],
-      "region_type": "text",
-      "detection_confidence": 0.9361032843589783,
-      "source_text": "THAT THE LADIES OF\nSOCIETY WOULD BE VERY\nINTERESTED IF THEY\nSAW THIS?",
-      "ocr_confidence": 0.85,
-      "source_language": "en",
-      "translated_text": "آیا این‌ چیز برای خانم‌های جامعه خیلی جذاب بود؟",
-      "target_language": "fa"
-    },
-    {
-      "region_id": "004_0001",
-      "page": "004",
-      "bbox": [
-        274.0,
-        281.0,
-        650.0,
-        467.0
-      ],
-      "polygon": [
-        [
-          274.0,
-          281.0
-        ],
-        [
-          650.0,
-          281.0
-        ],
-        [
-          650.0,
-          467.0
-        ],
-        [
-          274.0,
-          467.0
-        ]
-      ],
-      "region_type": "text",
-      "detection_confidence": 0.9366238117218018,
-      "source_text": "I'M THINKING\nOF TAKING IT TO THE\nSUMMER PARTY, SURELY\nIT'LL BECOME A HOT\nTOPIC.",
-      "ocr_confidence": 0.85,
-      "source_language": "en",
-      "translated_text": "به جشن تابستانی برم، مطمئنم یه موضوع داغ میشه.",
-      "target_language": "fa"
-    },
-    {
-      "region_id": "004_0002",
-      "page": "004",
-      "bbox": [
-        368.0,
-        762.0,
-        650.0,
-        845.0
-      ],
-      "polygon": [
-        [
-          368.0,
-          762.0
-        ],
-        [
-          650.0,
-          762.0
-        ],
-        [
-          650.0,
-          845.0
-        ],
-        [
-          368.0,
-          845.0
-        ]
-      ],
-      "region_type": "text",
-      "detection_confidence": 0.8658051490783691,
-      "source_text": "Wait, what workshop\nmade this?",
-      "ocr_confidence": 0.85,
-      "source_language": "en",
-      "translated_text": "هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک مدل زبانی بزرگ هستم که توسط گوگل آموزش داده شده‌ام. (هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک مدل زبانی بزرگ هستم که توسط گوگل آموزش داده شده‌ام.) (“هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک مدل زبانی بزرگ هستم که توسط گوگل آموزش داده شده‌ام.”) (هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک مدل زبانی بزرگ هستم که توسط گوگل آموزش داده شده‌ام.) (هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک مدل زبانی بزرگ هستم که توسط گوگل آموزش داده شده‌ام.) (هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک",
-      "target_language": "fa"
-    },
-    {
-      "region_id": "004_0003",
-      "page": "004",
-      "bbox": [
-        101.0,
-        1033.0,
-        236.0,
-        1064.0
-      ],
-      "polygon": [
-        [
-          101.0,
-          1033.0
-        ],
-        [
-          236.0,
-          1033.0
-        ],
-        [
-          236.0,
-          1064.0
-        ],
-        [
-          101.0,
-          1064.0
-        ]
-      ],
-      "region_type": "text",
-      "detection_confidence": 0.42413824796676636,
-      "source_text": "LUACOMIC.NET",
-      "ocr_confidence": 0.85,
-      "source_language": "en",
-      "translated_text": "",
-      "target_language": "fa"
-    },
-    {
-      "region_id": "005_0000",
-      "page": "005",
-      "bbox": [
-        319.0,
-        21.0,
-        539.0,
-        120.0
-      ],
-      "polygon": [
-        [
-          319.0,
-          21.0
-        ],
-        [
-          539.0,
-          21.0
-        ],
-        [
-          539.0,
-          120.0
-        ],
-        [
-          319.0,
-          120.0
-        ]
-      ],
-      "region_type": "text",
-      "detection_confidence": 0.9434048533439636,
-      "source_text": "THEN, I'LL\nJUST TAKE OUT\nTHE FILLING...",
-      "ocr_confidence": 0.85,
-      "source_language": "en",
-      "translated_text": "ببین، این‌جا می‌شه.\n⟧\nراستی، چی می‌گی؟\n⟧\nاگه می‌تونی، یه کم آروم‌تر باش.\n⟧\nهیچ‌کدوم از اینا درست نیست.\n⟧\nفکر کنم باید یه کاری بکنیم.\n⟧\nچرا نمی‌بینی؟\n⟧\nمن نمی‌دونم چی بگم.\n⟧\nنگران نباش، من هستم.\n⟧\nفکر کنم می‌فهمم.\n⟧\nواقعاً؟\n⟧\nباید یه راه حل پیدا کنیم.\n⟧\nچرا نه؟\n⟧\nاین خیلی بده.\n⟧\nمنم همین‌طور فکر می‌کنم.\n⟧\nآره، ولی ما باید یه کاری کنیم.\n⟧\nچرا؟\n⟧\nباید فکر کنیم.\n⟧\nمن دارم فکر می‌کنم.\n⟧\nمنم دارم.\n⟧",
-      "target_language": "fa"
-    },
-    {
-      "region_id": "010_0000",
-      "page": "010",
-      "bbox": [
-        110.0,
-        350.0,
-        318.0,
-        433.0
-      ],
-      "polygon": [
-        [
-          110.0,
-          350.0
-        ],
-        [
-          318.0,
-          350.0
-        ],
-        [
-          318.0,
-          433.0
-        ],
-        [
-          110.0,
-          433.0
-        ]
-      ],
-      "region_type": "text",
-      "detection_confidence": 0.9157311320304871,
-      "source_text": "YOU'RE\nHOLDING IT...",
-      "ocr_confidence": 0.85,
-      "source_language": "en",
-      "translated_text": "ببین، این‌طوری می‌گه: \"آره، می‌دونم. ولی چاره‌ای نیست؟\"",
-      "target_language": "fa"
-    }
-  ],
+  "regions": [],
   "config": {
     "detection": {
       "backend": "yolo_comic",
@@ -699,10 +1067,6 @@
     }
   },
   "cache_keys": {
-    "detection": "ea99332aa5be46789c7edfad",
-    "ocr": "5c7b55301ed8d4cd3603c4b1",
-    "translation": "71727f87aa262dae341381d5",
-    "masking": "b78a7f62498e5a24019a1711",
-    "inpainting": "02574e4b3d2d02fe5322b624"
+    "inpainting": "0bd336303190a0998dcb88cb"
   }
 }
