@@ -959,6 +959,22 @@ class Pipeline:
             try:
                 arr, info = self.preprocessor.load(img_path)
                 page_regions = by_page.get(page, [])
+                # Cleaning only needs where text is (detection), not what it says
+                # (OCR). If OCR produced no regions for this page, fall back to
+                # the raw detection boxes so text removal still works.
+                if not page_regions:
+                    det_path = self.detection_dir / f"{page}.json"
+                    if det_path.exists():
+                        try:
+                            dets = json.loads(det_path.read_text(encoding="utf-8"))
+                            if dets:
+                                page_regions = dets
+                                logger.info(
+                                    "masking: page %s using %d detection boxes "
+                                    "(no OCR regions)", page, len(dets)
+                                )
+                        except Exception:
+                            pass
                 mask = self.mask_gen.generate((info.height, info.width), page_regions, image=arr)
                 mask_path = self.masks_dir / f"{page}.png"
                 cv2.imwrite(str(mask_path), mask)

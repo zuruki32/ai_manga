@@ -211,9 +211,17 @@ def main() -> None:
             pass
 
     regions: List[Dict[str, Any]] = list(manifest.get("regions") or [])
-    # fallback: read per-page ocr json
+    # fallback 1: per-page OCR json (has source_text)
     if not regions and (chapter / "ocr").is_dir():
         for jp in sorted((chapter / "ocr").glob("*.json")):
+            try:
+                regions.extend(json.loads(jp.read_text(encoding="utf-8")))
+            except Exception:
+                pass
+    # fallback 2: detection json (geometry only — when OCR failed/empty).
+    # Lets the DETECT panel + cleaning review work even without OCR text.
+    if not regions and (chapter / "detection").is_dir():
+        for jp in sorted((chapter / "detection").glob("*.json")):
             try:
                 regions.extend(json.loads(jp.read_text(encoding="utf-8")))
             except Exception:
