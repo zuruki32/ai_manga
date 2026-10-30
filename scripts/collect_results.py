@@ -60,6 +60,36 @@ def _find(dir_: Path, stem: str) -> Optional[Path]:
     return None
 
 
+def _page_id(path: Path) -> str:
+    """Mirror manga_ai.utils.page_id_from_path; fall back to a close rule."""
+    try:
+        from manga_ai.utils import page_id_from_path
+        return page_id_from_path(path)
+    except Exception:
+        import re
+        return re.sub(r"[^0-9a-zA-Z]", "", path.stem)
+
+
+def build_page_map(chapter: Path) -> Dict[str, Path]:
+    """Map page-id -> original image path.
+
+    The pipeline names cleaned/masks by page-id (e.g. ``001.png``) but keeps
+    originals under their real filenames (e.g. ``00 (1).jpg``), so a stem match
+    fails. Rebuild the id->file mapping the same way the pipeline does.
+    """
+    out: Dict[str, Path] = {}
+    search_dirs = [chapter / "original", chapter]
+    for d in search_dirs:
+        if not d.is_dir():
+            continue
+        for p in sorted(d.iterdir()):
+            if p.is_file() and p.suffix.lower() in IMG_EXTS:
+                out.setdefault(_page_id(p), p)
+        if out:  # prefer original/ if it yielded anything
+            break
+    return out
+
+
 def _load_processed(preprocessor, path: Path) -> Optional[np.ndarray]:
     """Return a BGR uint8 image in the same coords the detector saw."""
     try:
@@ -207,9 +237,11 @@ def main() -> None:
     scored.sort(key=lambda t: (t[0], t[1]), reverse=True)
     sample_pages = [t[2] for t in scored[: max(args.samples, 1)]] if scored else []
 
+    page_map = build_page_map(chapter)
+
     made_panels = []
     for pg in sample_pages:
-        orig_path = _find(chapter / "original", str(pg)) or _find(chapter, str(pg))
+        orig_path = page_map.get(str(pg))
         proc = _load_processed(preprocessor, orig_path) if (preprocessor and orig_path) else (
             cv2.imread(str(orig_path)) if orig_path else None)
         regs = by_page.get(str(pg), [])
@@ -260,7 +292,7 @@ def main() -> None:
     for idx, r in enumerate(picked):
         pg = str(r.get("page"))
         if pg not in cache_proc:
-            op = _find(chapter / "original", pg) or _find(chapter, pg)
+            op = page_map.get(pg)
             cache_proc[pg] = _load_processed(preprocessor, op) if (preprocessor and op) else (
                 cv2.imread(str(op)) if op else None)
         proc = cache_proc[pg]

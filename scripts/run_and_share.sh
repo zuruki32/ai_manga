@@ -17,6 +17,7 @@ CHAPTER="data/chapters/Ch.133 - Suddenly Became A Princess One Day"
 CONFIG="hybrid_qwen_gemma_it"     # bare config name under configs/
 # transtest = translator-only smoke test (no OCR needed); others run the pipeline
 STAGE="full"                      # full | detect | ocr | translate | mask | clean | transtest
+LIMIT=10                          # full run: only first N pages (0 = whole chapter)
 SAMPLES=6
 CROPS=16
 PUSH=1
@@ -31,6 +32,7 @@ while [[ $# -gt 0 ]]; do
     --stage)   STAGE="$2";   shift 2;;
     --samples) SAMPLES="$2"; shift 2;;
     --crops)   CROPS="$2"; shift 2;;
+    --limit)   LIMIT="$2"; shift 2;;
     --force)   FORCE="--force"; shift;;
     --no-push) PUSH=0; shift;;
     --python)  PYTHON="$2"; shift 2;;
@@ -93,10 +95,15 @@ echo "-- git pull --rebase --autostash origin $BRANCH"
 git pull --rebase --autostash origin "$BRANCH" || echo "!! pull failed (offline or conflict) — continuing with local code"
 
 # 2) run the pipeline, capturing a log
+# --limit only applies to the full pipeline ('process')
+LIMIT_ARG=""
+if [[ "$CMD" == "process" && "${LIMIT:-0}" -gt 0 ]]; then
+  LIMIT_ARG="--limit $LIMIT"
+fi
 LOG="$(mktemp)"
-echo "-- running: $PYTHON -m manga_ai $CMD \"$CHAPTER\" -c $CONFIG $FORCE"
+echo "-- running: $PYTHON -m manga_ai $CMD \"$CHAPTER\" -c $CONFIG $FORCE $LIMIT_ARG"
 set -o pipefail
-$PYTHON -m manga_ai "$CMD" "$CHAPTER" -c "$CONFIG" $FORCE 2>&1 | tee "$LOG"
+$PYTHON -m manga_ai "$CMD" "$CHAPTER" -c "$CONFIG" $FORCE $LIMIT_ARG 2>&1 | tee "$LOG"
 RUN_RC=${PIPESTATUS[0]}
 echo "-- pipeline exit code: $RUN_RC"
 

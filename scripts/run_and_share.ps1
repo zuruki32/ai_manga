@@ -14,6 +14,7 @@ param(
   [string]$Config  = "hybrid_qwen_gemma_it",
   [ValidateSet("full","detect","ocr","translate","mask","clean","transtest")]
   [string]$Stage   = "full",
+  [int]$Limit      = 10,
   [int]$Samples    = 6,
   [int]$Crops      = 16,
   [switch]$Force,
@@ -74,10 +75,14 @@ Write-Host "-- git pull --rebase --autostash origin $Branch"
 git pull --rebase --autostash origin $Branch
 if ($LASTEXITCODE -ne 0) { Write-Host "!! pull failed (offline or conflict) - continuing with local code" }
 
+# --limit only applies to the full pipeline ('process')
+$limitArg = @()
+if ($Cmd -eq "process" -and $Limit -gt 0) { $limitArg = @("--limit", $Limit) }
+
 # 2) run the pipeline, capturing a log
 $log = [System.IO.Path]::GetTempFileName()
-Write-Host "-- running: $Python -m manga_ai $Cmd `"$Chapter`" -c $Config $($forceArg -join ' ')"
-& $Python -m manga_ai $Cmd $Chapter -c $Config @forceArg 2>&1 | Tee-Object -FilePath $log
+Write-Host "-- running: $Python -m manga_ai $Cmd `"$Chapter`" -c $Config $($forceArg -join ' ') $($limitArg -join ' ')"
+& $Python -m manga_ai $Cmd $Chapter -c $Config @forceArg @limitArg 2>&1 | Tee-Object -FilePath $log
 $runRc = $LASTEXITCODE
 Write-Host "-- pipeline exit code: $runRc"
 

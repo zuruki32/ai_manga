@@ -59,6 +59,7 @@ class Pipeline:
         self.manifest_path = self.chapter_dir / "manifest.json"
 
         self.force = bool(config.get("pipeline.force", False))
+        self.limit = int(config.get("pipeline.limit", 0) or 0)
         self.pipeline_version = config.get("pipeline.version", __version__)
         self.cache = ArtifactCache(enabled=config.get("cache.enabled", True))
 
@@ -379,6 +380,15 @@ class Pipeline:
                 new_id = f"{p}_{seen[p]}"
                 unique_pages.append(new_id)
                 unique_images.append(img)
+
+        if self.limit and self.limit > 0 and len(unique_images) > self.limit:
+            log_stage(
+                logger,
+                "preprocess",
+                f"Limiting to first {self.limit} of {len(unique_images)} pages",
+            )
+            unique_images = unique_images[: self.limit]
+            unique_pages = unique_pages[: self.limit]
 
         for d in (
             self.detection_dir,
