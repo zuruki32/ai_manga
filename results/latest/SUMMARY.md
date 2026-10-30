@@ -8,27 +8,24 @@
 ## Stage status (watch the `backend` column — `mock` = model missing/failed)
 | stage | backend | status | time(ms) | warn | err |
 |---|---|---|---|---|---|
-| detection | yolo_comic | success | 3333 | 4 | 0 |
-| ocr | hybrid_qwen | success | 29901 | 0 | 0 |
-| translation | huggingface | success | 27143 | 0 | 0 |
-| masking | polygon_mask | success | 693 | 0 | 0 |
-| inpainting | opencv | success | 4862 | 1 | 0 |
+| detection | yolo_comic | success | 2630 | 4 | 0 |
+| ocr | hybrid_qwen | success | 44125 | 0 | 0 |
+| translation | huggingface | success | 30634 | 0 | 0 |
+| masking | polygon_mask | success | 663 | 0 | 0 |
+| inpainting | anime-lama | failed | 115082 | 0 | 1 |
 - ⚠️ `detection`: page=006: No text regions detected
 - ⚠️ `detection`: page=007: No text regions detected
 - ⚠️ `detection`: page=008: No text regions detected
 - ⚠️ `detection`: page=009: No text regions detected
-- ⚠️ `inpainting`: LaMa unavailable (IOPaint is required for the 'iopaint' backend. Install it with:
-    pip install 'manga-ai[iopaint]'
-    # or: pip install iopaint
-(original error: cannot import name 'cached_download' from 'huggingface_hub' (D:\projects\Lib\site-packages\huggingface_hub\__init__.py)))
+- ❌ `inpainting`: page=001: [SSL: DECRYPTION_FAILED_OR_BAD_RECORD_MAC] decryption failed or bad record mac (_ssl.c:2559)
 
 ## Sample pages (6) — `samples/*.jpg` = ORIGINAL | DETECT | MASK | CLEANED
-- `samples/001_panels.jpg`
 - `samples/004_panels.jpg`
 - `samples/002_panels.jpg`
 - `samples/003_panels.jpg`
 - `samples/005_panels.jpg`
 - `samples/010_panels.jpg`
+- `samples/006_panels.jpg`
 
 ## OCR verification (10 crops) — see `ocr_crops/index.md`
 

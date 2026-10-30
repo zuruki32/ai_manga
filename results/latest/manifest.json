@@ -3,8 +3,8 @@
   "chapter_id": "Ch.133 - Suddenly Became A Princess One Day",
   "source_language": "en",
   "target_language": "fa",
-  "created_at": "2026-10-30T21:21:06.956803+00:00Z",
-  "updated_at": "2026-10-30T21:22:12.968245Z",
+  "created_at": "2026-10-30T21:33:25.176188+00:00Z",
+  "updated_at": "2026-10-30T21:36:38.400997Z",
   "pipeline_version": "0.1.0",
   "pages": [
     "001",
@@ -21,9 +21,9 @@
   "page_status": [
     {
       "page": "001",
-      "status": "success",
+      "status": "failed",
       "stage": "inpainting",
-      "error": null
+      "error": "[SSL: DECRYPTION_FAILED_OR_BAD_RECORD_MAC] decryption failed or bad record mac (_ssl.c:2559)"
     },
     {
       "page": "002",
@@ -90,7 +90,7 @@
       "precision": null,
       "input_resolution": null,
       "output_resolution": null,
-      "execution_time_ms": 3332.8557000495493,
+      "execution_time_ms": 2629.5910000335425,
       "peak_vram_mb": 273.7333984375,
       "status": "success",
       "errors": [],
@@ -100,12 +100,12 @@
         "page=008: No text regions detected",
         "page=009: No text regions detected"
       ],
-      "config_hash": "b86adc9689746372",
+      "config_hash": "bc15d2123dcd3136",
       "input_hash": null,
       "output_hash": "b11e96a26da3a60b70453d9ebde4b598d56f699650450a75b3b8ce174726b5c8",
-      "started_at": "2026-10-30T21:21:06.958807Z",
-      "finished_at": "2026-10-30T21:21:10.291283Z",
-      "duration_ms": 3332.8557000495493,
+      "started_at": "2026-10-30T21:33:25.176188Z",
+      "finished_at": "2026-10-30T21:33:27.807459Z",
+      "duration_ms": 2629.5910000335425,
       "extra": {}
     },
     "ocr": {
@@ -117,17 +117,17 @@
       "precision": null,
       "input_resolution": null,
       "output_resolution": null,
-      "execution_time_ms": 29900.53459990304,
+      "execution_time_ms": 44124.594300054014,
       "peak_vram_mb": 6605.1318359375,
       "status": "success",
       "errors": [],
       "warnings": [],
-      "config_hash": "b86adc9689746372",
+      "config_hash": "bc15d2123dcd3136",
       "input_hash": null,
       "output_hash": null,
-      "started_at": "2026-10-30T21:21:10.296268Z",
-      "finished_at": "2026-10-30T21:21:40.192661Z",
-      "duration_ms": 29900.53459990304,
+      "started_at": "2026-10-30T21:33:27.809877Z",
+      "finished_at": "2026-10-30T21:34:11.929349Z",
+      "duration_ms": 44124.594300054014,
       "extra": {}
     },
     "translation": {
@@ -139,17 +139,17 @@
       "precision": null,
       "input_resolution": null,
       "output_resolution": null,
-      "execution_time_ms": 27143.352499930188,
+      "execution_time_ms": 30633.523999946192,
       "peak_vram_mb": null,
       "status": "success",
       "errors": [],
       "warnings": [],
-      "config_hash": "b86adc9689746372",
+      "config_hash": "bc15d2123dcd3136",
       "input_hash": null,
       "output_hash": null,
-      "started_at": "2026-10-30T21:21:40.217367Z",
-      "finished_at": "2026-10-30T21:22:07.360085Z",
-      "duration_ms": 27143.352499930188,
+      "started_at": "2026-10-30T21:34:11.971973Z",
+      "finished_at": "2026-10-30T21:34:42.599687Z",
+      "duration_ms": 30633.523999946192,
       "extra": {}
     },
     "masking": {
@@ -161,41 +161,41 @@
       "precision": null,
       "input_resolution": null,
       "output_resolution": null,
-      "execution_time_ms": 693.0100000463426,
+      "execution_time_ms": 662.8678999841213,
       "peak_vram_mb": null,
       "status": "success",
       "errors": [],
       "warnings": [],
-      "config_hash": "b86adc9689746372",
+      "config_hash": "bc15d2123dcd3136",
       "input_hash": null,
       "output_hash": null,
-      "started_at": "2026-10-30T21:22:07.403490Z",
-      "finished_at": "2026-10-30T21:22:08.095221Z",
-      "duration_ms": 693.0100000463426,
+      "started_at": "2026-10-30T21:34:42.655485Z",
+      "finished_at": "2026-10-30T21:34:43.314373Z",
+      "duration_ms": 662.8678999841213,
       "extra": {}
     },
     "inpainting": {
       "stage": "inpainting",
-      "backend": "opencv",
-      "model": "manga",
+      "backend": "anime-lama",
+      "model": "anime-lama",
       "model_version": null,
       "device": "cuda:0",
       "precision": null,
       "input_resolution": null,
       "output_resolution": null,
-      "execution_time_ms": 4861.629000050016,
+      "execution_time_ms": 115081.93300000858,
       "peak_vram_mb": 5676.55908203125,
-      "status": "success",
-      "errors": [],
-      "warnings": [
-        "LaMa unavailable (IOPaint is required for the 'iopaint' backend. Install it with:\n    pip install 'manga-ai[iopaint]'\n    # or: pip install iopaint\n(original error: cannot import name 'cached_download' from 'huggingface_hub' (D:\\projects\\Lib\\site-packages\\huggingface_hub\\__init__.py)))"
+      "status": "failed",
+      "errors": [
+        "page=001: [SSL: DECRYPTION_FAILED_OR_BAD_RECORD_MAC] decryption failed or bad record mac (_ssl.c:2559)"
       ],
-      "config_hash": "b86adc9689746372",
+      "warnings": [],
+      "config_hash": "bc15d2123dcd3136",
       "input_hash": null,
       "output_hash": null,
-      "started_at": "2026-10-30T21:22:08.095221Z",
-      "finished_at": "2026-10-30T21:22:12.966241Z",
-      "duration_ms": 4861.629000050016,
+      "started_at": "2026-10-30T21:34:43.314373Z",
+      "finished_at": "2026-10-30T21:36:38.400997Z",
+      "duration_ms": 115081.93300000858,
       "extra": {
         "tile_size": 768,
         "overlap": 64
@@ -687,16 +687,12 @@
       "bubble_pad_px": 10
     },
     "inpainting": {
-      "backend": "iopaint",
+      "backend": "anime-lama",
       "tile_size": 768,
       "overlap": 64,
       "precision": "fp16",
       "fallback_to_cpu": true,
-      "model": "manga",
-      "hd_strategy": "crop",
-      "crop_trigger_size": 1024,
       "crop_margin": 128,
-      "resize_limit": 2048,
       "radius": 7,
       "method": "telea",
       "passes": 2,
@@ -705,10 +701,10 @@
     }
   },
   "cache_keys": {
-    "detection": "2fdb4f6cf6dc883dae6a7db9",
-    "ocr": "a3a2da08d131cb1007d178a3",
-    "translation": "4f3b05671d9ec4d764a4f182",
-    "masking": "634a4214589764d7e3d521c5",
-    "inpainting": "69b8bcf470f3aa8020adb988"
+    "detection": "78940d683d737128b93e6dad",
+    "ocr": "b20a2677c6d56875148d5cf4",
+    "translation": "cc63815797386d3fa3c75600",
+    "masking": "4f1c2a8e126c049aea321d95",
+    "inpainting": "35660d55abc375297c763624"
   }
 }
