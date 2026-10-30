@@ -38,7 +38,7 @@ if ($Stage -eq "transtest") {
   $log = [System.IO.Path]::GetTempFileName()
   & $Python scripts/smoke_translate.py -c $Config --out results/latest 2>&1 | Tee-Object -FilePath $log
   $rc = $LASTEXITCODE
-  Copy-Item $log results/latest/run.txt -Force -ErrorAction SilentlyContinue
+  (Get-Content $log -Raw -ErrorAction SilentlyContinue) | Set-Content results/latest/run.txt -Encoding utf8 -ErrorAction SilentlyContinue
   Remove-Item $log -ErrorAction SilentlyContinue
   if (-not $NoPush) {
     git add -A results/
@@ -84,7 +84,7 @@ Write-Host "-- pipeline exit code: $runRc"
 # 3) collect a small shareable snapshot
 Write-Host "-- collecting results"
 & $Python scripts/collect_results.py --chapter $Chapter --config $Config --out results/latest --samples $Samples --crops $Crops
-if (Test-Path results/latest) { Copy-Item $log results/latest/run.txt -Force -ErrorAction SilentlyContinue }
+if (Test-Path results/latest) { (Get-Content $log -Raw -ErrorAction SilentlyContinue) | Set-Content results/latest/run.txt -Encoding utf8 -ErrorAction SilentlyContinue }
 Remove-Item $log -ErrorAction SilentlyContinue
 
 # 4) commit + push
