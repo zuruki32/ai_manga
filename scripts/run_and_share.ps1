@@ -77,9 +77,9 @@ Write-Host "-- git pull --rebase --autostash origin $Branch"
 git pull --rebase --autostash origin $Branch
 if ($LASTEXITCODE -ne 0) { Write-Host "!! pull failed (offline or conflict) - continuing with local code" }
 
-# --limit only applies to the full pipeline ('process')
+# --limit applies to every image stage (not translate, which has no pages)
 $limitArg = @()
-if ($Cmd -eq "process" -and $Limit -gt 0) { $limitArg = @("--limit", $Limit) }
+if ($Cmd -ne "translate" -and $Limit -gt 0) { $limitArg = @("--limit", $Limit) }
 
 # 2) run the pipeline, capturing a log
 $log = [System.IO.Path]::GetTempFileName()

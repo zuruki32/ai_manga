@@ -95,9 +95,9 @@ echo "-- git pull --rebase --autostash origin $BRANCH"
 git pull --rebase --autostash origin "$BRANCH" || echo "!! pull failed (offline or conflict) — continuing with local code"
 
 # 2) run the pipeline, capturing a log
-# --limit only applies to the full pipeline ('process')
+# --limit applies to every image stage (not translate, which has no pages)
 LIMIT_ARG=""
-if [[ "$CMD" == "process" && "${LIMIT:-0}" -gt 0 ]]; then
+if [[ "$CMD" != "translate" && "${LIMIT:-0}" -gt 0 ]]; then
   LIMIT_ARG="--limit $LIMIT"
 fi
 LOG="$(mktemp)"

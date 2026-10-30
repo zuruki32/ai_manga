@@ -382,17 +382,21 @@ def main() -> None:
     (out / "cleaned_full").mkdir(parents=True, exist_ok=True)
     full_made = []
     cdir = chapter / "cleaned"
-    if cdir.is_dir():
-        for cp in sorted(cdir.glob("*.png"))[:14]:
-            img = cv2.imread(str(cp))
-            if img is None:
-                continue
-            if img.shape[1] > 1200:
-                s = 1200 / img.shape[1]
-                img = cv2.resize(img, (1200, max(1, int(img.shape[0] * s))), interpolation=cv2.INTER_AREA)
-            name = f"{cp.stem}.jpg"
-            cv2.imwrite(str(out / "cleaned_full" / name), img, [cv2.IMWRITE_JPEG_QUALITY, 85])
-            full_made.append(name)
+    # Only this run's pages (manifest), so stale cleaned/*.png from earlier
+    # full-chapter runs don't leak into the review.
+    for pg in list(pages)[:14]:
+        cp = _find(cdir, str(pg))
+        if cp is None:
+            continue
+        img = cv2.imread(str(cp))
+        if img is None:
+            continue
+        if img.shape[1] > 1200:
+            s = 1200 / img.shape[1]
+            img = cv2.resize(img, (1200, max(1, int(img.shape[0] * s))), interpolation=cv2.INTER_AREA)
+        name = f"{pg}.jpg"
+        cv2.imwrite(str(out / "cleaned_full" / name), img, [cv2.IMWRITE_JPEG_QUALITY, 85])
+        full_made.append(name)
 
     # 4) SUMMARY.md
     stages = manifest.get("stages", {})
