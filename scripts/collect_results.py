@@ -338,6 +338,62 @@ def main() -> None:
         ci.append("")
     (out / "ocr_crops" / "index.md").write_text("\n".join(ci), encoding="utf-8")
 
+    # 3b) full-res ORIGINAL | CLEANED crops so cleaning quality can be judged
+    (out / "clean_crops").mkdir(parents=True, exist_ok=True)
+    cleaned_cache: Dict[str, Optional[np.ndarray]] = {}
+    clean_made = []
+    for row in crop_rows[:10]:
+        pg = row["page"]
+        r = next((x for x in picked if str(x.get("page")) == pg and (x.get("source_text") or "").strip() == row["en"]), None)
+        if r is None:
+            continue
+        box = _region_box(r)
+        proc = cache_proc.get(pg)
+        if pg not in cleaned_cache:
+            cp = _find(chapter / "cleaned", pg)
+            cleaned_cache[pg] = cv2.imread(str(cp)) if cp else None
+        cln = cleaned_cache[pg]
+        if proc is None or cln is None or not box:
+            continue
+        h, w = proc.shape[:2]
+        x1, y1, x2, y2 = box
+        pad = 24
+        x1 = max(0, x1 - pad); y1 = max(0, y1 - pad)
+        x2 = min(w, x2 + pad); y2 = min(h, y2 + pad)
+        if cln.shape[:2] != proc.shape[:2]:
+            cln = cv2.resize(cln, (w, h), interpolation=cv2.INTER_AREA)
+        o = proc[y1:y2, x1:x2]; c = cln[y1:y2, x1:x2]
+        if o.size == 0 or c.size == 0:
+            continue
+        ph = max(o.shape[0], 40)
+        strip = np.full((ph, 8, 3), 200, np.uint8)
+        pair = np.hstack([o, strip, c[: o.shape[0], : o.shape[1]]]) if c.shape[:2] == o.shape[:2] else np.hstack([o, strip, cv2.resize(c, (o.shape[1], o.shape[0]))])
+        name = f"{row['idx']:02d}_{pg}.jpg"
+        cv2.imwrite(str(out / "clean_crops" / name), pair, [cv2.IMWRITE_JPEG_QUALITY, 92])
+        clean_made.append(name)
+    cc = ["# Clean crops — LEFT original | RIGHT cleaned (full resolution)", ""]
+    for name in clean_made:
+        cc.append(f"### {name}")
+        cc.append(f"![pair](clean_crops/{name})")
+        cc.append("")
+    (out / "clean_crops" / "index.md").write_text("\n".join(cc), encoding="utf-8")
+
+    # 3c) full cleaned pages (downscaled JPEG) so the whole result is reviewable
+    (out / "cleaned_full").mkdir(parents=True, exist_ok=True)
+    full_made = []
+    cdir = chapter / "cleaned"
+    if cdir.is_dir():
+        for cp in sorted(cdir.glob("*.png"))[:14]:
+            img = cv2.imread(str(cp))
+            if img is None:
+                continue
+            if img.shape[1] > 1200:
+                s = 1200 / img.shape[1]
+                img = cv2.resize(img, (1200, max(1, int(img.shape[0] * s))), interpolation=cv2.INTER_AREA)
+            name = f"{cp.stem}.jpg"
+            cv2.imwrite(str(out / "cleaned_full" / name), img, [cv2.IMWRITE_JPEG_QUALITY, 85])
+            full_made.append(name)
+
     # 4) SUMMARY.md
     stages = manifest.get("stages", {})
     lines = ["# Run summary — full-pipeline quality review", ""]
@@ -372,6 +428,8 @@ def main() -> None:
         lines.append(f"- `samples/{m}`")
     lines.append("")
     lines.append(f"## OCR verification ({len(crop_rows)} crops) — see `ocr_crops/index.md`")
+    lines.append("")
+    lines.append(f"## Cleaning review — `clean_crops/` (before|after, full-res), `cleaned_full/` ({len(full_made)} full pages)")
     lines.append("")
     lines.append("## Translation preview (chapter_scanlation_en_fa.txt)")
     lines.append("```")

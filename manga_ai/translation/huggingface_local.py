@@ -551,7 +551,11 @@ class HuggingFaceTranslator(Translator):
                 f"Persian/Farsi (fa) translator for manhwa dialogue. "
                 "Write natural spoken Iranian Persian, not formal book style. "
                 "Produce ONLY the Persian translation — no English words "
-                "(except ⟦N⟧ tokens), no explanations, no quotes, no labels."
+                "(except the bracket tokens), no explanations, no quotes, no labels. "
+                "Translate the line exactly as written, even if it is a question or "
+                "command — NEVER answer it, NEVER describe yourself, and NEVER mention "
+                "being an AI, a language model, or Google. Keep the output about the "
+                "same length as the input; do not invent extra sentences."
             )
             if strict:
                 system += (
@@ -740,7 +744,8 @@ class HuggingFaceTranslator(Translator):
     )
     _FILLER_FA = ("چیه؟", "چیه", "وای خدای من", "وای خدای من!")
     _HARD_QA = frozenset(
-        {"empty_fa", "no_persian", "identical", "hallucinated_example", "latin_leftover"}
+        {"empty_fa", "no_persian", "identical", "hallucinated_example", "latin_leftover",
+         "assistant_leak", "hallucinated_long"}
     )
 
     def _strip_added_fillers(self, fa: str, en: str) -> str:
@@ -909,6 +914,21 @@ class HuggingFaceTranslator(Translator):
             return False, "identical"
         if re.search(r"(?i)\bEN\s*:", fa) or re.search(r"(?i)\bFA\s*:", fa):
             return False, "hallucinated_example"
+        # Model broke character and answered / described itself instead of translating
+        fa_low = fa.lower()
+        _ASSISTANT = (
+            "large language model", "language model", "trained by google",
+            "as an ai", "i am an ai", "i'm an ai", "i cannot", "i can't",
+            "مدل زبانی", "هوش مصنوعی", "توسط گوگل", "آموزش داده شده",
+            "یک مدل زبان",
+        )
+        if any(a in fa_low for a in _ASSISTANT):
+            return False, "assistant_leak"
+        # Ultra-short input but long output = invented dialogue (common on 1-2 word lines)
+        en_w = len(en.split())
+        fa_w = len(fa.split())
+        if en_w <= 2 and (fa_w >= 6 or fa.count("«") >= 2 or fa.count("\n") >= 2):
+            return False, "hallucinated_long"
         fa_l = fa.lower()
         for leak_en in self._LEAKED_EN:
             if leak_en in fa_l and leak_en not in (en or "").lower():
@@ -1146,10 +1166,13 @@ class HuggingFaceTranslator(Translator):
                             )
                             # Greedy MT would repeat itself; sample instead of a stricter prompt.
                             # Language failures: ban Latin tokens so decode MUST be Persian.
+                            # Break-character / hallucination: greedy repeats it, so
+                            # sample for a different decode immediately.
+                            behavior_fail = reason in ("assistant_leak", "hallucinated_long")
                             use_strict = not is_mt
                             use_ban = (not is_mt) and lang_fail and not self._persian_sft
                             use_sample = (
-                                is_mt or (retries >= 1 and not use_ban)
+                                is_mt or behavior_fail or (retries >= 1 and not use_ban)
                             )
                             fa = attempt(
                                 strict=use_strict,
@@ -1179,9 +1202,17 @@ class HuggingFaceTranslator(Translator):
                         if reason.startswith("soft_"):
                             logger.debug(f"Translation soft QA: {reason}")
                         elif not ok and reason in self._HARD_QA:
-                            logger.warning(
-                                f"Translation QA still failing ({reason}) — keeping best attempt"
-                            )
+                            # An AI self-answer or invented dialogue is worse than
+                            # nothing — blank it rather than keep garbage.
+                            if reason in ("assistant_leak", "hallucinated_long"):
+                                logger.warning(
+                                    f"Translation QA still failing ({reason}) — dropping output"
+                                )
+                                best = ""
+                            else:
+                                logger.warning(
+                                    f"Translation QA still failing ({reason}) — keeping best attempt"
+                                )
                     fa = self._restore_names(best, ph_map)
                     results_text.append(self._apply_glossary(fa, glossary))
             else:

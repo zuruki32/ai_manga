@@ -63,6 +63,8 @@ def create_inpainter(backend: str = "mock", **kwargs) -> Inpainter:
             device=kwargs.get("device", "cuda"),
             crop_margin=int(kwargs.get("crop_margin", 128)),
             model_path=kwargs.get("model_path"),
+            solid_fill_std=float(kwargs.get("solid_fill_std", 10.0)),
+            feather_sigma=float(kwargs.get("feather_sigma", 2.0)),
         )
     if backend in ("iopaint", "manga"):
         if not iopaint_available():

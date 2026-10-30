@@ -104,10 +104,16 @@ class AnimeLaMaInpainter(Inpainter):
         device: str = "cuda",
         crop_margin: int = 128,
         model_path: Optional[str] = None,
+        solid_fill_std: float = 10.0,
+        feather_sigma: float = 2.0,
         **_: Any,
     ) -> None:
         self.device = device or "cuda"
         self.crop_margin = int(crop_margin)
+        # Below this color std in the ring just outside the text, treat the region
+        # as a solid bubble/flat area and flat-fill it (crisp) instead of LaMa.
+        self.solid_fill_std = float(solid_fill_std)
+        self.feather_sigma = float(feather_sigma)
         self.model_path = Path(model_path) if model_path else (_default_cache() / "anime-manga-big-lama.pt")
         self._model = None
         self._torch = None
@@ -190,10 +196,34 @@ class AnimeLaMaInpainter(Inpainter):
         res = np.clip(res * 255, 0, 255).astype("uint8")
         return res[:h, :w]
 
+    def _solid_fill(self, crop_img: np.ndarray, crop_mask: np.ndarray) -> Optional[np.ndarray]:
+        """If the ring just outside the mask is near-uniform (a solid speech
+        bubble / flat background), return a flat fill of that color — crisp and
+        ghost-free. Otherwise return None so LaMa handles the textured art."""
+        k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
+        dil = cv2.dilate(crop_mask, k)
+        ring = (dil > 0) & (crop_mask == 0)
+        pix = crop_img[ring]
+        if pix.shape[0] < 24:
+            return None
+        pix = pix.reshape(-1, crop_img.shape[2])
+        std = float(pix.std(axis=0).mean())
+        if std <= self.solid_fill_std:
+            color = np.median(pix, axis=0)
+            out = np.empty_like(crop_img)
+            out[:] = color.astype(np.uint8)
+            return out
+        return None
+
+    def _feather(self, orig: np.ndarray, cleaned: np.ndarray, crop_mask: np.ndarray) -> np.ndarray:
+        """Blend cleaned into orig with a soft alpha from the mask (no hard seams)."""
+        a = cv2.GaussianBlur((crop_mask > 0).astype(np.float32), (0, 0), self.feather_sigma)
+        a = np.clip(a, 0.0, 1.0)[:, :, None]
+        return (orig.astype(np.float32) * (1 - a) + cleaned.astype(np.float32) * a).astype(np.uint8)
+
     def inpaint(self, image: np.ndarray, mask: np.ndarray) -> np.ndarray:
         if mask is None or mask.size == 0 or mask.max() == 0:
             return image.copy()
-        self._ensure_model()
 
         if mask.ndim == 3:
             mask = mask[:, :, 0]
@@ -202,8 +232,7 @@ class AnimeLaMaInpainter(Inpainter):
         H, W = image.shape[:2]
 
         result = image.copy()
-        boxes = _boxes_from_mask(mask)
-        for box in boxes:
+        for box in _boxes_from_mask(mask):
             x1, y1, x2, y2 = box
             x1 = max(0, x1 - self.crop_margin)
             y1 = max(0, y1 - self.crop_margin)
@@ -215,18 +244,24 @@ class AnimeLaMaInpainter(Inpainter):
             crop_mask = mask[y1:y2, x1:x2]
             if crop_mask.max() == 0:
                 continue
+            m = crop_mask > 0
+
+            # Crisp flat fill for solid bubble interiors; LaMa only for real art.
+            filled = self._solid_fill(crop_img, crop_mask)
+            if filled is not None:
+                region = result[y1:y2, x1:x2]
+                region[m] = filled[m]
+                result[y1:y2, x1:x2] = region
+                continue
+
+            self._ensure_model()
             try:
                 cleaned = self._forward_crop(crop_img, crop_mask)
             except RuntimeError as e:
                 if "out of memory" in str(e).lower():
                     self._clear_cuda()
-                    raise
                 raise
-            # paste only the masked pixels so unmasked art stays pixel-exact
-            m = crop_mask > 0
-            region = result[y1:y2, x1:x2]
-            region[m] = cleaned[m]
-            result[y1:y2, x1:x2] = region
+            result[y1:y2, x1:x2] = self._feather(crop_img, cleaned, crop_mask)
         return result
 
     def _clear_cuda(self) -> None:

@@ -220,6 +220,8 @@ class Pipeline:
                     resize_limit=self.config.get("inpainting.resize_limit", 2048),
                     hd_strategy=self.config.get("inpainting.hd_strategy", "crop"),
                     result_is_bgr=self.config.get("inpainting.result_is_bgr", True),
+                    solid_fill_std=self.config.get("inpainting.solid_fill_std", 10.0),
+                    feather_sigma=self.config.get("inpainting.feather_sigma", 2.0),
                 )
             except Exception as e:
                 logger.warning(f"Inpainter '{backend}' failed ({e}), falling back to opencv")
