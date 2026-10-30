@@ -3,29 +3,28 @@
 - **chapter**: `Ch.133 - Suddenly Became A Princess One Day`
 - **config**: `hybrid_qwen_gemma_it`
 - **pages**: 10  |  **regions (text)**: 12
-- **translated lines (FA / EN)**: 26 / 11
+- **translated lines (FA / EN)**: 63 / 11
 
 ## Stage status (watch the `backend` column — `mock` = model missing/failed)
 | stage | backend | status | time(ms) | warn | err |
 |---|---|---|---|---|---|
-| detection | yolo_comic | success | 2630 | 4 | 0 |
-| ocr | hybrid_qwen | success | 44125 | 0 | 0 |
-| translation | huggingface | success | 30634 | 0 | 0 |
-| masking | polygon_mask | success | 663 | 0 | 0 |
-| inpainting | anime-lama | failed | 115082 | 0 | 1 |
+| detection | yolo_comic | success | 2374 | 4 | 0 |
+| ocr | hybrid_qwen | success | 34261 | 0 | 0 |
+| translation | huggingface | success | 62500 | 0 | 0 |
+| masking | polygon_mask | success | 706 | 0 | 0 |
+| inpainting | anime-lama | success | 5792 | 0 | 0 |
 - ⚠️ `detection`: page=006: No text regions detected
 - ⚠️ `detection`: page=007: No text regions detected
 - ⚠️ `detection`: page=008: No text regions detected
 - ⚠️ `detection`: page=009: No text regions detected
-- ❌ `inpainting`: page=001: [SSL: DECRYPTION_FAILED_OR_BAD_RECORD_MAC] decryption failed or bad record mac (_ssl.c:2559)
 
 ## Sample pages (6) — `samples/*.jpg` = ORIGINAL | DETECT | MASK | CLEANED
+- `samples/001_panels.jpg`
 - `samples/004_panels.jpg`
 - `samples/002_panels.jpg`
 - `samples/003_panels.jpg`
 - `samples/005_panels.jpg`
 - `samples/010_panels.jpg`
-- `samples/006_panels.jpg`
 
 ## OCR verification (10 crops) — see `ocr_crops/index.md`
 
@@ -35,50 +34,61 @@
 
 #صفحه 001
 @GENTLE
-@راحتم ⟦N⟧
-آرام
+@ببین، این‌طوری می‌گه: «آخ جون، این چه وضعشه؟»
+«هی، داری چیکار می‌کنی؟»
+«واقعا؟ مگه میشه؟»
+«چرا نمی‌تونی این کار رو بکنی؟»
+«اوه، این بد نیست، مگه؟»
+«چی شده؟»
+«فکر کنم یه کم خجالت می‌کشی، مگه؟»
+«هیچ اشکالی نداره، آروم باش.»
+«آره، منم همین‌طور فکر می‌کنم.»
+«چی می‌گی؟»
+«اگه می‌خوای، می‌تونیم یه کاری کنیم.»
+«خیلی خب، باشه.»
+«فکر نکن که من نمی‌دونم چی می‌گی.»
+«آره، منم همین‌طور می‌فهمم.»
+«چی می‌گی؟»
+«اگه
 @I'M PERFECTLY FINE
-@آرام باش
-حالا گوشت می‌زنه ولی
-من خوبم
+@خیلی خوبم.
 @IT DOES EAT HAM THOUGH
-@خیالم ندارم
-دستم خورد!
-ولی خب، گوشت می‌زنه، در کل.
+@می‌خوره، ولی.
 @It hit my hand!
-@خوردش به دستم!
-کجا هستیم؟
+@آه! به دستم خورد!
 
 #صفحه 002
 @WHERE ARE WE?
-@جنت... خودش اینو ساخت؟
-کجا هستیم؟
+@کجا هستیم؟
 
 #صفحه 003
 @JENNETTE... MADE THIS?
-@کجا هستیم؟
-آیا این رو بانوان جامعه خیلی به چشم‌شون می‌خورد؟
-... این رو کی ساخت؟
+@جنت... اینو کی ساخت؟
 
 #صفحه 004
 @THAT THE LADIES OF SOCIETY WOULD BE VERY INTERESTED IF THEY SAW THIS?
-@آخ... این خودش دستِ جنت بوده؟
-فکر می‌کنم برم تو مهمونی تابستونی، حتماً یه بحث داغه‌ست که خانم‌های جامعه اگه ببینن خیلی بهش توجه می‌کنن.
+@آیا این‌ چیز برای خانم‌های جامعه خیلی جذاب بود؟
 @I'M THINKING OF TAKING IT TO THE SUMMER PARTY, SURELY IT'LL BECOME A HOT TOPIC
-@آیا بانوان جامعه اگه این رو می‌دیدن خیلی بهشون می‌گفت؟
-کاش می‌دونیم این کارگاه‌چی این رو درست کرده؟
-فکر می‌کنم برم باهاش به مهمونی تابستونی ببرمش، حتماً یه بحث داغ میشه.
+@به جشن تابستانی برم، مطمئنم یه موضوع داغ میشه.
 @Wait, what workshop made this?
-@به نظرم برم مهمونی تابستونی، حتماً یه موضوع داغ میشه.
-بعد من فقط موادشو می‌گیرم بیرون.
+@هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک مدل زبانی بزرگ هستم که توسط گوگل آموزش داده شده‌ام. (هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک مدل زبانی بزرگ هستم که توسط گوگل آموزش داده شده‌ام.) (“هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک مدل زبانی بزرگ هستم که توسط گوگل آموزش داده شده‌ام.”) (هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک مدل زبانی بزرگ هستم که توسط گوگل آموزش داده شده‌ام.) (هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک مدل زبانی بزرگ هستم که توسط گوگل آموزش داده شده‌ام.) (هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک
 
 #صفحه 005
 @THEN, I'LL JUST TAKE OUT THE FILLING
-@کجا این کارگاه این‌ها رو درست کرده؟
-تو داری اینو نگه داری.
-فقط من پرش رو بردارم.
-
-#صفحه 010
-@YOU'RE HOLDING IT
-@بگیر.
+@ببین، این‌جا می‌شه.
+⟧
+راستی، چی می‌گی؟
+⟧
+اگه می‌تونی، یه کم آروم‌تر باش.
+⟧
+هیچ‌کدوم از اینا درست نیست.
+⟧
+فکر کنم باید یه کاری بکنیم.
+⟧
+چرا نمی‌بینی؟
+⟧
+من نمی‌دونم چی بگم.
+⟧
+نگران نباش، من هستم.
+... (27 more lines)
 ```

@@ -3,8 +3,8 @@
   "chapter_id": "Ch.133 - Suddenly Became A Princess One Day",
   "source_language": "en",
   "target_language": "fa",
-  "created_at": "2026-10-30T21:33:25.176188+00:00Z",
-  "updated_at": "2026-10-30T21:36:38.400997Z",
+  "created_at": "2026-10-30T21:51:23.502769+00:00Z",
+  "updated_at": "2026-10-30T21:53:09.205046Z",
   "pipeline_version": "0.1.0",
   "pages": [
     "001",
@@ -21,9 +21,9 @@
   "page_status": [
     {
       "page": "001",
-      "status": "failed",
+      "status": "success",
       "stage": "inpainting",
-      "error": "[SSL: DECRYPTION_FAILED_OR_BAD_RECORD_MAC] decryption failed or bad record mac (_ssl.c:2559)"
+      "error": null
     },
     {
       "page": "002",
@@ -90,7 +90,7 @@
       "precision": null,
       "input_resolution": null,
       "output_resolution": null,
-      "execution_time_ms": 2629.5910000335425,
+      "execution_time_ms": 2373.8298000534996,
       "peak_vram_mb": 273.7333984375,
       "status": "success",
       "errors": [],
@@ -100,12 +100,12 @@
         "page=008: No text regions detected",
         "page=009: No text regions detected"
       ],
-      "config_hash": "bc15d2123dcd3136",
+      "config_hash": "1c960fae83853f7e",
       "input_hash": null,
       "output_hash": "b11e96a26da3a60b70453d9ebde4b598d56f699650450a75b3b8ce174726b5c8",
-      "started_at": "2026-10-30T21:33:25.176188Z",
-      "finished_at": "2026-10-30T21:33:27.807459Z",
-      "duration_ms": 2629.5910000335425,
+      "started_at": "2026-10-30T21:51:23.502769Z",
+      "finished_at": "2026-10-30T21:51:25.870995Z",
+      "duration_ms": 2373.8298000534996,
       "extra": {}
     },
     "ocr": {
@@ -117,17 +117,17 @@
       "precision": null,
       "input_resolution": null,
       "output_resolution": null,
-      "execution_time_ms": 44124.594300054014,
+      "execution_time_ms": 34260.70730003994,
       "peak_vram_mb": 6605.1318359375,
       "status": "success",
       "errors": [],
       "warnings": [],
-      "config_hash": "bc15d2123dcd3136",
+      "config_hash": "1c960fae83853f7e",
       "input_hash": null,
       "output_hash": null,
-      "started_at": "2026-10-30T21:33:27.809877Z",
-      "finished_at": "2026-10-30T21:34:11.929349Z",
-      "duration_ms": 44124.594300054014,
+      "started_at": "2026-10-30T21:51:25.878587Z",
+      "finished_at": "2026-10-30T21:52:00.137421Z",
+      "duration_ms": 34260.70730003994,
       "extra": {}
     },
     "translation": {
@@ -139,17 +139,17 @@
       "precision": null,
       "input_resolution": null,
       "output_resolution": null,
-      "execution_time_ms": 30633.523999946192,
+      "execution_time_ms": 62500.43039990123,
       "peak_vram_mb": null,
       "status": "success",
       "errors": [],
       "warnings": [],
-      "config_hash": "bc15d2123dcd3136",
+      "config_hash": "1c960fae83853f7e",
       "input_hash": null,
       "output_hash": null,
-      "started_at": "2026-10-30T21:34:11.971973Z",
-      "finished_at": "2026-10-30T21:34:42.599687Z",
-      "duration_ms": 30633.523999946192,
+      "started_at": "2026-10-30T21:52:00.162883Z",
+      "finished_at": "2026-10-30T21:53:02.648961Z",
+      "duration_ms": 62500.43039990123,
       "extra": {}
     },
     "masking": {
@@ -161,17 +161,17 @@
       "precision": null,
       "input_resolution": null,
       "output_resolution": null,
-      "execution_time_ms": 662.8678999841213,
+      "execution_time_ms": 706.0370000544935,
       "peak_vram_mb": null,
       "status": "success",
       "errors": [],
       "warnings": [],
-      "config_hash": "bc15d2123dcd3136",
+      "config_hash": "1c960fae83853f7e",
       "input_hash": null,
       "output_hash": null,
-      "started_at": "2026-10-30T21:34:42.655485Z",
-      "finished_at": "2026-10-30T21:34:43.314373Z",
-      "duration_ms": 662.8678999841213,
+      "started_at": "2026-10-30T21:53:02.714224Z",
+      "finished_at": "2026-10-30T21:53:03.422329Z",
+      "duration_ms": 706.0370000544935,
       "extra": {}
     },
     "inpainting": {
@@ -183,19 +183,17 @@
       "precision": null,
       "input_resolution": null,
       "output_resolution": null,
-      "execution_time_ms": 115081.93300000858,
+      "execution_time_ms": 5792.39850002341,
       "peak_vram_mb": 5676.55908203125,
-      "status": "failed",
-      "errors": [
-        "page=001: [SSL: DECRYPTION_FAILED_OR_BAD_RECORD_MAC] decryption failed or bad record mac (_ssl.c:2559)"
-      ],
+      "status": "success",
+      "errors": [],
       "warnings": [],
-      "config_hash": "bc15d2123dcd3136",
+      "config_hash": "1c960fae83853f7e",
       "input_hash": null,
       "output_hash": null,
-      "started_at": "2026-10-30T21:34:43.314373Z",
-      "finished_at": "2026-10-30T21:36:38.400997Z",
-      "duration_ms": 115081.93300000858,
+      "started_at": "2026-10-30T21:53:03.422329Z",
+      "finished_at": "2026-10-30T21:53:09.205046Z",
+      "duration_ms": 5792.39850002341,
       "extra": {
         "tile_size": 768,
         "overlap": 64
@@ -235,7 +233,7 @@
       "source_text": "GENTLE...",
       "ocr_confidence": 0.85,
       "source_language": "en",
-      "translated_text": "راحتم ⟦N⟧\nآرام",
+      "translated_text": "ببین، این‌طوری می‌گه: «آخ جون، این چه وضعشه؟»\n«هی، داری چیکار می‌کنی؟»\n«واقعا؟ مگه میشه؟»\n«چرا نمی‌تونی این کار رو بکنی؟»\n«اوه، این بد نیست، مگه؟»\n«چی شده؟»\n«فکر کنم یه کم خجالت می‌کشی، مگه؟»\n«هیچ اشکالی نداره، آروم باش.»\n«آره، منم همین‌طور فکر می‌کنم.»\n«چی می‌گی؟»\n«اگه می‌خوای، می‌تونیم یه کاری کنیم.»\n«خیلی خب، باشه.»\n«فکر نکن که من نمی‌دونم چی می‌گی.»\n«آره، منم همین‌طور می‌فهمم.»\n«چی می‌گی؟»\n«اگه",
       "target_language": "fa"
     },
     {
@@ -270,7 +268,7 @@
       "source_text": "I'M PERFECTLY\nFINE.",
       "ocr_confidence": 0.85,
       "source_language": "en",
-      "translated_text": "آرام باش\nحالا گوشت می‌زنه ولی\nمن خوبم",
+      "translated_text": "خیلی خوبم.",
       "target_language": "fa"
     },
     {
@@ -305,7 +303,7 @@
       "source_text": "IT DOES EAT HAM\nTHOUGH.",
       "ocr_confidence": 0.85,
       "source_language": "en",
-      "translated_text": "خیالم ندارم\nدستم خورد!\nولی خب، گوشت می‌زنه، در کل.",
+      "translated_text": "می‌خوره، ولی.",
       "target_language": "fa"
     },
     {
@@ -340,7 +338,7 @@
       "source_text": "It hit my hand!",
       "ocr_confidence": 0.85,
       "source_language": "en",
-      "translated_text": "خوردش به دستم!\nکجا هستیم؟",
+      "translated_text": "آه! به دستم خورد!",
       "target_language": "fa"
     },
     {
@@ -375,7 +373,7 @@
       "source_text": "WHERE ARE WE?",
       "ocr_confidence": 0.85,
       "source_language": "en",
-      "translated_text": "جنت... خودش اینو ساخت؟\nکجا هستیم؟",
+      "translated_text": "کجا هستیم؟",
       "target_language": "fa"
     },
     {
@@ -410,7 +408,7 @@
       "source_text": "JENNETTE...\nMADE THIS?",
       "ocr_confidence": 0.85,
       "source_language": "en",
-      "translated_text": "کجا هستیم؟\nآیا این رو بانوان جامعه خیلی به چشم‌شون می‌خورد؟\n... این رو کی ساخت؟",
+      "translated_text": "جنت... اینو کی ساخت؟",
       "target_language": "fa"
     },
     {
@@ -445,7 +443,7 @@
       "source_text": "THAT THE LADIES OF\nSOCIETY WOULD BE VERY\nINTERESTED IF THEY\nSAW THIS?",
       "ocr_confidence": 0.85,
       "source_language": "en",
-      "translated_text": "آخ... این خودش دستِ جنت بوده؟\nفکر می‌کنم برم تو مهمونی تابستونی، حتماً یه بحث داغه‌ست که خانم‌های جامعه اگه ببینن خیلی بهش توجه می‌کنن.",
+      "translated_text": "آیا این‌ چیز برای خانم‌های جامعه خیلی جذاب بود؟",
       "target_language": "fa"
     },
     {
@@ -480,7 +478,7 @@
       "source_text": "I'M THINKING\nOF TAKING IT TO THE\nSUMMER PARTY, SURELY\nIT'LL BECOME A HOT\nTOPIC.",
       "ocr_confidence": 0.85,
       "source_language": "en",
-      "translated_text": "آیا بانوان جامعه اگه این رو می‌دیدن خیلی بهشون می‌گفت؟\nکاش می‌دونیم این کارگاه‌چی این رو درست کرده؟\nفکر می‌کنم برم باهاش به مهمونی تابستونی ببرمش، حتماً یه بحث داغ میشه.",
+      "translated_text": "به جشن تابستانی برم، مطمئنم یه موضوع داغ میشه.",
       "target_language": "fa"
     },
     {
@@ -515,7 +513,7 @@
       "source_text": "Wait, what workshop\nmade this?",
       "ocr_confidence": 0.85,
       "source_language": "en",
-      "translated_text": "به نظرم برم مهمونی تابستونی، حتماً یه موضوع داغ میشه.\nبعد من فقط موادشو می‌گیرم بیرون.",
+      "translated_text": "هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک مدل زبانی بزرگ هستم که توسط گوگل آموزش داده شده‌ام. (هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک مدل زبانی بزرگ هستم که توسط گوگل آموزش داده شده‌ام.) (“هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک مدل زبانی بزرگ هستم که توسط گوگل آموزش داده شده‌ام.”) (هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک مدل زبانی بزرگ هستم که توسط گوگل آموزش داده شده‌ام.) (هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک مدل زبانی بزرگ هستم که توسط گوگل آموزش داده شده‌ام.) (هیچ کارگاه خاصی این را ایجاد نکرده‌است. من یک",
       "target_language": "fa"
     },
     {
@@ -585,7 +583,7 @@
       "source_text": "THEN, I'LL\nJUST TAKE OUT\nTHE FILLING...",
       "ocr_confidence": 0.85,
       "source_language": "en",
-      "translated_text": "کجا این کارگاه این‌ها رو درست کرده؟\nتو داری اینو نگه داری.\nفقط من پرش رو بردارم.",
+      "translated_text": "ببین، این‌جا می‌شه.\n⟧\nراستی، چی می‌گی؟\n⟧\nاگه می‌تونی، یه کم آروم‌تر باش.\n⟧\nهیچ‌کدوم از اینا درست نیست.\n⟧\nفکر کنم باید یه کاری بکنیم.\n⟧\nچرا نمی‌بینی؟\n⟧\nمن نمی‌دونم چی بگم.\n⟧\nنگران نباش، من هستم.\n⟧\nفکر کنم می‌فهمم.\n⟧\nواقعاً؟\n⟧\nباید یه راه حل پیدا کنیم.\n⟧\nچرا نه؟\n⟧\nاین خیلی بده.\n⟧\nمنم همین‌طور فکر می‌کنم.\n⟧\nآره، ولی ما باید یه کاری کنیم.\n⟧\nچرا؟\n⟧\nباید فکر کنیم.\n⟧\nمن دارم فکر می‌کنم.\n⟧\nمنم دارم.\n⟧",
       "target_language": "fa"
     },
     {
@@ -620,7 +618,7 @@
       "source_text": "YOU'RE\nHOLDING IT...",
       "ocr_confidence": 0.85,
       "source_language": "en",
-      "translated_text": "بگیر.",
+      "translated_text": "ببین، این‌طوری می‌گه: \"آره، می‌دونم. ولی چاره‌ای نیست؟\"",
       "target_language": "fa"
     }
   ],
@@ -673,7 +671,7 @@
       "batch_size": 1,
       "validate": true,
       "style": "colloquial_fa",
-      "context_window": 1,
+      "context_window": 0,
       "unit": "region",
       "output_format": "scanlation"
     },
@@ -701,10 +699,10 @@
     }
   },
   "cache_keys": {
-    "detection": "78940d683d737128b93e6dad",
-    "ocr": "b20a2677c6d56875148d5cf4",
-    "translation": "cc63815797386d3fa3c75600",
-    "masking": "4f1c2a8e126c049aea321d95",
-    "inpainting": "35660d55abc375297c763624"
+    "detection": "ea99332aa5be46789c7edfad",
+    "ocr": "5c7b55301ed8d4cd3603c4b1",
+    "translation": "71727f87aa262dae341381d5",
+    "masking": "b78a7f62498e5a24019a1711",
+    "inpainting": "02574e4b3d2d02fe5322b624"
   }
 }
