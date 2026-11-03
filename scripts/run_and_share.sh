@@ -14,7 +14,7 @@ set -uo pipefail
 
 # ---- defaults (edit these) ------------------------------------------------
 CHAPTER="data/chapters/Ch.133 - Suddenly Became A Princess One Day"
-CONFIG="hybrid_qwen_gemma_it"     # bare config name under configs/
+CONFIG="hybrid_qwen_nllb"     # bare config name under configs/
 # transtest = translator-only smoke test (no OCR needed); others run the pipeline
 STAGE="full"                      # full | detect | ocr | translate | mask | clean | transtest
 LIMIT=10                          # full run: only first N pages (0 = whole chapter)

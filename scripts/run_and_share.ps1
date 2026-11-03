@@ -11,7 +11,7 @@ Examples:
 #>
 param(
   [string]$Chapter = "data/chapters/Ch.133 - Suddenly Became A Princess One Day",
-  [string]$Config  = "hybrid_qwen_gemma_it",
+  [string]$Config  = "hybrid_qwen_nllb",
   [ValidateSet("full","detect","ocr","translate","mask","clean","transtest")]
   [string]$Stage   = "full",
   [int]$Limit      = 10,
