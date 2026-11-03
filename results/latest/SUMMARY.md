@@ -8,15 +8,7 @@
 ## Stage status (watch the `backend` column — `mock` = model missing/failed)
 | stage | backend | status | time(ms) | warn | err |
 |---|---|---|---|---|---|
-| detection | yolo_comic | success | 4199 | 4 | 0 |
-| ocr | hybrid_qwen | success | 35155 | 0 | 0 |
-| translation | huggingface | success | 56829 | 0 | 0 |
-| masking | polygon_mask | success | 787 | 0 | 0 |
-| inpainting | anime-lama | success | 5222 | 0 | 0 |
-- ⚠️ `detection`: page=006: No text regions detected
-- ⚠️ `detection`: page=007: No text regions detected
-- ⚠️ `detection`: page=008: No text regions detected
-- ⚠️ `detection`: page=009: No text regions detected
+| inpainting | anime-lama | success | 5365 | 0 | 0 |
 
 ## Sample pages (6) — `samples/*.jpg` = ORIGINAL | DETECT | MASK | CLEANED
 - `samples/001_panels.jpg`
