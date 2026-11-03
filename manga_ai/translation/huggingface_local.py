@@ -335,11 +335,10 @@ class HuggingFaceTranslator(Translator):
                 kwargs["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
             kwargs["device_map"] = "auto"
         else:
-            if _has_accelerate() and self.device.startswith("cuda"):
-                kwargs["device_map"] = "auto"
-                kwargs["torch_dtype"] = torch.float16
-            else:
-                kwargs["torch_dtype"] = torch.float16 if self.device.startswith("cuda") else torch.float32
+            # Small fp16 models (NLLB, MADLAD-fp16) fit fully on the GPU — load
+            # then .to(cuda) explicitly. device_map="auto" can silently offload
+            # layers to CPU and make translation ~100x slower.
+            kwargs["torch_dtype"] = torch.float16 if self.device.startswith("cuda") else torch.float32
 
         model = AutoModelForSeq2SeqLM.from_pretrained(model_id, **kwargs)
         if "device_map" not in kwargs:
