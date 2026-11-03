@@ -39,6 +39,10 @@ def _is_nllb(model_name: str) -> bool:
     return "nllb" in (model_name or "").lower().replace("\\", "/")
 
 
+def _is_madlad(model_name: str) -> bool:
+    return "madlad" in (model_name or "").lower().replace("\\", "/")
+
+
 def _is_causal(model_name: str) -> bool:
     low = (model_name or "").lower().replace("\\", "/")
     if _is_nllb(low):  # NLLB is seq2seq, never causal
@@ -259,6 +263,7 @@ class HuggingFaceTranslator(Translator):
         self._mode = "seq2seq"  # or "causal"
         self._is_m2m = False
         self._is_nllb = _is_nllb(model or "")
+        self._is_madlad = _is_madlad(model or "")
         self._is_gemma3_mm = False
 
     def _resolve_model(self, src: str, tgt: str) -> str:
@@ -477,6 +482,11 @@ class HuggingFaceTranslator(Translator):
                 forced_bos = tok.lang_code_to_id[tgt_lang]
         else:
             forced_bos = None
+
+        if self._is_madlad:
+            # MADLAD-400 selects the target language with a "<2xx>" input prefix.
+            tgt2 = {"pe": "fa"}.get(tgt[:2], tgt[:2])
+            texts = [f"<2{tgt2}> {t}" for t in texts]
 
         inputs = tok(
             texts,
@@ -1240,9 +1250,9 @@ class HuggingFaceTranslator(Translator):
                 for text in non_empty_texts:
                     mapping = {}
                     t = text
-                    # NLLB handles names by transliteration and would mangle the
-                    # ⟦N⟧ tokens, so pass raw text and rely on the post-glossary.
-                    if not self._is_nllb:
+                    # NLLB/MADLAD handle names by transliteration and would mangle
+                    # the ⟦N⟧ tokens, so pass raw text and rely on the post-glossary.
+                    if not (self._is_nllb or self._is_madlad):
                         for i, (term, _) in enumerate(
                             sorted(glossary.items(), key=lambda kv: -len(kv[0] or ""))
                         ):

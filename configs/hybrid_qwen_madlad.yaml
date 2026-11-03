@@ -1,0 +1,90 @@
+# Hybrid OCR (local Qwen3-VL) + MADLAD-400-3B (8-bit)  ==  MAX-ACCURACY MODE
+#
+# google/madlad400-3b-mt is Google's dedicated MT model — top faithfulness in
+# our benchmark (gets idioms + "ham" right). 8-bit ~3.5 GB VRAM on a 6 GB GPU.
+# Downloads ~12 GB on first run. Like NLLB it's a pure translator (no style /
+# few-shot). For a funny / custom voice use -c configs/hybrid_qwen_gemma_it.yaml
+#
+# OCR weights:  D:/projects/models/Qwen3-VL-8B-Instruct
+
+pipeline:
+  version: "0.1.0"
+  source_language: "en"
+  target_language: "fa"
+  force: true
+
+preprocessing:
+  convert_to_rgb: true
+  max_dimension: 1600
+  validate: true
+
+detection:
+  backend: "yolo_comic"
+  model: "models/comic-yolo.pt"
+  variant: "textseg"
+  confidence_threshold: 0.25
+  imgsz: 1024
+
+ocr:
+  backend: "hybrid_qwen"
+  model: "D:/projects/models/Qwen3-VL-8B-Instruct"
+  local_files_only: true
+  lang: "en"
+  confidence_threshold: 0.3
+  load_in_4bit: true
+  max_new_tokens: 96
+  pad_px: 6
+  max_pixels: 3211264
+  prompt: >
+    Read all English text in this comic speech bubble or caption.
+    Output only the transcribed text, nothing else.
+    If there is no readable text, output an empty string.
+
+translation:
+  backend: "huggingface"
+  model: "google/madlad400-3b-mt"   # Google dedicated MT (top accuracy)
+  local_files_only: false            # downloads ~12 GB on first run
+  load_in_8bit: true                 # ~3.5 GB VRAM on a 6 GB GPU
+  max_new_tokens: 128
+  max_length: 256
+  batch_size: 4
+  validate: true
+  max_retries: 1
+  unit: "region"
+  output_format: "scanlation"
+  glossary:
+    "Jennette": "جنت"
+    "JENNETTE": "جنت"
+    "Claude": "کلود"
+    "CLAUDE": "کلود"
+    "Your Highness": "علیاحضرت"
+    "Princess": "پرنسس"
+    "PRINCESS": "پرنسس"
+
+masking:
+  dilation_px: 18
+  blur_radius: 2
+  use_polygon: true
+  residual_expand: true
+  residual_thresh: 140
+  bubble_inflate: true
+  bubble_pad_px: 10
+
+inpainting:
+  crop_margin: 128
+  backend: "anime-lama"
+  tile_size: 768
+  overlap: 64
+  fallback_to_cpu: true
+
+device:
+  preferred: "cuda"
+  device_id: 0
+  unload_after_stage: true
+
+cache:
+  enabled: true
+
+logging:
+  level: "INFO"
+  structured: true
