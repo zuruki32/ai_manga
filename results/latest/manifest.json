@@ -3,8 +3,8 @@
   "chapter_id": "Ch.133 - Suddenly Became A Princess One Day",
   "source_language": "en",
   "target_language": "fa",
-  "created_at": "2026-11-03T20:16:08.046544+00:00Z",
-  "updated_at": "2026-11-03T20:16:13.434098Z",
+  "created_at": "2026-11-03T22:08:25.334783+00:00Z",
+  "updated_at": "2026-11-03T22:27:25.673925Z",
   "pipeline_version": "0.1.0",
   "pages": [
     "001",
@@ -81,6 +81,99 @@
     }
   ],
   "stages": {
+    "detection": {
+      "stage": "detection",
+      "backend": "yolo_comic",
+      "model": "yolo_comic",
+      "model_version": null,
+      "device": "cuda:0",
+      "precision": null,
+      "input_resolution": null,
+      "output_resolution": null,
+      "execution_time_ms": 2475.4222999326885,
+      "peak_vram_mb": 273.7333984375,
+      "status": "success",
+      "errors": [],
+      "warnings": [
+        "page=006: No text regions detected",
+        "page=007: No text regions detected",
+        "page=008: No text regions detected",
+        "page=009: No text regions detected"
+      ],
+      "config_hash": "d82f3620e4bc855a",
+      "input_hash": null,
+      "output_hash": "b11e96a26da3a60b70453d9ebde4b598d56f699650450a75b3b8ce174726b5c8",
+      "started_at": "2026-11-03T22:08:25.334783Z",
+      "finished_at": "2026-11-03T22:08:27.809885Z",
+      "duration_ms": 2475.4222999326885,
+      "extra": {}
+    },
+    "ocr": {
+      "stage": "ocr",
+      "backend": "hybrid_qwen",
+      "model": "hybrid_qwen",
+      "model_version": null,
+      "device": "cuda:0",
+      "precision": null,
+      "input_resolution": null,
+      "output_resolution": null,
+      "execution_time_ms": 33193.32700013183,
+      "peak_vram_mb": 6605.1318359375,
+      "status": "success",
+      "errors": [],
+      "warnings": [],
+      "config_hash": "d82f3620e4bc855a",
+      "input_hash": null,
+      "output_hash": null,
+      "started_at": "2026-11-03T22:08:27.813460Z",
+      "finished_at": "2026-11-03T22:09:00.999477Z",
+      "duration_ms": 33193.32700013183,
+      "extra": {}
+    },
+    "translation": {
+      "stage": "translation",
+      "backend": "huggingface",
+      "model": "facebook/nllb-200-distilled-1.3B",
+      "model_version": null,
+      "device": "cpu",
+      "precision": null,
+      "input_resolution": null,
+      "output_resolution": null,
+      "execution_time_ms": 1092633.0188999418,
+      "peak_vram_mb": null,
+      "status": "success",
+      "errors": [],
+      "warnings": [],
+      "config_hash": "d82f3620e4bc855a",
+      "input_hash": null,
+      "output_hash": null,
+      "started_at": "2026-11-03T22:09:01.032808Z",
+      "finished_at": "2026-11-03T22:27:13.653145Z",
+      "duration_ms": 1092633.0188999418,
+      "extra": {}
+    },
+    "masking": {
+      "stage": "masking",
+      "backend": "polygon_mask",
+      "model": null,
+      "model_version": null,
+      "device": "cpu",
+      "precision": null,
+      "input_resolution": null,
+      "output_resolution": null,
+      "execution_time_ms": 1573.750700103119,
+      "peak_vram_mb": null,
+      "status": "success",
+      "errors": [],
+      "warnings": [],
+      "config_hash": "d82f3620e4bc855a",
+      "input_hash": null,
+      "output_hash": null,
+      "started_at": "2026-11-03T22:27:13.759302Z",
+      "finished_at": "2026-11-03T22:27:15.324293Z",
+      "duration_ms": 1573.750700103119,
+      "extra": {}
+    },
     "inpainting": {
       "stage": "inpainting",
       "backend": "anime-lama",
@@ -90,24 +183,445 @@
       "precision": null,
       "input_resolution": null,
       "output_resolution": null,
-      "execution_time_ms": 5364.911499898881,
-      "peak_vram_mb": 487.89599609375,
+      "execution_time_ms": 10338.037899928167,
+      "peak_vram_mb": 8460.72314453125,
       "status": "success",
       "errors": [],
       "warnings": [],
-      "config_hash": "1c960fae83853f7e",
+      "config_hash": "d82f3620e4bc855a",
       "input_hash": null,
       "output_hash": null,
-      "started_at": "2026-11-03T20:16:08.081185Z",
-      "finished_at": "2026-11-03T20:16:13.434098Z",
-      "duration_ms": 5364.911499898881,
+      "started_at": "2026-11-03T22:27:15.324293Z",
+      "finished_at": "2026-11-03T22:27:25.673925Z",
+      "duration_ms": 10338.037899928167,
       "extra": {
         "tile_size": 768,
         "overlap": 64
       }
     }
   },
-  "regions": [],
+  "regions": [
+    {
+      "region_id": "001_0000",
+      "page": "001",
+      "bbox": [
+        426.0,
+        0.0,
+        619.0,
+        46.0
+      ],
+      "polygon": [
+        [
+          426.0,
+          0.0
+        ],
+        [
+          619.0,
+          0.0
+        ],
+        [
+          619.0,
+          46.0
+        ],
+        [
+          426.0,
+          46.0
+        ]
+      ],
+      "region_type": "text",
+      "detection_confidence": 0.8466481566429138,
+      "source_text": "GENTLE...",
+      "ocr_confidence": 0.85,
+      "source_language": "en",
+      "translated_text": "آروم",
+      "target_language": "fa"
+    },
+    {
+      "region_id": "001_0001",
+      "page": "001",
+      "bbox": [
+        75.0,
+        21.0,
+        316.0,
+        103.0
+      ],
+      "polygon": [
+        [
+          75.0,
+          21.0
+        ],
+        [
+          316.0,
+          21.0
+        ],
+        [
+          316.0,
+          103.0
+        ],
+        [
+          75.0,
+          103.0
+        ]
+      ],
+      "region_type": "text",
+      "detection_confidence": 0.9174589514732361,
+      "source_text": "I'M PERFECTLY\nFINE.",
+      "ocr_confidence": 0.85,
+      "source_language": "en",
+      "translated_text": "من کاملا خوبم",
+      "target_language": "fa"
+    },
+    {
+      "region_id": "001_0002",
+      "page": "001",
+      "bbox": [
+        126.0,
+        263.0,
+        397.0,
+        346.0
+      ],
+      "polygon": [
+        [
+          126.0,
+          263.0
+        ],
+        [
+          397.0,
+          263.0
+        ],
+        [
+          397.0,
+          346.0
+        ],
+        [
+          126.0,
+          346.0
+        ]
+      ],
+      "region_type": "text",
+      "detection_confidence": 0.9250160455703735,
+      "source_text": "IT DOES EAT HAM\nTHOUGH.",
+      "ocr_confidence": 0.85,
+      "source_language": "en",
+      "translated_text": "با اين حال اون رو ميخوره",
+      "target_language": "fa"
+    },
+    {
+      "region_id": "001_0003",
+      "page": "001",
+      "bbox": [
+        152.0,
+        504.0,
+        362.0,
+        556.0
+      ],
+      "polygon": [
+        [
+          152.0,
+          504.0
+        ],
+        [
+          362.0,
+          504.0
+        ],
+        [
+          362.0,
+          556.0
+        ],
+        [
+          152.0,
+          556.0
+        ]
+      ],
+      "region_type": "text",
+      "detection_confidence": 0.8636107444763184,
+      "source_text": "It hit my hand!",
+      "ocr_confidence": 0.85,
+      "source_language": "en",
+      "translated_text": "دستم رو خورد!",
+      "target_language": "fa"
+    },
+    {
+      "region_id": "002_0000",
+      "page": "002",
+      "bbox": [
+        471.0,
+        783.0,
+        692.0,
+        883.0
+      ],
+      "polygon": [
+        [
+          471.0,
+          783.0
+        ],
+        [
+          692.0,
+          783.0
+        ],
+        [
+          692.0,
+          883.0
+        ],
+        [
+          471.0,
+          883.0
+        ]
+      ],
+      "region_type": "text",
+      "detection_confidence": 0.922061562538147,
+      "source_text": "WHERE ARE WE?",
+      "ocr_confidence": 0.85,
+      "source_language": "en",
+      "translated_text": "ما کجا هستيم؟",
+      "target_language": "fa"
+    },
+    {
+      "region_id": "003_0000",
+      "page": "003",
+      "bbox": [
+        85.0,
+        265.0,
+        284.0,
+        344.0
+      ],
+      "polygon": [
+        [
+          85.0,
+          265.0
+        ],
+        [
+          284.0,
+          265.0
+        ],
+        [
+          284.0,
+          344.0
+        ],
+        [
+          85.0,
+          344.0
+        ]
+      ],
+      "region_type": "text",
+      "detection_confidence": 0.9051179885864258,
+      "source_text": "JENNETTE...\nMADE THIS?",
+      "ocr_confidence": 0.85,
+      "source_language": "en",
+      "translated_text": "جِنِت... اينکارو کردي؟",
+      "target_language": "fa"
+    },
+    {
+      "region_id": "004_0000",
+      "page": "004",
+      "bbox": [
+        57.0,
+        0.0,
+        447.0,
+        146.0
+      ],
+      "polygon": [
+        [
+          57.0,
+          0.0
+        ],
+        [
+          447.0,
+          0.0
+        ],
+        [
+          447.0,
+          146.0
+        ],
+        [
+          57.0,
+          146.0
+        ]
+      ],
+      "region_type": "text",
+      "detection_confidence": 0.9361032843589783,
+      "source_text": "THAT THE LADIES OF\nSOCIETY WOULD BE VERY\nINTERESTED IF THEY\nSAW THIS?",
+      "ocr_confidence": 0.85,
+      "source_language": "en",
+      "translated_text": "که خانم هاي جامعه خيلي علاقه مند ميشن اگه اينو ببينن؟",
+      "target_language": "fa"
+    },
+    {
+      "region_id": "004_0001",
+      "page": "004",
+      "bbox": [
+        274.0,
+        281.0,
+        650.0,
+        467.0
+      ],
+      "polygon": [
+        [
+          274.0,
+          281.0
+        ],
+        [
+          650.0,
+          281.0
+        ],
+        [
+          650.0,
+          467.0
+        ],
+        [
+          274.0,
+          467.0
+        ]
+      ],
+      "region_type": "text",
+      "detection_confidence": 0.9366238117218018,
+      "source_text": "I'M THINKING\nOF TAKING IT TO THE\nSUMMER PARTY, SURELY\nIT'LL BECOME A HOT\nTOPIC.",
+      "ocr_confidence": 0.85,
+      "source_language": "en",
+      "translated_text": "من دارم به فکر بردنش به مهموني تابستون هستم، مطمئناً موضوع داغي خواهد شد",
+      "target_language": "fa"
+    },
+    {
+      "region_id": "004_0002",
+      "page": "004",
+      "bbox": [
+        368.0,
+        762.0,
+        650.0,
+        845.0
+      ],
+      "polygon": [
+        [
+          368.0,
+          762.0
+        ],
+        [
+          650.0,
+          762.0
+        ],
+        [
+          650.0,
+          845.0
+        ],
+        [
+          368.0,
+          845.0
+        ]
+      ],
+      "region_type": "text",
+      "detection_confidence": 0.8658051490783691,
+      "source_text": "Wait, what workshop\nmade this?",
+      "ocr_confidence": 0.85,
+      "source_language": "en",
+      "translated_text": "صبر کن، کدوم کارگاه اينو درست کرده؟",
+      "target_language": "fa"
+    },
+    {
+      "region_id": "004_0003",
+      "page": "004",
+      "bbox": [
+        101.0,
+        1033.0,
+        236.0,
+        1064.0
+      ],
+      "polygon": [
+        [
+          101.0,
+          1033.0
+        ],
+        [
+          236.0,
+          1033.0
+        ],
+        [
+          236.0,
+          1064.0
+        ],
+        [
+          101.0,
+          1064.0
+        ]
+      ],
+      "region_type": "text",
+      "detection_confidence": 0.42413824796676636,
+      "source_text": "LUACOMIC.NET",
+      "ocr_confidence": 0.85,
+      "source_language": "en",
+      "translated_text": "",
+      "target_language": "fa"
+    },
+    {
+      "region_id": "005_0000",
+      "page": "005",
+      "bbox": [
+        319.0,
+        21.0,
+        539.0,
+        120.0
+      ],
+      "polygon": [
+        [
+          319.0,
+          21.0
+        ],
+        [
+          539.0,
+          21.0
+        ],
+        [
+          539.0,
+          120.0
+        ],
+        [
+          319.0,
+          120.0
+        ]
+      ],
+      "region_type": "text",
+      "detection_confidence": 0.9434048533439636,
+      "source_text": "THEN, I'LL\nJUST TAKE OUT\nTHE FILLING...",
+      "ocr_confidence": 0.85,
+      "source_language": "en",
+      "translated_text": "بعدش، من فقط پرش رو ميگيرم بيرون",
+      "target_language": "fa"
+    },
+    {
+      "region_id": "010_0000",
+      "page": "010",
+      "bbox": [
+        110.0,
+        350.0,
+        318.0,
+        433.0
+      ],
+      "polygon": [
+        [
+          110.0,
+          350.0
+        ],
+        [
+          318.0,
+          350.0
+        ],
+        [
+          318.0,
+          433.0
+        ],
+        [
+          110.0,
+          433.0
+        ]
+      ],
+      "region_type": "text",
+      "detection_confidence": 0.9157311320304871,
+      "source_text": "YOU'RE\nHOLDING IT...",
+      "ocr_confidence": 0.85,
+      "source_language": "en",
+      "translated_text": "تو داری نگهش داری",
+      "target_language": "fa"
+    }
+  ],
   "config": {
     "detection": {
       "backend": "yolo_comic",
@@ -138,9 +652,9 @@
     "translation": {
       "backend": "huggingface",
       "base_url": null,
-      "model": "models/gemma-3-4b-it",
+      "model": "facebook/nllb-200-distilled-1.3B",
       "temperature": 0.2,
-      "max_retries": 3,
+      "max_retries": 1,
       "glossary": {
         "Jennette": "جنت",
         "JENNETTE": "جنت",
@@ -150,14 +664,11 @@
         "Princess": "پرنسس",
         "PRINCESS": "پرنسس"
       },
-      "local_files_only": true,
-      "load_in_4bit": true,
-      "max_new_tokens": 192,
-      "max_length": 512,
-      "batch_size": 1,
+      "local_files_only": false,
+      "max_new_tokens": 128,
+      "max_length": 256,
+      "batch_size": 8,
       "validate": true,
-      "style": "colloquial_fa",
-      "context_window": 0,
       "unit": "region",
       "output_format": "scanlation"
     },
@@ -176,15 +687,14 @@
       "overlap": 64,
       "precision": "fp16",
       "fallback_to_cpu": true,
-      "crop_margin": 128,
-      "radius": 7,
-      "method": "telea",
-      "passes": 2,
-      "soft_edge": 3,
-      "bg_fill": true
+      "crop_margin": 128
     }
   },
   "cache_keys": {
-    "inpainting": "02574e4b3d2d02fe5322b624"
+    "detection": "ea4b7d0e86dbacb399e1fa2f",
+    "ocr": "59da1f199e82a448eb505680",
+    "translation": "264a02c6f9700ea3924e042d",
+    "masking": "5d43da0c1a86783ad6d9e660",
+    "inpainting": "1570551b1077749d3a24c923"
   }
 }

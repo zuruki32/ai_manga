@@ -1,14 +1,22 @@
 # Run summary — full-pipeline quality review
 
 - **chapter**: `Ch.133 - Suddenly Became A Princess One Day`
-- **config**: `hybrid_qwen_gemma_it`
+- **config**: `hybrid_qwen_nllb`
 - **pages**: 10  |  **regions (text)**: 12
 - **translated lines (FA / EN)**: 11 / 11
 
 ## Stage status (watch the `backend` column — `mock` = model missing/failed)
 | stage | backend | status | time(ms) | warn | err |
 |---|---|---|---|---|---|
-| inpainting | anime-lama | success | 5365 | 0 | 0 |
+| detection | yolo_comic | success | 2475 | 4 | 0 |
+| ocr | hybrid_qwen | success | 33193 | 0 | 0 |
+| translation | huggingface | success | 1092633 | 0 | 0 |
+| masking | polygon_mask | success | 1574 | 0 | 0 |
+| inpainting | anime-lama | success | 10338 | 0 | 0 |
+- ⚠️ `detection`: page=006: No text regions detected
+- ⚠️ `detection`: page=007: No text regions detected
+- ⚠️ `detection`: page=008: No text regions detected
+- ⚠️ `detection`: page=009: No text regions detected
 
 ## Sample pages (6) — `samples/*.jpg` = ORIGINAL | DETECT | MASK | CLEANED
 - `samples/001_panels.jpg`
@@ -28,35 +36,35 @@
 
 #صفحه 001
 @GENTLE
-@آرام.
+@آروم
 @I'M PERFECTLY FINE
-@خیالم ندارم.
+@من کاملا خوبم
 @IT DOES EAT HAM THOUGH
-@چیپس هم می‌خوره ولی [این]
+@با اين حال اون رو ميخوره
 @It hit my hand!
-@[دستش] به دستم خورد!
+@دستم رو خورد!
 
 #صفحه 002
 @WHERE ARE WE?
-@کجا هستیم؟
+@ما کجا هستيم؟
 
 #صفحه 003
 @JENNETTE... MADE THIS?
-@تو این کار رو کردی؟
+@جِنِت... اينکارو کردي؟
 
 #صفحه 004
 @THAT THE LADIES OF SOCIETY WOULD BE VERY INTERESTED IF THEY SAW THIS?
-@اگه بانوان جامعه اينو مي‌ديدن يه ذره بي‌حوصله‌شون نيابه؟
+@که خانم هاي جامعه خيلي علاقه مند ميشن اگه اينو ببينن؟
 @I'M THINKING OF TAKING IT TO THE SUMMER PARTY, SURELY IT'LL BECOME A HOT TOPIC
-@به این فکر می‌کنم برم مهمونی تابستونی، حتماً یه موضوع داغ میشه.
+@من دارم به فکر بردنش به مهموني تابستون هستم، مطمئناً موضوع داغي خواهد شد
 @Wait, what workshop made this?
-@کدوم کارگاه این رو درست کرده؟
+@صبر کن، کدوم کارگاه اينو درست کرده؟
 
 #صفحه 005
 @THEN, I'LL JUST TAKE OUT THE FILLING
-@Okay, I understand. Please provide the English line.
+@بعدش، من فقط پرش رو ميگيرم بيرون
 
 #صفحه 010
 @YOU'RE HOLDING IT
-@داری نگهداشتی؟
+@تو داری نگهش داری
 ```

@@ -1,23 +1,23 @@
 === Page 001 ===
 EN: GENTLE I'M PERFECTLY FINE IT DOES EAT HAM THOUGH It hit my hand!
-FA: آرام. خیالم ندارم. چیپس هم می‌خوره ولی [این] [دستش] به دستم خورد!
+FA: آروم من کاملا خوبم با اين حال اون رو ميخوره دستم رو خورد!
 
 === Page 002 ===
 EN: WHERE ARE WE?
-FA: کجا هستیم؟
+FA: ما کجا هستيم؟
 
 === Page 003 ===
 EN: JENNETTE... MADE THIS?
-FA: تو این کار رو کردی؟
+FA: جِنِت... اينکارو کردي؟
 
 === Page 004 ===
 EN: THAT THE LADIES OF SOCIETY WOULD BE VERY INTERESTED IF THEY SAW THIS? I'M THINKING OF TAKING IT TO THE SUMMER PARTY, SURELY IT'LL BECOME A HOT TOPIC Wait, what workshop made this?
-FA: اگه بانوان جامعه اينو مي‌ديدن يه ذره بي‌حوصله‌شون نيابه؟ به این فکر می‌کنم برم مهمونی تابستونی، حتماً یه موضوع داغ میشه. کدوم کارگاه این رو درست کرده؟
+FA: که خانم هاي جامعه خيلي علاقه مند ميشن اگه اينو ببينن؟ من دارم به فکر بردنش به مهموني تابستون هستم، مطمئناً موضوع داغي خواهد شد صبر کن، کدوم کارگاه اينو درست کرده؟
 
 === Page 005 ===
 EN: THEN, I'LL JUST TAKE OUT THE FILLING
-FA: Okay, I understand. Please provide the English line.
+FA: بعدش، من فقط پرش رو ميگيرم بيرون
 
 === Page 010 ===
 EN: YOU'RE HOLDING IT
-FA: داری نگهداشتی؟
+FA: تو داری نگهش داری
