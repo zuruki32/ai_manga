@@ -28,9 +28,21 @@ CAUSAL_PREFIXES = (
     "hunyuan", "aya", "cohere", "seed-x", "tower",
 )
 
+# NLLB-200 BCP-47-ish language codes
+NLLB_LANG = {
+    "en": "eng_Latn", "fa": "pes_Arab", "pe": "pes_Arab",
+    "ko": "kor_Hang", "ja": "jpn_Jpan", "zh": "zho_Hans", "ar": "arb_Arab",
+}
+
+
+def _is_nllb(model_name: str) -> bool:
+    return "nllb" in (model_name or "").lower().replace("\\", "/")
+
 
 def _is_causal(model_name: str) -> bool:
     low = (model_name or "").lower().replace("\\", "/")
+    if _is_nllb(low):  # NLLB is seq2seq, never causal
+        return False
     if any(p in low for p in CAUSAL_PREFIXES):
         return True
     return False
@@ -246,6 +258,7 @@ class HuggingFaceTranslator(Translator):
         self._pivot_tokenizer = None
         self._mode = "seq2seq"  # or "causal"
         self._is_m2m = False
+        self._is_nllb = _is_nllb(model or "")
         self._is_gemma3_mm = False
 
     def _resolve_model(self, src: str, tgt: str) -> str:
@@ -443,7 +456,13 @@ class HuggingFaceTranslator(Translator):
         import torch
 
         device = next(model.parameters()).device
-        if is_m2m:
+        if self._is_nllb:
+            tok.src_lang = NLLB_LANG.get(src[:2], "eng_Latn")
+            try:
+                forced_bos = tok.convert_tokens_to_ids(NLLB_LANG.get(tgt[:2], "pes_Arab"))
+            except Exception:
+                forced_bos = None
+        elif is_m2m:
             src_lang = {"en": "en", "fa": "fa", "pe": "fa"}.get(src[:2], src[:2])
             tgt_lang = {"en": "en", "fa": "fa", "pe": "fa"}.get(tgt[:2], tgt[:2])
             if hasattr(tok, "src_lang"):
@@ -1221,13 +1240,16 @@ class HuggingFaceTranslator(Translator):
                 for text in non_empty_texts:
                     mapping = {}
                     t = text
-                    for i, (term, _) in enumerate(
-                        sorted(glossary.items(), key=lambda kv: -len(kv[0] or ""))
-                    ):
-                        if term and term in t:
-                            ph = f"⟦{i}⟧"
-                            t = t.replace(term, ph)
-                            mapping[ph] = glossary.get(term) or term
+                    # NLLB handles names by transliteration and would mangle the
+                    # ⟦N⟧ tokens, so pass raw text and rely on the post-glossary.
+                    if not self._is_nllb:
+                        for i, (term, _) in enumerate(
+                            sorted(glossary.items(), key=lambda kv: -len(kv[0] or ""))
+                        ):
+                            if term and term in t:
+                                ph = f"⟦{i}⟧"
+                                t = t.replace(term, ph)
+                                mapping[ph] = glossary.get(term) or term
                     placeholders.append(mapping)
                     protected_list.append(t)
 
