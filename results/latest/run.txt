@@ -1,9 +1,233 @@
-﻿Traceback (most recent call last):
-  File "<frozen runpy>", line 198, in _run_module_as_main
-  File "<frozen runpy>", line 88, in _run_code
-  File "D:\projects\manga-ai\manga_ai\__main__.py", line 3, in <module>
-    from manga_ai.cli import main
-  File "D:\projects\manga-ai\manga_ai\cli.py", line 10, in <module>
-    import click
-ModuleNotFoundError: No module named 'click'
+﻿[INFO] Config translation: backend='huggingface' model='models/gemma-3-4b-it'
+[INFO] [pipeline] Processing chapter Ch.133 - Suddenly Became A Princess One Day
+[INFO] [preprocess] Discovering images in D:\projects\manga-ai\data\chapters\Ch.133 - Suddenly Became A Princess One Day
+[INFO] [preprocess] Limiting to first 10 of 136 pages
+[INFO] [preprocess] Found 10 pages
+[INFO] [detection] Starting text detection
+[INFO] Loading YOLO comic detector model=models\comic-yolo.pt device=0 variant=textseg imgsz=1024
+[INFO] [detection] Page 001: 4 regions
+[INFO] [detection] Page 002: 1 regions
+[INFO] [detection] Page 003: 1 regions
+[INFO] [detection] Page 004: 4 regions
+[INFO] [detection] Page 005: 1 regions
+[INFO] [detection] Page 006: 0 regions
+[INFO] [detection] Page 007: 0 regions
+[INFO] [detection] Page 008: 0 regions
+[INFO] [detection] Page 009: 0 regions
+[INFO] [detection] Page 010: 1 regions
+[INFO] VRAM peak detection: 274 MB
+[INFO] YOLO comic detector unloaded
+[INFO] [ocr] Starting OCR
+[INFO] Loading Hybrid Qwen OCR model=D:\projects\models\Qwen3-VL-8B-Instruct device=cuda:0 4bit=True local_files_only=True
+W1103 23:28:15.381000 6840 Lib\site-packages\torch\utils\flop_counter.py:113] triton not found; flop counting will not work for triton kernels
+System.Management.Automation.RemoteException
+Loading weights:   0%|          | 0/750 [00:00<?, ?it/s]
+Loading weights:   0%|          | 1/750 [00:01<13:29,  1.08s/it]
+Loading weights:   0%|          | 2/750 [00:02<13:44,  1.10s/it]
+Loading weights:   1%|          | 5/750 [00:02<04:28,  2.77it/s]
+Loading weights:   1%|1         | 10/750 [00:02<01:51,  6.65it/s]
+Loading weights:   2%|2         | 15/750 [00:02<01:07, 10.92it/s]
+Loading weights:   2%|2         | 18/750 [00:02<01:00, 12.02it/s]
+Loading weights:   3%|3         | 26/750 [00:03<00:36, 19.82it/s]
+Loading weights:   4%|4         | 30/750 [00:03<00:35, 20.28it/s]
+Loading weights:   5%|4         | 37/750 [00:03<00:27, 25.84it/s]
+Loading weights:   5%|5         | 41/750 [00:03<00:28, 24.74it/s]
+Loading weights:   6%|6         | 48/750 [00:03<00:23, 29.69it/s]
+Loading weights:   7%|6         | 52/750 [00:03<00:26, 26.41it/s]
+Loading weights:   8%|7         | 59/750 [00:04<00:22, 30.19it/s]
+Loading weights:   8%|8         | 63/750 [00:04<00:24, 27.70it/s]
+Loading weights:   9%|9         | 70/750 [00:04<00:21, 31.05it/s]
+Loading weights:  10%|9         | 74/750 [00:04<00:23, 28.47it/s]
+Loading weights:  11%|#         | 81/750 [00:04<00:20, 31.87it/s]
+Loading weights:  11%|#1        | 85/750 [00:04<00:23, 28.88it/s]
+Loading weights:  12%|#2        | 92/750 [00:05<00:20, 31.76it/s]
+Loading weights:  13%|#2        | 96/750 [00:05<00:23, 27.99it/s]
+Loading weights:  14%|#3        | 103/750 [00:05<00:20, 31.32it/s]
+Loading weights:  14%|#4        | 107/750 [00:05<00:22, 28.00it/s]
+Loading weights:  15%|#5        | 114/750 [00:05<00:20, 31.65it/s]
+Loading weights:  16%|#5        | 118/750 [00:06<00:22, 28.15it/s]
+Loading weights:  17%|#6        | 125/750 [00:06<00:19, 31.99it/s]
+Loading weights:  17%|#7        | 129/750 [00:06<00:22, 28.18it/s]
+Loading weights:  18%|#8        | 136/750 [00:06<00:19, 31.97it/s]
+Loading weights:  19%|#8        | 140/750 [00:06<00:21, 28.58it/s]
+Loading weights:  20%|#9        | 147/750 [00:06<00:18, 32.25it/s]
+Loading weights:  20%|##        | 151/750 [00:07<00:20, 28.98it/s]
+Loading weights:  21%|##1       | 158/750 [00:07<00:18, 32.39it/s]
+Loading weights:  22%|##1       | 162/750 [00:07<00:20, 28.96it/s]
+Loading weights:  23%|##2       | 169/750 [00:07<00:18, 30.91it/s]
+Loading weights:  23%|##3       | 173/750 [00:07<00:22, 25.82it/s]
+Loading weights:  24%|##4       | 180/750 [00:08<00:20, 27.88it/s]
+Loading weights:  24%|##4       | 183/750 [00:08<00:24, 23.35it/s]
+Loading weights:  25%|##5       | 188/750 [00:08<00:20, 27.47it/s]
+Loading weights:  26%|##5       | 192/750 [00:08<00:23, 23.32it/s]
+Loading weights:  26%|##6       | 195/750 [00:08<00:23, 24.07it/s]
+Loading weights:  27%|##6       | 199/750 [00:08<00:20, 27.20it/s]
+Loading weights:  27%|##7       | 203/750 [00:09<00:22, 24.81it/s]
+Loading weights:  28%|##7       | 208/750 [00:09<00:19, 27.88it/s]
+Loading weights:  28%|##8       | 213/750 [00:09<00:17, 30.39it/s]
+Loading weights:  29%|##8       | 217/750 [00:09<00:19, 27.25it/s]
+Loading weights:  30%|##9       | 224/750 [00:09<00:17, 30.07it/s]
+Loading weights:  30%|###       | 228/750 [00:10<00:20, 25.24it/s]
+Loading weights:  31%|###1      | 235/750 [00:10<00:17, 28.99it/s]
+Loading weights:  32%|###1      | 239/750 [00:10<00:18, 27.02it/s]
+Loading weights:  33%|###2      | 246/750 [00:10<00:15, 32.20it/s]
+Loading weights:  33%|###3      | 250/750 [00:10<00:17, 28.71it/s]
+Loading weights:  34%|###4      | 257/750 [00:10<00:15, 32.63it/s]
+Loading weights:  35%|###4      | 261/750 [00:11<00:16, 29.07it/s]
+Loading weights:  36%|###5      | 268/750 [00:11<00:15, 31.59it/s]
+Loading weights:  36%|###6      | 272/750 [00:11<00:17, 27.52it/s]
+Loading weights:  37%|###7      | 279/750 [00:11<00:15, 30.60it/s]
+Loading weights:  38%|###7      | 283/750 [00:11<00:17, 26.44it/s]
+Loading weights:  39%|###8      | 290/750 [00:12<00:14, 31.05it/s]
+Loading weights:  39%|###9      | 294/750 [00:12<00:17, 26.72it/s]
+Loading weights:  40%|###9      | 299/750 [00:12<00:14, 30.83it/s]
+Loading weights:  40%|####      | 303/750 [00:12<00:19, 23.02it/s]
+Loading weights:  42%|####1     | 312/750 [00:12<00:14, 30.32it/s]
+Loading weights:  42%|####2     | 316/750 [00:13<00:16, 26.26it/s]
+Loading weights:  43%|####3     | 323/750 [00:13<00:14, 28.64it/s]
+Loading weights:  44%|####3     | 327/750 [00:13<00:16, 26.41it/s]
+Loading weights:  45%|####4     | 334/750 [00:13<00:14, 28.16it/s]
+Loading weights:  45%|####4     | 337/750 [00:13<00:18, 22.47it/s]
+Loading weights:  46%|####6     | 345/750 [00:14<00:14, 27.87it/s]
+Loading weights:  46%|####6     | 348/750 [00:14<00:18, 21.45it/s]
+Loading weights:  47%|####7     | 356/750 [00:14<00:15, 25.28it/s]
+Loading weights:  48%|####7     | 359/750 [00:14<00:18, 21.57it/s]
+Loading weights:  49%|####8     | 367/750 [00:15<00:14, 25.93it/s]
+Loading weights:  49%|####9     | 370/750 [00:15<00:17, 21.29it/s]
+Loading weights:  50%|#####     | 378/750 [00:15<00:13, 26.71it/s]
+Loading weights:  51%|#####     | 381/750 [00:15<00:16, 22.13it/s]
+Loading weights:  51%|#####1    | 386/750 [00:15<00:13, 26.45it/s]
+Loading weights:  52%|#####2    | 390/750 [00:16<00:16, 21.68it/s]
+Loading weights:  53%|#####2    | 395/750 [00:16<00:14, 25.12it/s]
+Loading weights:  57%|#####6    | 427/750 [00:16<00:04, 77.99it/s]
+Loading weights:  62%|######2   | 467/750 [00:16<00:01, 141.58it/s]
+Loading weights:  68%|######8   | 513/750 [00:16<00:01, 209.85it/s]
+Loading weights:  75%|#######4  | 559/750 [00:16<00:00, 265.59it/s]
+Loading weights:  80%|#######9  | 599/750 [00:16<00:00, 290.24it/s]
+Loading weights:  86%|########6 | 647/750 [00:16<00:00, 331.39it/s]
+Loading weights:  92%|#########2| 693/750 [00:17<00:00, 357.07it/s]
+Loading weights:  97%|#########7| 731/750 [00:17<00:00, 284.90it/s]
+Loading weights: 100%|##########| 750/750 [00:17<00:00, 42.83it/s] 
+D:\projects\Lib\site-packages\transformers\models\qwen2_vl\image_processing_qwen2_vl.py:129: FutureWarning: Passing `min_pixels` and `max_pixels` to a processor call is deprecated and will be removed in v5.23. Pass in `size={'longest_edge': xxx, 'shortest_edge': xxx} to override the target size.`
+  warnings.warn(
+D:\projects\Lib\site-packages\bitsandbytes\backends\cuda\ops.py:957: UserWarning: inner dimension (4304) is not aligned for fast kernel with blocksize=64, falling back to slower implementation.
+  warn(
+[INFO] [ocr] Page 001: 4/4 successful
+[INFO] [ocr] Page 002: 1/1 successful
+[INFO] [ocr] Page 003: 1/1 successful
+[INFO] [ocr] Page 004: 4/4 successful
+[INFO] [ocr] Page 005: 1/1 successful
+[INFO] [ocr] Page 006: 0/0 successful
+[INFO] [ocr] Page 007: 0/0 successful
+[INFO] [ocr] Page 008: 0/0 successful
+[INFO] [ocr] Page 009: 0/0 successful
+[INFO] [ocr] Page 010: 1/1 successful
+[INFO] VRAM peak ocr: 6605 MB
+[INFO] Hybrid Qwen OCR unloaded
+[INFO] [translation] Starting chapter translation (unit=region, format=scanlation)
+[INFO] Creating translator backend='huggingface' model='models/gemma-3-4b-it'
+[INFO] Translator backend=huggingface model=models/gemma-3-4b-it
+[INFO] Using Gemma3ForConditionalGeneration (architectures=['Gemma3ForConditionalGeneration'])
+[INFO] Loading causal/VLM model: models/gemma-3-4b-it via Gemma3ForConditionalGeneration (4bit=True, 8bit=False, local_files_only=True, multimodal=True)
+System.Management.Automation.RemoteException
+Loading weights:   0%|          | 0/883 [00:00<?, ?it/s]
+Loading weights:   0%|          | 1/883 [00:01<24:22,  1.66s/it]
+Loading weights:   1%|          | 5/883 [00:01<04:04,  3.60it/s]
+Loading weights:   2%|1         | 17/883 [00:01<00:58, 14.82it/s]
+Loading weights:   3%|3         | 29/883 [00:02<00:31, 26.75it/s]
+Loading weights:   4%|4         | 37/883 [00:02<00:25, 33.79it/s]
+Loading weights:   5%|5         | 45/883 [00:02<00:22, 36.78it/s]
+Loading weights:   6%|6         | 56/883 [00:02<00:17, 46.90it/s]
+Loading weights:   8%|7         | 68/883 [00:02<00:14, 57.14it/s]
+Loading weights:   9%|8         | 76/883 [00:02<00:13, 59.65it/s]
+Loading weights:  10%|9         | 84/883 [00:02<00:14, 56.70it/s]
+Loading weights:  11%|#         | 95/883 [00:03<00:12, 64.10it/s]
+Loading weights:  12%|#2        | 107/883 [00:03<00:10, 74.01it/s]
+Loading weights:  13%|#3        | 116/883 [00:03<00:10, 75.97it/s]
+Loading weights:  14%|#4        | 125/883 [00:03<00:10, 69.80it/s]
+Loading weights:  15%|#5        | 134/883 [00:03<00:10, 71.41it/s]
+Loading weights:  17%|#6        | 146/883 [00:03<00:09, 78.83it/s]
+Loading weights:  18%|#7        | 155/883 [00:03<00:09, 79.73it/s]
+Loading weights:  19%|#8        | 164/883 [00:03<00:10, 70.28it/s]
+Loading weights:  20%|#9        | 173/883 [00:04<00:09, 71.26it/s]
+Loading weights:  21%|##        | 185/883 [00:04<00:09, 77.44it/s]
+Loading weights:  22%|##1       | 193/883 [00:04<00:09, 71.57it/s]
+Loading weights:  23%|##2       | 201/883 [00:04<00:10, 62.01it/s]
+Loading weights:  24%|##4       | 212/883 [00:04<00:09, 67.12it/s]
+Loading weights:  25%|##5       | 224/883 [00:04<00:08, 74.08it/s]
+Loading weights:  26%|##6       | 232/883 [00:04<00:08, 73.82it/s]
+Loading weights:  27%|##7       | 240/883 [00:05<00:10, 62.65it/s]
+Loading weights:  28%|##8       | 251/883 [00:05<00:09, 67.56it/s]
+Loading weights:  30%|##9       | 263/883 [00:05<00:08, 71.08it/s]
+Loading weights:  31%|###       | 271/883 [00:05<00:08, 72.83it/s]
+Loading weights:  32%|###1      | 279/883 [00:05<00:09, 61.13it/s]
+Loading weights:  33%|###2      | 290/883 [00:05<00:08, 66.18it/s]
+Loading weights:  34%|###4      | 302/883 [00:05<00:08, 71.44it/s]
+Loading weights:  35%|###5      | 310/883 [00:06<00:07, 71.65it/s]
+Loading weights:  36%|###6      | 318/883 [00:06<00:09, 60.53it/s]
+Loading weights:  37%|###7      | 329/883 [00:06<00:08, 66.67it/s]
+Loading weights:  39%|###8      | 341/883 [00:06<00:07, 72.64it/s]
+Loading weights:  40%|###9      | 349/883 [00:06<00:07, 71.47it/s]
+Loading weights:  40%|####      | 357/883 [00:06<00:08, 63.08it/s]
+Loading weights:  42%|####1     | 368/883 [00:06<00:07, 69.54it/s]
+Loading weights:  43%|####3     | 380/883 [00:07<00:06, 73.61it/s]
+Loading weights:  44%|####3     | 388/883 [00:07<00:07, 69.80it/s]
+Loading weights:  45%|####4     | 396/883 [00:07<00:08, 55.06it/s]
+Loading weights:  46%|####5     | 406/883 [00:07<00:07, 64.01it/s]
+Loading weights:  47%|####6     | 414/883 [00:07<00:07, 61.07it/s]
+Loading weights:  48%|####7     | 421/883 [00:07<00:09, 50.35it/s]
+Loading weights:  49%|####8     | 432/883 [00:07<00:07, 62.45it/s]
+Loading weights:  50%|####9     | 440/883 [00:08<00:06, 64.23it/s]
+Loading weights:  54%|#####4    | 479/883 [00:08<00:02, 141.51it/s]
+Loading weights:  61%|######    | 535/883 [00:08<00:01, 238.90it/s]
+Loading weights:  66%|######6   | 583/883 [00:08<00:01, 294.58it/s]
+Loading weights:  71%|#######   | 625/883 [00:08<00:00, 326.34it/s]
+Loading weights:  76%|#######5  | 669/883 [00:08<00:00, 356.67it/s]
+Loading weights:  81%|########  | 713/883 [00:08<00:00, 377.25it/s]
+Loading weights:  86%|########5 | 759/883 [00:08<00:00, 399.53it/s]
+Loading weights:  91%|#########1| 807/883 [00:08<00:00, 421.44it/s]
+Loading weights:  97%|#########7| 857/883 [00:09<00:00, 436.03it/s]
+Loading weights: 100%|##########| 883/883 [00:09<00:00, 97.52it/s] 
+[INFO] Weight check OK (lm_head.weight, total_tensors=2884)
+[INFO] Generate smoke test OK
+[WARNING] Translation QA failed (no_persian); retrying
+[INFO] Latin-ban logits: blocked 158258/262144 tokens for FA-only decode
+[WARNING] Translation QA failed (no_persian); retrying
+[WARNING] Translation QA failed (no_persian); retrying
+[WARNING] Translation QA still failing (no_persian) ΓÇö keeping best attempt
+[INFO] [translation] 11 lines / 6 pages translated (11 non-empty FA)
+[INFO] Scanlation FA: D:\projects\manga-ai\data\chapters\Ch.133 - Suddenly Became A Princess One Day\translation\chapter_scanlation_fa.txt
+[INFO] Readable QA: D:\projects\manga-ai\data\chapters\Ch.133 - Suddenly Became A Princess One Day\translation\chapter_en_fa.txt
+[INFO] HF translator unloaded
+[INFO] [masking] Generating masks
+[INFO] [masking] Page 001: mask generated
+[INFO] [masking] Page 002: mask generated
+[INFO] [masking] Page 003: mask generated
+[INFO] [masking] Page 004: mask generated
+[INFO] [masking] Page 005: mask generated
+[INFO] [masking] Page 006: mask generated
+[INFO] [masking] Page 007: mask generated
+[INFO] [masking] Page 008: mask generated
+[INFO] [masking] Page 009: mask generated
+[INFO] [masking] Page 010: mask generated
+[INFO] [inpainting] Starting inpainting / text removal
+[INFO] Loading anime-lama (TorchScript) on cuda:0
+D:\projects\Lib\site-packages\torch\jit\_serialization.py:176: FutureWarning: `torch.jit.load` is deprecated. Please switch to `torch.export`.
+  warnings.warn(
+[INFO] [inpainting] Page 001: cleaned
+[INFO] [inpainting] Page 002: cleaned
+[INFO] [inpainting] Page 003: cleaned
+[INFO] [inpainting] Page 004: cleaned
+[INFO] [inpainting] Page 005: cleaned
+[INFO] [inpainting] Page 006: cleaned
+[INFO] [inpainting] Page 007: cleaned
+[INFO] [inpainting] Page 008: cleaned
+[INFO] [inpainting] Page 009: cleaned
+[INFO] [inpainting] Page 010: cleaned
+[INFO] VRAM peak inpainting: 5677 MB
+[INFO] [pipeline] Completed
+
+Done. Manifest: D:\projects\manga-ai\data\chapters\Ch.133 - Suddenly Became A Princess One Day\manifest.json
+Pages: 10
+Regions: 12
 
