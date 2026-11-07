@@ -82,6 +82,19 @@ class Pipeline:
             bubble_inflate=config.get("masking.bubble_inflate", True),
             bubble_pad_px=config.get("masking.bubble_pad_px", 8),
         )
+        # Optional comic-text-detector mask (catches SFX / stylized text the
+        # dialogue detector misses) — unioned into the cleaning mask.
+        self.ctd_masker = None
+        if str(config.get("masking.text_segmentation", "") or "").lower() in ("ctd", "comic_text_detector"):
+            try:
+                from manga_ai.masking.ctd import CTDTextMasker
+                self.ctd_masker = CTDTextMasker(
+                    thresh=float(config.get("masking.ctd_thresh", 0.3)),
+                    dilate=int(config.get("masking.ctd_dilate", 3)),
+                )
+            except Exception as e:
+                logger.warning(f"ctd text segmentation unavailable: {e}")
+
         self.quality = QualityChecker(config.section("quality"))
 
         preferred = config.get("device.preferred", "cuda")
@@ -249,6 +262,11 @@ class Pipeline:
         self._ocr = None
         self._translator = None
         self._inpainter = None
+        if self.ctd_masker is not None:
+            try:
+                self.ctd_masker.unload()
+            except Exception:
+                pass
         clear_cuda()
 
     # ------------------------------------------------------------------
@@ -978,6 +996,16 @@ class Pipeline:
                         except Exception:
                             pass
                 mask = self.mask_gen.generate((info.height, info.width), page_regions, image=arr)
+                # Union in the comic-text-detector mask so SFX / stylized text
+                # the dialogue detector missed also gets removed.
+                if self.ctd_masker is not None:
+                    try:
+                        tmask = self.ctd_masker.text_mask(arr)
+                        if tmask.shape[:2] != mask.shape[:2]:
+                            tmask = cv2.resize(tmask, (mask.shape[1], mask.shape[0]), interpolation=cv2.INTER_NEAREST)
+                        mask = cv2.bitwise_or(mask, tmask)
+                    except Exception as e:
+                        log_error(logger, stage, f"ctd mask failed: {e}", page=page)
                 mask_path = self.masks_dir / f"{page}.png"
                 cv2.imwrite(str(mask_path), mask)
                 masks[page] = mask

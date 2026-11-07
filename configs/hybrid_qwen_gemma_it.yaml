@@ -73,6 +73,8 @@ translation:
     "PRINCESS": "پرنسس"
 
 masking:
+  text_segmentation: "ctd"  # also mask SFX/stylized text (comic-text-detector, ~91MB auto-download)
+  ctd_dilate: 3
   dilation_px: 18
   blur_radius: 2
   use_polygon: true
