@@ -8,11 +8,11 @@
 ## Stage status (watch the `backend` column — `mock` = model missing/failed)
 | stage | backend | status | time(ms) | warn | err |
 |---|---|---|---|---|---|
-| detection | yolo_comic | success | 2475 | 4 | 0 |
-| ocr | hybrid_qwen | success | 33193 | 0 | 0 |
-| translation | huggingface | success | 1092633 | 0 | 0 |
-| masking | polygon_mask | success | 1574 | 0 | 0 |
-| inpainting | anime-lama | success | 10338 | 0 | 0 |
+| detection | yolo_comic | success | 4204 | 4 | 0 |
+| ocr | hybrid_qwen | success | 34804 | 0 | 0 |
+| translation | huggingface | success | 6639 | 0 | 0 |
+| masking | polygon_mask | success | 676 | 0 | 0 |
+| inpainting | anime-lama | success | 5462 | 0 | 0 |
 - ⚠️ `detection`: page=006: No text regions detected
 - ⚠️ `detection`: page=007: No text regions detected
 - ⚠️ `detection`: page=008: No text regions detected
