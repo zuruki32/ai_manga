@@ -19,7 +19,7 @@ CONFIG="hybrid_qwen_nllb"     # bare config name under configs/
 STAGE="full"                      # full | detect | ocr | translate | mask | clean | transtest
 LIMIT=10                          # full run: only first N pages (0 = whole chapter)
 SAMPLES=6
-CROPS=16
+CROPS=40
 PUSH=1
 FORCE=""
 PYTHON="${PYTHON:-python}"

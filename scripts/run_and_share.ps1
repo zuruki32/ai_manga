@@ -16,7 +16,7 @@ param(
   [string]$Stage   = "full",
   [int]$Limit      = 10,
   [int]$Samples    = 6,
-  [int]$Crops      = 16,
+  [int]$Crops      = 40,
   [switch]$Force,
   [switch]$NoPush,
   [string]$Python  = "python"

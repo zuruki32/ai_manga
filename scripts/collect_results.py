@@ -342,7 +342,7 @@ def main() -> None:
     (out / "clean_crops").mkdir(parents=True, exist_ok=True)
     cleaned_cache: Dict[str, Optional[np.ndarray]] = {}
     clean_made = []
-    for row in crop_rows[:10]:
+    for row in crop_rows:
         pg = row["page"]
         r = next((x for x in picked if str(x.get("page")) == pg and (x.get("source_text") or "").strip() == row["en"]), None)
         if r is None:
@@ -382,9 +382,10 @@ def main() -> None:
     (out / "cleaned_full").mkdir(parents=True, exist_ok=True)
     full_made = []
     cdir = chapter / "cleaned"
-    # Only this run's pages (manifest), so stale cleaned/*.png from earlier
-    # full-chapter runs don't leak into the review.
-    for pg in list(pages)[:14]:
+    # ALL of this run's pages (manifest), so every cleaned page is reviewable
+    # (not just a sample). Stale pages from earlier runs are excluded by using
+    # the manifest page list.
+    for pg in list(pages):
         cp = _find(cdir, str(pg))
         if cp is None:
             continue
