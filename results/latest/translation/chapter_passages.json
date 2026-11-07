@@ -6,6 +6,26 @@
   "output_format": "scanlation",
   "passages": [
     {
+      "page": "000",
+      "en": "THOSE WHO WILL ONE DAY RULE THE WORLD WOULD BE SO JEALOUS AND PURE-HEARTED OVER A CAT SO INNOCENT",
+      "fa": "اونايي که يه روزي بر دنيا فرمانروايي ميکنن خيلي نسبت به يه گربه حسود و خالص قلب خواهند بود خیلی بی گناه",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "000",
+          "region_id": "000_0000",
+          "en": "THOSE WHO WILL ONE DAY RULE THE WORLD WOULD BE SO JEALOUS AND PURE-HEARTED OVER A CAT",
+          "fa": "اونايي که يه روزي بر دنيا فرمانروايي ميکنن خيلي نسبت به يه گربه حسود و خالص قلب خواهند بود"
+        },
+        {
+          "page": "000",
+          "region_id": "000_0001",
+          "en": "SO INNOCENT",
+          "fa": "خیلی بی گناه"
+        }
+      ]
+    },
+    {
       "page": "001",
       "en": "GENTLE I'M PERFECTLY FINE IT DOES EAT HAM THOUGH It hit my hand!",
       "fa": "آروم من کاملا خوبم با اين حال اون رو ميخوره دستم رو خورد!",
@@ -116,6 +136,1178 @@
           "region_id": "010_0000",
           "en": "YOU'RE HOLDING IT",
           "fa": "تو داری نگهش داری"
+        }
+      ]
+    },
+    {
+      "page": "012",
+      "en": "IF YOU PET IT LIKE THAT YOU'LL BLOCK ITS VIEW, SO IT'S BETTER TO PET IT FROM UNDERNEATH L-LIKE THIS?",
+      "fa": "اگه اينجوري دوستش داشته باشي که جلوي چشمش رو بگيري بهتره از زيرش دوستش داشته باشي اینو دوست داری؟",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "012",
+          "region_id": "012_0000",
+          "en": "IF YOU PET IT LIKE THAT YOU'LL BLOCK ITS VIEW, SO IT'S BETTER TO PET IT FROM UNDERNEATH",
+          "fa": "اگه اينجوري دوستش داشته باشي که جلوي چشمش رو بگيري بهتره از زيرش دوستش داشته باشي"
+        },
+        {
+          "page": "012",
+          "region_id": "012_0001",
+          "en": "L-LIKE THIS?",
+          "fa": "اینو دوست داری؟"
+        }
+      ]
+    },
+    {
+      "page": "014",
+      "en": "COST OF DISPOSING BROKEN FURNITURE AND REQUEST FOR NEW FURNITURE",
+      "fa": "هزینه دفع مبلمان شکسته و درخواست مبلمان جدید",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "014",
+          "region_id": "014_0000",
+          "en": "COST OF DISPOSING BROKEN FURNITURE AND REQUEST FOR NEW FURNITURE",
+          "fa": "هزینه دفع مبلمان شکسته و درخواست مبلمان جدید"
+        }
+      ]
+    },
+    {
+      "page": "016",
+      "en": "FAR WOW, SO CUTE! Is it because we fed it?",
+      "fa": "FAR واو، چقدر خوشگله! بخاطر اينه که بهش غذا داديم؟",
+      "n_regions": 3,
+      "lines": [
+        {
+          "page": "016",
+          "region_id": "016_0000",
+          "en": "FAR",
+          "fa": "FAR"
+        },
+        {
+          "page": "016",
+          "region_id": "016_0001",
+          "en": "WOW, SO CUTE!",
+          "fa": "واو، چقدر خوشگله!"
+        },
+        {
+          "page": "016",
+          "region_id": "016_0002",
+          "en": "Is it because we fed it?",
+          "fa": "بخاطر اينه که بهش غذا داديم؟"
+        }
+      ]
+    },
+    {
+      "page": "017",
+      "en": "LOVE TO! HUH?",
+      "fa": "دوست دارم! هاه؟",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "017",
+          "region_id": "017_0000",
+          "en": "LOVE TO!",
+          "fa": "دوست دارم!"
+        },
+        {
+          "page": "017",
+          "region_id": "017_0001",
+          "en": "HUH?",
+          "fa": "هاه؟"
+        }
+      ]
+    },
+    {
+      "page": "018",
+      "en": "JENNETTE'S LETTERS ARE FUN TO READ, THEY'RE FULL OF LITTLE DETAILS LIKE HOW THE HORSE HAD A FOAL, OR THE CHICK WAS CUTE, OR THE CAT STOLE FOOD",
+      "fa": "نامه هاي \"جنت\" خنده دار و پر از جزئیات کوچکي هستن مثل اينکه اسب يه توله داشته يا جوجه خوشگله يا گربه غذا دزديده",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "018",
+          "region_id": "018_0000",
+          "en": "JENNETTE'S LETTERS ARE FUN TO READ, THEY'RE FULL OF LITTLE DETAILS",
+          "fa": "نامه هاي \"جنت\" خنده دار و پر از جزئیات کوچکي هستن"
+        },
+        {
+          "page": "018",
+          "region_id": "018_0001",
+          "en": "LIKE HOW THE HORSE HAD A FOAL, OR THE CHICK WAS CUTE, OR THE CAT STOLE FOOD",
+          "fa": "مثل اينکه اسب يه توله داشته يا جوجه خوشگله يا گربه غذا دزديده"
+        }
+      ]
+    },
+    {
+      "page": "021",
+      "en": "JENNETTE MADE IT. QUITE SKILLFULLY TOO",
+      "fa": "\"جنت\" انجامش داد.",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "021",
+          "region_id": "021_0000",
+          "en": "JENNETTE MADE IT. QUITE SKILLFULLY TOO",
+          "fa": "\"جنت\" انجامش داد."
+        }
+      ]
+    },
+    {
+      "page": "023",
+      "en": "AH, NO, IT JUST CLIMBED ONTO MY LAP ON ITS OWN",
+      "fa": "آه، نه، اون فقط خودش به دستم صعود کرد",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "023",
+          "region_id": "023_0000",
+          "en": "AH, NO, IT JUST CLIMBED ONTO MY LAP ON ITS OWN",
+          "fa": "آه، نه، اون فقط خودش به دستم صعود کرد"
+        }
+      ]
+    },
+    {
+      "page": "024",
+      "en": "IT'S JUST THAT CATS HAVE ALWAYS FOLLOWED ME SINCE I WAS YOUNG WOW...!",
+      "fa": "فقط اینه که گربه ها از وقتی که جوون بودم همیشه دنبالم میومدن واو...!",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "024",
+          "region_id": "024_0000",
+          "en": "IT'S JUST THAT CATS HAVE ALWAYS FOLLOWED ME SINCE I WAS YOUNG",
+          "fa": "فقط اینه که گربه ها از وقتی که جوون بودم همیشه دنبالم میومدن"
+        },
+        {
+          "page": "024",
+          "region_id": "024_0001",
+          "en": "WOW...!",
+          "fa": "واو...!"
+        }
+      ]
+    },
+    {
+      "page": "025",
+      "en": "Place like this inside the Palace Well, the place is huge",
+      "fa": "يه جايي مثل اين داخل قصر خب، اينجا خيلي بزرگه",
+      "n_regions": 3,
+      "lines": [
+        {
+          "page": "025",
+          "region_id": "025_0000",
+          "en": "Place like this inside the Palace",
+          "fa": "يه جايي مثل اين داخل قصر"
+        },
+        {
+          "page": "025",
+          "region_id": "025_0001",
+          "en": "Well, the place is huge",
+          "fa": "خب، اينجا خيلي بزرگه"
+        }
+      ]
+    },
+    {
+      "page": "027",
+      "en": "I DON'T KNOW IF A BROKEN RELATIONSHIP CAN EVER FULLY TO WHAT IT ONCE WAS",
+      "fa": "نميدونم يه رابطه شکسته ميتونه دوباره به اون چيزي که قبلا بود برگردد",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "027",
+          "region_id": "027_0000",
+          "en": "I DON'T KNOW IF A BROKEN RELATIONSHIP CAN EVER FULLY TO WHAT IT ONCE WAS",
+          "fa": "نميدونم يه رابطه شکسته ميتونه دوباره به اون چيزي که قبلا بود برگردد"
+        }
+      ]
+    },
+    {
+      "page": "029",
+      "en": "BE CAREFUL, IT MIGHT UNSHEATHE ITS CLAWS ARE YOU A CAT EXPERT? N-NO, NOT AT ALL",
+      "fa": "مراقب باش، ممکنه ناخن هاش رو باز کنه آیا شما متخصص گربه هستید؟ نه، اصلاً نه",
+      "n_regions": 3,
+      "lines": [
+        {
+          "page": "029",
+          "region_id": "029_0000",
+          "en": "BE CAREFUL, IT MIGHT UNSHEATHE ITS CLAWS",
+          "fa": "مراقب باش، ممکنه ناخن هاش رو باز کنه"
+        },
+        {
+          "page": "029",
+          "region_id": "029_0001",
+          "en": "ARE YOU A CAT EXPERT?",
+          "fa": "آیا شما متخصص گربه هستید؟"
+        },
+        {
+          "page": "029",
+          "region_id": "029_0002",
+          "en": "N-NO, NOT AT ALL",
+          "fa": "نه، اصلاً نه"
+        }
+      ]
+    },
+    {
+      "page": "031",
+      "en": "THE CAT WAS SOON ADOPTED BY ANOTHER OFFICIAL 20 years of butler experience",
+      "fa": "اون گربه به زودي توسط يه مامور ديگه به فرزندي گرفته شد 20 سال تجربه خدمتکار",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "031",
+          "region_id": "031_0000",
+          "en": "THE CAT WAS SOON ADOPTED BY ANOTHER OFFICIAL",
+          "fa": "اون گربه به زودي توسط يه مامور ديگه به فرزندي گرفته شد"
+        },
+        {
+          "page": "031",
+          "region_id": "031_0001",
+          "en": "20 years of butler experience",
+          "fa": "20 سال تجربه خدمتکار"
+        }
+      ]
+    },
+    {
+      "page": "032",
+      "en": "THINGS WOULD BECOME SO MESSY I HAVE TO CALM DOWN",
+      "fa": "همه چيز خيلي آشفته ميشه بايد آروم بشم",
+      "n_regions": 3,
+      "lines": [
+        {
+          "page": "032",
+          "region_id": "032_0000",
+          "en": "THINGS WOULD BECOME SO MESSY",
+          "fa": "همه چيز خيلي آشفته ميشه"
+        },
+        {
+          "page": "032",
+          "region_id": "032_0002",
+          "en": "I HAVE TO CALM DOWN",
+          "fa": "بايد آروم بشم"
+        }
+      ]
+    },
+    {
+      "page": "033",
+      "en": "I SUPPOSE AS TIME PASSED, THINGS SOMEHOW PIECED TOGETHER AGAIN",
+      "fa": "فکر کنم با گذشت زمان همه چيز دوباره به هم وصل شد",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "033",
+          "region_id": "033_0000",
+          "en": "I SUPPOSE AS TIME PASSED, THINGS SOMEHOW PIECED TOGETHER AGAIN",
+          "fa": "فکر کنم با گذشت زمان همه چيز دوباره به هم وصل شد"
+        }
+      ]
+    },
+    {
+      "page": "034",
+      "en": "JENNETTE LOST INTEREST IN STUDYING BECAUSE YOU MADE THE LESSONS TOO ADVANCED FOR HER She was excellent for her age The only Problem was that her companion point was the Princess",
+      "fa": "جِنِتِ علاقه ی خود را به مطالعه از دست داد چون درس ها را برایش خیلی پیشرفته ساختید اون براي سنش خيلي خوب بود تنها مشکلي که داشت اين بود که دوست دخترش شاهزاده بود",
+      "n_regions": 3,
+      "lines": [
+        {
+          "page": "034",
+          "region_id": "034_0000",
+          "en": "JENNETTE LOST INTEREST IN STUDYING BECAUSE YOU MADE THE LESSONS TOO ADVANCED FOR HER",
+          "fa": "جِنِتِ علاقه ی خود را به مطالعه از دست داد چون درس ها را برایش خیلی پیشرفته ساختید"
+        },
+        {
+          "page": "034",
+          "region_id": "034_0001",
+          "en": "She was excellent for her age",
+          "fa": "اون براي سنش خيلي خوب بود"
+        },
+        {
+          "page": "034",
+          "region_id": "034_0002",
+          "en": "The only Problem was that her companion point was the Princess",
+          "fa": "تنها مشکلي که داشت اين بود که دوست دخترش شاهزاده بود"
+        }
+      ]
+    },
+    {
+      "page": "035",
+      "en": "CATS USUALLY DON'T LIKE HAVING THEIR PAWS TOUCHED",
+      "fa": "گربه ها معمولا دوست ندارن که به پنجه هاشون دست بزنن",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "035",
+          "region_id": "035_0000",
+          "en": "CATS USUALLY DON'T LIKE HAVING THEIR PAWS TOUCHED",
+          "fa": "گربه ها معمولا دوست ندارن که به پنجه هاشون دست بزنن"
+        }
+      ]
+    },
+    {
+      "page": "041",
+      "en": "BUT I GUESS IT'S NOT",
+      "fa": "اما فکر کنم که نه",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "041",
+          "region_id": "041_0000",
+          "en": "BUT I GUESS IT'S NOT",
+          "fa": "اما فکر کنم که نه"
+        }
+      ]
+    },
+    {
+      "page": "046",
+      "en": "WOULD YOU LIKE TO... PET IT?",
+      "fa": "دوست داري...",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "046",
+          "region_id": "046_0000",
+          "en": "WOULD YOU LIKE TO... PET IT?",
+          "fa": "دوست داري..."
+        }
+      ]
+    },
+    {
+      "page": "047",
+      "en": "MEOW",
+      "fa": "ميو",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "047",
+          "region_id": "047_0000",
+          "en": "MEOW",
+          "fa": "ميو"
+        }
+      ]
+    },
+    {
+      "page": "048",
+      "en": "JENNETTE HAS TO LIVE COMFORTABLY TOO, SO THERE'S NO HELPING IT",
+      "fa": "جینت باید خیلی راحت زندگی کنه پس هیچ کمکی نمیشه کرد",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "048",
+          "region_id": "048_0000",
+          "en": "JENNETTE HAS TO LIVE COMFORTABLY TOO, SO THERE'S NO HELPING IT",
+          "fa": "جینت باید خیلی راحت زندگی کنه پس هیچ کمکی نمیشه کرد"
+        }
+      ]
+    },
+    {
+      "page": "050",
+      "en": "IT LOOKS HIGH QUALITY",
+      "fa": "به نظر کيفيت عالي مياد",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "050",
+          "region_id": "050_0000",
+          "en": "IT LOOKS HIGH QUALITY",
+          "fa": "به نظر کيفيت عالي مياد"
+        }
+      ]
+    },
+    {
+      "page": "055",
+      "en": "THESE DOLLS? YOUR MAJESTY AND THE PRINCESS?",
+      "fa": "اين عروسک ها، شاهزاده و شاهزاده؟",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "055",
+          "region_id": "055_0000",
+          "en": "THESE DOLLS? YOUR MAJESTY AND THE PRINCESS?",
+          "fa": "اين عروسک ها، شاهزاده و شاهزاده؟"
+        }
+      ]
+    },
+    {
+      "page": "056",
+      "en": "FATHER, WHAT ARE",
+      "fa": "پدر، چي هست؟",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "056",
+          "region_id": "056_0000",
+          "en": "FATHER, WHAT ARE",
+          "fa": "پدر، چي هست؟"
+        }
+      ]
+    },
+    {
+      "page": "058",
+      "en": "Kitty, kitty, come here",
+      "fa": "کیتی، کیتی، بیا اینجا",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "058",
+          "region_id": "058_0000",
+          "en": "Kitty, kitty, come here",
+          "fa": "کیتی، کیتی، بیا اینجا"
+        }
+      ]
+    },
+    {
+      "page": "059",
+      "en": "IS WHAT I USED TO THINK",
+      "fa": "این چیزیه که قبلا فکر میکردم",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "059",
+          "region_id": "059_0000",
+          "en": "IS WHAT I USED TO THINK",
+          "fa": "این چیزیه که قبلا فکر میکردم"
+        }
+      ]
+    },
+    {
+      "page": "061",
+      "en": "THE CAT IS IT YOURS?",
+      "fa": "گربه مال توئه؟",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "061",
+          "region_id": "061_0000",
+          "en": "THE CAT",
+          "fa": "گربه"
+        },
+        {
+          "page": "061",
+          "region_id": "061_0001",
+          "en": "IS IT YOURS?",
+          "fa": "مال توئه؟"
+        }
+      ]
+    },
+    {
+      "page": "062",
+      "en": "ABOUT THE FURNITURE YOU SENT, DON'T YOU THINK IT BREAKS TOO EASILY? CLAUDE WENT WILD AND DESTROYED ALL OF— THIS SHAMELESS MAN BACK THEN, I DIDN'T KNOW",
+      "fa": "در مورد مبلماني که فرستادي فکر نميکني خيلي راحت خراب ميشه؟ اين مرد بي شرم بعدش، نميدونستم",
+      "n_regions": 3,
+      "lines": [
+        {
+          "page": "062",
+          "region_id": "062_0000",
+          "en": "ABOUT THE FURNITURE YOU SENT, DON'T YOU THINK IT BREAKS TOO EASILY? CLAUDE WENT WILD AND DESTROYED ALL OF—",
+          "fa": "در مورد مبلماني که فرستادي فکر نميکني خيلي راحت خراب ميشه؟"
+        },
+        {
+          "page": "062",
+          "region_id": "062_0001",
+          "en": "THIS SHAMELESS MAN",
+          "fa": "اين مرد بي شرم"
+        },
+        {
+          "page": "062",
+          "region_id": "062_0002",
+          "en": "BACK THEN, I DIDN'T KNOW",
+          "fa": "بعدش، نميدونستم"
+        }
+      ]
+    },
+    {
+      "page": "068",
+      "en": "AH! IT RAN AWAY!",
+      "fa": "فرار کرد!",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "068",
+          "region_id": "068_0000",
+          "en": "AH! IT RAN AWAY!",
+          "fa": "فرار کرد!"
+        }
+      ]
+    },
+    {
+      "page": "070",
+      "en": "SHOULD WE COME BACK HERE AGAIN TOMORROW? YES! I'D",
+      "fa": "بايد فردا برگرديم اينجا؟ آره، دوست دارم",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "070",
+          "region_id": "070_0000",
+          "en": "SHOULD WE COME BACK HERE AGAIN TOMORROW?",
+          "fa": "بايد فردا برگرديم اينجا؟"
+        },
+        {
+          "page": "070",
+          "region_id": "070_0001",
+          "en": "YES! I'D",
+          "fa": "آره، دوست دارم"
+        }
+      ]
+    },
+    {
+      "page": "071",
+      "en": "BUT IT MIGHT EAT THE BACON OR HAM INSIDE",
+      "fa": "اما مي تونه گوشت خوک رو بخوره يا گوشت خنزير داخلش",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "071",
+          "region_id": "071_0000",
+          "en": "BUT IT MIGHT EAT THE BACON OR HAM INSIDE",
+          "fa": "اما مي تونه گوشت خوک رو بخوره يا گوشت خنزير داخلش"
+        }
+      ]
+    },
+    {
+      "page": "074",
+      "en": "THE CAT?",
+      "fa": "گربه؟",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "074",
+          "region_id": "074_0000",
+          "en": "THE CAT?",
+          "fa": "گربه؟"
+        }
+      ]
+    },
+    {
+      "page": "075",
+      "en": "AH, THAT'S RIGHT, SHE LIKED DOLLS, DIDN'T SHE? SHE ALWAYS STACKED THEM ALL OVER HER ROOM She made it well",
+      "fa": "آره، اون از عروسک ها خوشش ميومد، مگه نه؟ اون خوب انجامش داد",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "075",
+          "region_id": "075_0000",
+          "en": "AH, THAT'S RIGHT, SHE LIKED DOLLS, DIDN'T SHE? SHE ALWAYS STACKED THEM ALL OVER HER ROOM",
+          "fa": "آره، اون از عروسک ها خوشش ميومد، مگه نه؟"
+        },
+        {
+          "page": "075",
+          "region_id": "075_0001",
+          "en": "She made it well",
+          "fa": "اون خوب انجامش داد"
+        }
+      ]
+    },
+    {
+      "page": "076",
+      "en": "I'D BELIEVE IT IF YOU TOLD ME THAT IT WAS MADE BY A MASTER CRAFTSMAN DON'T YOU THINK",
+      "fa": "اگه بهم ميگفتي که توسط يه استاد صنعت ساخته شده باورش ميکردم فکر نميکني",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "076",
+          "region_id": "076_0000",
+          "en": "I'D BELIEVE IT IF YOU TOLD ME THAT IT WAS MADE BY A MASTER CRAFTSMAN",
+          "fa": "اگه بهم ميگفتي که توسط يه استاد صنعت ساخته شده باورش ميکردم"
+        },
+        {
+          "page": "076",
+          "region_id": "076_0001",
+          "en": "DON'T YOU THINK",
+          "fa": "فکر نميکني"
+        }
+      ]
+    },
+    {
+      "page": "078",
+      "en": "IT'S A CAT!",
+      "fa": "یه گربه ست!",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "078",
+          "region_id": "078_0000",
+          "en": "IT'S A CAT!",
+          "fa": "یه گربه ست!"
+        }
+      ]
+    },
+    {
+      "page": "079",
+      "en": "AND THE TWO OF THEM BEGAN TO GROW DISTANT NOT LONG AFTER",
+      "fa": "و بعد از مدت کوتاهی این دو شروع به فاصله گرفتن کردند",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "079",
+          "region_id": "079_0000",
+          "en": "AND THE TWO OF THEM BEGAN TO GROW DISTANT NOT LONG AFTER",
+          "fa": "و بعد از مدت کوتاهی این دو شروع به فاصله گرفتن کردند"
+        }
+      ]
+    },
+    {
+      "page": "081",
+      "en": "AH, IT'S COMING CLOSER!",
+      "fa": "آه، داره نزديک تر ميشه!",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "081",
+          "region_id": "081_0000",
+          "en": "AH, IT'S COMING CLOSER!",
+          "fa": "آه، داره نزديک تر ميشه!"
+        }
+      ]
+    },
+    {
+      "page": "082",
+      "en": "YES!",
+      "fa": "آره!",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "082",
+          "region_id": "082_0000",
+          "en": "YES!",
+          "fa": "آره!"
+        }
+      ]
+    },
+    {
+      "page": "084",
+      "en": "CLAUDE APPARENTLY BROKE ALL THE FURNITURE BY ACCIDENT THIS TIME, SO IT ALL NEED REPLACING THE LETTER WAS FULL OF HIS MAJESTY'S INSULTS. IT SEEMS THAT",
+      "fa": "کلاود ظاهراً اين دفعه با تصادف همه ي مبلمان رو خراب کرده، پس همه شون نياز به تعويض دارن نامه پر از توهينات جلال داشت.",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "084",
+          "region_id": "084_0000",
+          "en": "CLAUDE APPARENTLY BROKE ALL THE FURNITURE BY ACCIDENT THIS TIME, SO IT ALL NEED REPLACING",
+          "fa": "کلاود ظاهراً اين دفعه با تصادف همه ي مبلمان رو خراب کرده، پس همه شون نياز به تعويض دارن"
+        },
+        {
+          "page": "084",
+          "region_id": "084_0001",
+          "en": "THE LETTER WAS FULL OF HIS MAJESTY'S INSULTS. IT SEEMS THAT",
+          "fa": "نامه پر از توهينات جلال داشت."
+        }
+      ]
+    },
+    {
+      "page": "086",
+      "en": "KITTY!",
+      "fa": "کیتی!",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "086",
+          "region_id": "086_0000",
+          "en": "KITTY!",
+          "fa": "کیتی!"
+        }
+      ]
+    },
+    {
+      "page": "088",
+      "en": "WOULD YOU LIKE TO HOLD IT?",
+      "fa": "میخوای نگهش داری؟",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "088",
+          "region_id": "088_0000",
+          "en": "WOULD YOU LIKE TO HOLD IT?",
+          "fa": "میخوای نگهش داری؟"
+        }
+      ]
+    },
+    {
+      "page": "092",
+      "en": "HAHAHA MAYBE HE WANTED TO SEND HIS REGARDS TO YOU? YOU SAY THAT, BUT YOU LOOK LIVELY",
+      "fa": "هاهاها شايد اون ميخواست به تو نگاه کنه؟ تو اینو میگی ولی به نظر زنده میای",
+      "n_regions": 3,
+      "lines": [
+        {
+          "page": "092",
+          "region_id": "092_0000",
+          "en": "HAHAHA",
+          "fa": "هاهاها"
+        },
+        {
+          "page": "092",
+          "region_id": "092_0001",
+          "en": "MAYBE HE WANTED TO SEND HIS REGARDS TO YOU?",
+          "fa": "شايد اون ميخواست به تو نگاه کنه؟"
+        },
+        {
+          "page": "092",
+          "region_id": "092_0002",
+          "en": "YOU SAY THAT, BUT YOU LOOK LIVELY",
+          "fa": "تو اینو میگی ولی به نظر زنده میای"
+        }
+      ]
+    },
+    {
+      "page": "093",
+      "en": "SHE NEVER SEEMED INTERESTED IN ACADEMICS, BUT SHE HAD TALENT LIKE THIS",
+      "fa": "اون هيچوقت به دانشگاه علاقه اي نداشت ولي اين استعداد رو داشت",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "093",
+          "region_id": "093_0000",
+          "en": "SHE NEVER SEEMED INTERESTED IN ACADEMICS, BUT SHE HAD TALENT LIKE THIS",
+          "fa": "اون هيچوقت به دانشگاه علاقه اي نداشت ولي اين استعداد رو داشت"
+        }
+      ]
+    },
+    {
+      "page": "094",
+      "en": "WE MAY SADLY HAVE TO STOP",
+      "fa": "شايد متاسفانه مجبور بشيم جلوشون رو بگيريم",
+      "n_regions": 6,
+      "lines": [
+        {
+          "page": "094",
+          "region_id": "094_0000",
+          "en": "WE MAY SADLY HAVE TO STOP",
+          "fa": "شايد متاسفانه مجبور بشيم جلوشون رو بگيريم"
+        }
+      ]
+    },
+    {
+      "page": "098",
+      "en": "IT REMINDS ME OF OLD TIMES",
+      "fa": "به خاطرم مياره از زمان هاي قديمي",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "098",
+          "region_id": "098_0000",
+          "en": "IT REMINDS ME OF OLD TIMES",
+          "fa": "به خاطرم مياره از زمان هاي قديمي"
+        }
+      ]
+    },
+    {
+      "page": "100",
+      "en": "THIS PART OF THE PALACE? I DON'T KNOW IF YOU REMEMBER ME, BUT I'M ROGER FROM HOUSE ALPHEUS",
+      "fa": "اين قسمت از قصر؟ نميدونم منو يادته يا نه، ولي من \"راجر\" از خاندان \"آلفيوس\" هستم",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "100",
+          "region_id": "100_0000",
+          "en": "THIS PART OF THE PALACE?",
+          "fa": "اين قسمت از قصر؟"
+        },
+        {
+          "page": "100",
+          "region_id": "100_0001",
+          "en": "I DON'T KNOW IF YOU REMEMBER ME, BUT I'M ROGER FROM HOUSE ALPHEUS",
+          "fa": "نميدونم منو يادته يا نه، ولي من \"راجر\" از خاندان \"آلفيوس\" هستم"
+        }
+      ]
+    },
+    {
+      "page": "102",
+      "en": "ARE YOU HURT? IT LOOKED SO",
+      "fa": "آیا صدمه دیده ای؟ اينطور به نظر مي رسيد",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "102",
+          "region_id": "102_0000",
+          "en": "ARE YOU HURT?",
+          "fa": "آیا صدمه دیده ای؟"
+        },
+        {
+          "page": "102",
+          "region_id": "102_0001",
+          "en": "IT LOOKED SO",
+          "fa": "اينطور به نظر مي رسيد"
+        }
+      ]
+    },
+    {
+      "page": "103",
+      "en": "IS THIS HANDKERCHIEF IMPORTED?",
+      "fa": "آیا این دستمال وارداتی است؟",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "103",
+          "region_id": "103_0000",
+          "en": "IS THIS HANDKERCHIEF IMPORTED?",
+          "fa": "آیا این دستمال وارداتی است؟"
+        }
+      ]
+    },
+    {
+      "page": "104",
+      "en": "THERE IT IS!",
+      "fa": "اونجاست!",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "104",
+          "region_id": "104_0000",
+          "en": "THERE IT IS!",
+          "fa": "اونجاست!"
+        }
+      ]
+    },
+    {
+      "page": "105",
+      "en": "IF ONLY WE COULD FIND A PASSING GUARD OR MAID, WE COULD ASK",
+      "fa": "اگه فقط بتونيم يه نگهبان يا خدمتکار رو پيدا کنيم، ميتونيم ازش بپرسيم",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "105",
+          "region_id": "105_0000",
+          "en": "IF ONLY WE COULD FIND A PASSING GUARD OR MAID, WE COULD ASK",
+          "fa": "اگه فقط بتونيم يه نگهبان يا خدمتکار رو پيدا کنيم، ميتونيم ازش بپرسيم"
+        }
+      ]
+    },
+    {
+      "page": "106",
+      "en": "EVERY TIME AN INTERNATIONAL LETTER ARRIVES, I GET ANGRY THE PROUD, IT'S EXHAUSTING HERE, TAKE THIS AND GO PAY FOR IT",
+      "fa": "هر بار که يه نامه ي بين المللي مياد، عصباني ميشم، افتخار مي کنم، خسته کننده ست اينو بگير و پولش رو بده",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "106",
+          "region_id": "106_0000",
+          "en": "EVERY TIME AN INTERNATIONAL LETTER ARRIVES, I GET ANGRY THE PROUD, IT'S EXHAUSTING",
+          "fa": "هر بار که يه نامه ي بين المللي مياد، عصباني ميشم، افتخار مي کنم، خسته کننده ست"
+        },
+        {
+          "page": "106",
+          "region_id": "106_0001",
+          "en": "HERE, TAKE THIS AND GO PAY FOR IT",
+          "fa": "اينو بگير و پولش رو بده"
+        }
+      ]
+    },
+    {
+      "page": "108",
+      "en": "THEY BICKERED AGAIN. WHO IS HE TRYING TO TURN INTO A TRAITOR THIS TIME? IT'S ANNOYING HOW HE SENDS THE INVOICE TO ME WHEN HE COULD SEND IT STRAIGHT TO YOU",
+      "fa": "دوباره دعوا کردن، اين دفعه ميخواد کي رو به يه خائن تبديل کنه؟ ناراحت کننده ست که اين فاکتور رو به من ميفرسته وقتي که مي تونست مستقيم به تو بفرسته",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "108",
+          "region_id": "108_0000",
+          "en": "THEY BICKERED AGAIN. WHO IS HE TRYING TO TURN INTO A TRAITOR THIS TIME?",
+          "fa": "دوباره دعوا کردن، اين دفعه ميخواد کي رو به يه خائن تبديل کنه؟"
+        },
+        {
+          "page": "108",
+          "region_id": "108_0001",
+          "en": "IT'S ANNOYING HOW HE SENDS THE INVOICE TO ME WHEN HE COULD SEND IT STRAIGHT TO YOU",
+          "fa": "ناراحت کننده ست که اين فاکتور رو به من ميفرسته وقتي که مي تونست مستقيم به تو بفرسته"
+        }
+      ]
+    },
+    {
+      "page": "109",
+      "en": "IT'S NOT MY CAT BUT",
+      "fa": "اون گربه من نيست ولي",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "109",
+          "region_id": "109_0000",
+          "en": "IT'S NOT MY CAT BUT",
+          "fa": "اون گربه من نيست ولي"
+        }
+      ]
+    },
+    {
+      "page": "111",
+      "en": "MEOW",
+      "fa": "ميو",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "111",
+          "region_id": "111_0000",
+          "en": "MEOW",
+          "fa": "ميو"
+        }
+      ]
+    },
+    {
+      "page": "113",
+      "en": "AH!",
+      "fa": "آه!",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "113",
+          "region_id": "113_0000",
+          "en": "AH!",
+          "fa": "آه!"
+        }
+      ]
+    },
+    {
+      "page": "114",
+      "en": "WILL IT EAT THAT? MAYBE IT WON'T?",
+      "fa": "اینو میخوره؟ شايد اينطور نباشه؟",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "114",
+          "region_id": "114_0000",
+          "en": "WILL IT EAT THAT?",
+          "fa": "اینو میخوره؟"
+        },
+        {
+          "page": "114",
+          "region_id": "114_0001",
+          "en": "MAYBE IT WON'T?",
+          "fa": "شايد اينطور نباشه؟"
+        }
+      ]
+    },
+    {
+      "page": "115",
+      "en": "IT'S A CAT",
+      "fa": "اون يه گربه ست",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "115",
+          "region_id": "115_0000",
+          "en": "IT'S A CAT",
+          "fa": "اون يه گربه ست"
+        }
+      ]
+    },
+    {
+      "page": "117",
+      "en": "REGARDS? HARDLY. IT'S ALL TEASING",
+      "fa": "نگاه کردن سخته همه اش شوخي کردن",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "117",
+          "region_id": "117_0000",
+          "en": "REGARDS? HARDLY. IT'S ALL TEASING",
+          "fa": "نگاه کردن سخته همه اش شوخي کردن"
+        }
+      ]
+    },
+    {
+      "page": "118",
+      "en": "KITTY",
+      "fa": "کیتی",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "118",
+          "region_id": "118_0000",
+          "en": "KITTY",
+          "fa": "کیتی"
+        }
+      ]
+    },
+    {
+      "page": "119",
+      "en": "I WANTED TO PET IT THOUGH",
+      "fa": "من ميخواستم با اين وجودش رو دوست داشته باشم",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "119",
+          "region_id": "119_0000",
+          "en": "I WANTED TO PET IT THOUGH",
+          "fa": "من ميخواستم با اين وجودش رو دوست داشته باشم"
+        }
+      ]
+    },
+    {
+      "page": "120",
+      "en": "IT DOESN'T RUN",
+      "fa": "کار نميکنه",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "120",
+          "region_id": "120_0000",
+          "en": "IT DOESN'T RUN",
+          "fa": "کار نميکنه"
+        }
+      ]
+    },
+    {
+      "page": "122",
+      "en": "COME HERE I'LL GIVE YOU A SNACK!",
+      "fa": "بیا اینجا من بهتون یه میان وعده میدم!",
+      "n_regions": 2,
+      "lines": [
+        {
+          "page": "122",
+          "region_id": "122_0000",
+          "en": "COME HERE",
+          "fa": "بیا اینجا"
+        },
+        {
+          "page": "122",
+          "region_id": "122_0001",
+          "en": "I'LL GIVE YOU A SNACK!",
+          "fa": "من بهتون یه میان وعده میدم!"
+        }
+      ]
+    },
+    {
+      "page": "123",
+      "en": "TO THINK THAT",
+      "fa": "به اين فکر کردن",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "123",
+          "region_id": "123_0000",
+          "en": "TO THINK THAT",
+          "fa": "به اين فکر کردن"
+        }
+      ]
+    },
+    {
+      "page": "124",
+      "en": "So cute~",
+      "fa": "خیلی قشنگه",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "124",
+          "region_id": "124_0000",
+          "en": "So cute~",
+          "fa": "خیلی قشنگه"
+        }
+      ]
+    },
+    {
+      "page": "127",
+      "en": "JENNETTE MADE THAT AS WELL. SHE SENT ONE FOR YOU AND ONE FOR ME",
+      "fa": "\"جنت\" اينکارو خوب انجام داد اون يکي رو براي تو و يکي رو براي من فرستاد",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "127",
+          "region_id": "127_0000",
+          "en": "JENNETTE MADE THAT AS WELL. SHE SENT ONE FOR YOU AND ONE FOR ME",
+          "fa": "\"جنت\" اينکارو خوب انجام داد اون يکي رو براي تو و يکي رو براي من فرستاد"
+        }
+      ]
+    },
+    {
+      "page": "129",
+      "en": "I GUESS WE FOLLOWED IT TOO FAR AND WE LOST THE CAT TOO I didn't know that there was a",
+      "fa": "فکر کنم ما خيلي از حدش پيروي کرديم و ما گربه رو هم از دست داديم من نميدونستم که يه",
+      "n_regions": 3,
+      "lines": [
+        {
+          "page": "129",
+          "region_id": "129_0000",
+          "en": "I GUESS WE FOLLOWED IT TOO FAR",
+          "fa": "فکر کنم ما خيلي از حدش پيروي کرديم"
+        },
+        {
+          "page": "129",
+          "region_id": "129_0001",
+          "en": "AND WE LOST THE CAT TOO",
+          "fa": "و ما گربه رو هم از دست داديم"
+        },
+        {
+          "page": "129",
+          "region_id": "129_0002",
+          "en": "I didn't know that there was a",
+          "fa": "من نميدونستم که يه"
+        }
+      ]
+    },
+    {
+      "page": "131",
+      "en": "SHE WANTS TO OPEN A WORKSHOP AT THE PORT, APPARENTLY",
+      "fa": "ظاهراً ميخواد يه کارگاه در بندر باز کنه",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "131",
+          "region_id": "131_0000",
+          "en": "SHE WANTS TO OPEN A WORKSHOP AT THE PORT, APPARENTLY",
+          "fa": "ظاهراً ميخواد يه کارگاه در بندر باز کنه"
+        }
+      ]
+    },
+    {
+      "page": "132",
+      "en": "WHAT?! YOUR HIGNNESSES?! WHAT BRINGS YOU TO",
+      "fa": "چه اتفاقي افتاد؟ عالیجناب؟ چه چيزي تو رو به اينجا مياره؟",
+      "n_regions": 3,
+      "lines": [
+        {
+          "page": "132",
+          "region_id": "132_0000",
+          "en": "WHAT?!",
+          "fa": "چه اتفاقي افتاد؟"
+        },
+        {
+          "page": "132",
+          "region_id": "132_0001",
+          "en": "YOUR HIGNNESSES?!",
+          "fa": "عالیجناب؟"
+        },
+        {
+          "page": "132",
+          "region_id": "132_0002",
+          "en": "WHAT BRINGS YOU TO",
+          "fa": "چه چيزي تو رو به اينجا مياره؟"
+        }
+      ]
+    },
+    {
+      "page": "133",
+      "en": "• PLEUPTOS",
+      "fa": "• PLEUPTOS",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "133",
+          "region_id": "133_0000",
+          "en": "• PLEUPTOS",
+          "fa": "• PLEUPTOS"
+        }
+      ]
+    },
+    {
+      "page": "134",
+      "en": "PARTICULARLY BAD",
+      "fa": "به خصوص بد",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "134",
+          "region_id": "134_0000",
+          "en": "PARTICULARLY BAD",
+          "fa": "به خصوص بد"
+        }
+      ]
+    },
+    {
+      "page": "135",
+      "en": "IT'S A SMALL SUM, BUT HE'S TALENTED AT MA ME ANNOYED",
+      "fa": "اين يه مبلغ کوچيکه اما اون استعداد داره که منو ناراحت کنه",
+      "n_regions": 1,
+      "lines": [
+        {
+          "page": "135",
+          "region_id": "135_0000",
+          "en": "IT'S A SMALL SUM, BUT HE'S TALENTED AT MA ME ANNOYED",
+          "fa": "اين يه مبلغ کوچيکه اما اون استعداد داره که منو ناراحت کنه"
         }
       ]
     }
