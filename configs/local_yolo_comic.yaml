@@ -42,7 +42,8 @@ masking:
   residual_expand: false
 
 inpainting:
-  backend: "opencv"
+  crop_margin: 128
+  backend: "anime-lama"  # color anime/manga LaMa (vendored, no iopaint deps)
   fallback_to_cpu: true
 
 device:

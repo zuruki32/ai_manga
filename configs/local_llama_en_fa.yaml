@@ -36,7 +36,8 @@ masking:
   use_polygon: true
 
 inpainting:
-  backend: "opencv"
+  crop_margin: 128
+  backend: "anime-lama"  # color anime/manga LaMa (vendored, no iopaint deps)
   tile_size: 768
   overlap: 64
 

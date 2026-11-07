@@ -55,11 +55,12 @@ translation:
   max_length: 512
   batch_size: 1
   validate: true
-  max_retries: 2
-  # Stock Instruct + colloquial prompt (no Persian SFT). No EN:/FA: few-shots.
+  max_retries: 3
+  # Stock Instruct: short EN system prompt + Latin-ban retry (FA instructions → English replies).
+  # No EN:/FA: few-shots. Persian SFT still uses the FA colloquial prompt.
   style: "colloquial_fa"
   # Neighbouring bubbles shown to the model as context (not translated)
-  context_window: 1
+  context_window: 0  # 0 = translate each bubble alone (avoids neighbor-context leak)
   unit: "region"
   output_format: "scanlation"
   glossary:
@@ -72,6 +73,8 @@ translation:
     "PRINCESS": "پرنسس"
 
 masking:
+  text_segmentation: "ctd"  # also mask SFX/stylized text (comic-text-detector, ~91MB auto-download)
+  ctd_dilate: 3
   dilation_px: 18
   blur_radius: 2
   use_polygon: true
@@ -81,11 +84,12 @@ masking:
   bubble_pad_px: 10
 
 inpainting:
+  crop_margin: 128
   # Best quality (same stack as manga-image-translator / PanelCleaner / manga-text-cleaner):
   #   pip install 'manga-ai[lama]'
   #   # or: pip install simple-lama-inpainting --no-deps
   # Auto-falls back to improved OpenCV if LaMa missing / OOM (no per-page hard fail).
-  backend: "lama"
+  backend: "anime-lama"  # color anime/manga LaMa (vendored, no iopaint deps)
   radius: 7
   method: "telea"
   passes: 2

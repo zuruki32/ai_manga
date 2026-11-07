@@ -66,11 +66,15 @@ telegram = [
 lama = [
     "simple-lama-inpainting>=0.1.0",
 ]
+# Recommended cleaner: manga/anime-finetuned LaMa via IOPaint (backend: "iopaint" / "manga")
+iopaint = [
+    "iopaint>=1.5.0",
+]
 local = [
     "manga-ai[gpu,easyocr,translation-local]",
 ]
 all = [
-    "manga-ai[dev,gpu,ocr,easyocr,manga-ocr,hybrid-qwen,yolo,translation-local,lama,telegram]",
+    "manga-ai[dev,gpu,ocr,easyocr,manga-ocr,hybrid-qwen,yolo,translation-local,lama,iopaint,telegram]",
 ]
 
 [project.scripts]

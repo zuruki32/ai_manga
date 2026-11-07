@@ -22,10 +22,16 @@ def _resolve_config(
     config: Optional[str],
     backend: Optional[str],
     force: bool,
+    limit: int = 0,
 ) -> Config:
     overrides = {}
+    pipe_over = {}
     if force:
-        overrides["pipeline"] = {"force": True}
+        pipe_over["force"] = True
+    if limit and int(limit) > 0:
+        pipe_over["limit"] = int(limit)
+    if pipe_over:
+        overrides["pipeline"] = pipe_over
     resolved = resolve_config_path(config) if config else None
     if config and resolved is None:
         available = ", ".join(list_bundled_configs()) or "(none found)"
@@ -61,9 +67,10 @@ def main() -> None:
 )
 @click.option("--backend", type=str, default=None, help="Force all backends (e.g. mock)")
 @click.option("--force", is_flag=True, help="Ignore cache and re-run all stages")
-def process(chapter_dir: str, config: Optional[str], backend: Optional[str], force: bool) -> None:
+@click.option("--limit", type=int, default=0, help="Only process the first N pages (0 = all)")
+def process(chapter_dir: str, config: Optional[str], backend: Optional[str], force: bool, limit: int) -> None:
     """Run the full pipeline on a chapter directory."""
-    cfg = _resolve_config(config, backend, force)
+    cfg = _resolve_config(config, backend, force, limit=limit)
     setup_logging(level=cfg.get("logging.level", "INFO"))
     # Make misconfigured GGUF obvious before burning OCR time
     logger.info(
@@ -99,9 +106,10 @@ def process(chapter_dir: str, config: Optional[str], backend: Optional[str], for
 )
 @click.option("--backend", type=str, default=None)
 @click.option("--force", is_flag=True)
-def detect(chapter_dir: str, config: Optional[str], backend: Optional[str], force: bool) -> None:
+@click.option("--limit", type=int, default=0, help="Only process the first N pages (0 = all)")
+def detect(chapter_dir: str, config: Optional[str], backend: Optional[str], force: bool, limit: int) -> None:
     """Run text detection only."""
-    cfg = _resolve_config(config, backend, force)
+    cfg = _resolve_config(config, backend, force, limit=limit)
     setup_logging(level=cfg.get("logging.level", "INFO"))
     Pipeline(cfg, chapter_dir).run_stage("detection")
 
@@ -117,9 +125,10 @@ def detect(chapter_dir: str, config: Optional[str], backend: Optional[str], forc
 )
 @click.option("--backend", type=str, default=None)
 @click.option("--force", is_flag=True)
-def ocr(chapter_dir: str, config: Optional[str], backend: Optional[str], force: bool) -> None:
+@click.option("--limit", type=int, default=0, help="Only process the first N pages (0 = all)")
+def ocr(chapter_dir: str, config: Optional[str], backend: Optional[str], force: bool, limit: int) -> None:
     """Run OCR only."""
-    cfg = _resolve_config(config, backend, force)
+    cfg = _resolve_config(config, backend, force, limit=limit)
     setup_logging(level=cfg.get("logging.level", "INFO"))
     Pipeline(cfg, chapter_dir).run_stage("ocr")
 
@@ -152,9 +161,10 @@ def translate(chapter_dir: str, config: Optional[str], backend: Optional[str], f
     help="Config path or bare name (e.g. hybrid_qwen_en)",
 )
 @click.option("--force", is_flag=True)
-def mask(chapter_dir: str, config: Optional[str], force: bool) -> None:
+@click.option("--limit", type=int, default=0, help="Only process the first N pages (0 = all)")
+def mask(chapter_dir: str, config: Optional[str], force: bool, limit: int) -> None:
     """Generate text masks only."""
-    cfg = _resolve_config(config, None, force)
+    cfg = _resolve_config(config, None, force, limit=limit)
     setup_logging(level=cfg.get("logging.level", "INFO"))
     Pipeline(cfg, chapter_dir).run_stage("masking")
 
@@ -170,9 +180,10 @@ def mask(chapter_dir: str, config: Optional[str], force: bool) -> None:
 )
 @click.option("--backend", type=str, default=None)
 @click.option("--force", is_flag=True)
-def clean(chapter_dir: str, config: Optional[str], backend: Optional[str], force: bool) -> None:
+@click.option("--limit", type=int, default=0, help="Only process the first N pages (0 = all)")
+def clean(chapter_dir: str, config: Optional[str], backend: Optional[str], force: bool, limit: int) -> None:
     """Run inpainting / text removal only (alias: manga-ai inpaint)."""
-    cfg = _resolve_config(config, backend, force)
+    cfg = _resolve_config(config, backend, force, limit=limit)
     setup_logging(level=cfg.get("logging.level", "INFO"))
     Pipeline(cfg, chapter_dir).run_stage("inpainting")
 

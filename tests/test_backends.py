@@ -42,6 +42,29 @@ def test_create_opencv_inpainter():
     assert out.shape == img.shape
 
 
+def test_iopaint_backend_wiring():
+    """'iopaint'/'manga' either build the IOPaint backend or fall back to
+    OpenCV when IOPaint is not installed — never raise."""
+    from manga_ai.inpainting import iopaint_available
+
+    for backend in ("iopaint", "manga"):
+        inp = create_inpainter(backend, device="cpu")
+        if iopaint_available():
+            assert type(inp).__name__ == "IOPaintInpainter"
+        else:
+            assert type(inp).__name__ == "OpenCVInpainter"
+
+
+def test_iopaint_inpainter_noop_on_empty_mask():
+    """Empty mask must short-circuit (no model load, image returned as-is)."""
+    from manga_ai.inpainting.iopaint_backend import IOPaintInpainter
+
+    inp = IOPaintInpainter(device="cpu")
+    img = np.ones((32, 32, 3), dtype=np.uint8) * 200
+    out = inp.inpaint(img, np.zeros((32, 32), dtype=np.uint8))
+    assert np.array_equal(out, img)
+
+
 def test_unknown_backend_raises():
     with pytest.raises(ValueError):
         create_detector("nonexistent_xyz")

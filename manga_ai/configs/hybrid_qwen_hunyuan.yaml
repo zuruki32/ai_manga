@@ -78,11 +78,12 @@ masking:
   bubble_pad_px: 10
 
 inpainting:
+  crop_margin: 128
   # Best quality (same stack as manga-image-translator / PanelCleaner / manga-text-cleaner):
   #   pip install 'manga-ai[lama]'
   #   # or: pip install simple-lama-inpainting --no-deps
   # Auto-falls back to improved OpenCV if LaMa missing / OOM (no per-page hard fail).
-  backend: "lama"
+  backend: "anime-lama"  # color anime/manga LaMa (vendored, no iopaint deps)
   radius: 7
   method: "telea"
   passes: 2
