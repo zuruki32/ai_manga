@@ -1,0 +1,695 @@
+﻿[INFO] Config translation: backend='huggingface' model='facebook/nllb-200-distilled-1.3B'
+[INFO] [pipeline] Processing chapter Ch.133 - Suddenly Became A Princess One Day
+[INFO] [preprocess] Discovering images in D:\projects\manga-ai\data\chapters\Ch.133 - Suddenly Became A Princess One Day
+[INFO] [preprocess] Found 136 pages
+[INFO] [detection] Starting text detection
+[INFO] Loading YOLO comic detector model=models\comic-yolo.pt device=0 variant=textseg imgsz=1024
+[INFO] [detection] Page 001: 4 regions
+[INFO] [detection] Page 002: 1 regions
+[INFO] [detection] Page 003: 1 regions
+[INFO] [detection] Page 004: 4 regions
+[INFO] [detection] Page 005: 1 regions
+[INFO] [detection] Page 006: 0 regions
+[INFO] [detection] Page 007: 0 regions
+[INFO] [detection] Page 008: 0 regions
+[INFO] [detection] Page 009: 0 regions
+[INFO] [detection] Page 010: 1 regions
+[INFO] [detection] Page 011: 0 regions
+[INFO] [detection] Page 012: 2 regions
+[INFO] [detection] Page 013: 0 regions
+[INFO] [detection] Page 014: 1 regions
+[INFO] [detection] Page 015: 0 regions
+[INFO] [detection] Page 016: 3 regions
+[INFO] [detection] Page 017: 2 regions
+[INFO] [detection] Page 018: 2 regions
+[INFO] [detection] Page 019: 0 regions
+[INFO] [detection] Page 020: 0 regions
+[INFO] [detection] Page 021: 1 regions
+[INFO] [detection] Page 022: 0 regions
+[INFO] [detection] Page 023: 1 regions
+[INFO] [detection] Page 024: 2 regions
+[INFO] [detection] Page 025: 3 regions
+[INFO] [detection] Page 026: 0 regions
+[INFO] [detection] Page 027: 1 regions
+[INFO] [detection] Page 028: 0 regions
+[INFO] [detection] Page 029: 3 regions
+[INFO] [detection] Page 030: 1 regions
+[INFO] [detection] Page 031: 2 regions
+[INFO] [detection] Page 032: 3 regions
+[INFO] [detection] Page 033: 1 regions
+[INFO] [detection] Page 034: 3 regions
+[INFO] [detection] Page 035: 1 regions
+[INFO] [detection] Page 036: 0 regions
+[INFO] [detection] Page 037: 0 regions
+[INFO] [detection] Page 038: 0 regions
+[INFO] [detection] Page 039: 0 regions
+[INFO] [detection] Page 040: 0 regions
+[INFO] [detection] Page 041: 1 regions
+[INFO] [detection] Page 042: 0 regions
+[INFO] [detection] Page 043: 3 regions
+[INFO] [detection] Page 044: 0 regions
+[INFO] [detection] Page 045: 0 regions
+[INFO] [detection] Page 046: 1 regions
+[INFO] [detection] Page 047: 1 regions
+[INFO] [detection] Page 048: 1 regions
+[INFO] [detection] Page 049: 0 regions
+[INFO] [detection] Page 050: 2 regions
+[INFO] [detection] Page 051: 0 regions
+[INFO] [detection] Page 052: 0 regions
+[INFO] [detection] Page 053: 0 regions
+[INFO] [detection] Page 054: 0 regions
+[INFO] [detection] Page 055: 1 regions
+[INFO] [detection] Page 056: 1 regions
+[INFO] [detection] Page 057: 0 regions
+[INFO] [detection] Page 058: 1 regions
+[INFO] [detection] Page 059: 1 regions
+[INFO] [detection] Page 060: 1 regions
+[INFO] [detection] Page 061: 2 regions
+[INFO] [detection] Page 062: 3 regions
+[INFO] [detection] Page 063: 4 regions
+[INFO] [detection] Page 064: 0 regions
+[INFO] [detection] Page 065: 0 regions
+[INFO] [detection] Page 066: 0 regions
+[INFO] [detection] Page 067: 0 regions
+[INFO] [detection] Page 068: 1 regions
+[INFO] [detection] Page 069: 0 regions
+[INFO] [detection] Page 070: 2 regions
+[INFO] [detection] Page 071: 1 regions
+[INFO] [detection] Page 072: 0 regions
+[INFO] [detection] Page 073: 1 regions
+[INFO] [detection] Page 074: 1 regions
+[INFO] [detection] Page 075: 2 regions
+[INFO] [detection] Page 076: 2 regions
+[INFO] [detection] Page 077: 0 regions
+[INFO] [detection] Page 078: 1 regions
+[INFO] [detection] Page 079: 1 regions
+[INFO] [detection] Page 080: 0 regions
+[INFO] [detection] Page 081: 1 regions
+[INFO] [detection] Page 082: 1 regions
+[INFO] [detection] Page 083: 0 regions
+[INFO] [detection] Page 084: 2 regions
+[INFO] [detection] Page 085: 0 regions
+[INFO] [detection] Page 086: 1 regions
+[INFO] [detection] Page 087: 0 regions
+[INFO] [detection] Page 088: 1 regions
+[INFO] [detection] Page 089: 0 regions
+[INFO] [detection] Page 090: 0 regions
+[INFO] [detection] Page 091: 3 regions
+[INFO] [detection] Page 092: 3 regions
+[INFO] [detection] Page 093: 1 regions
+[INFO] [detection] Page 094: 6 regions
+[INFO] [detection] Page 095: 0 regions
+[INFO] [detection] Page 096: 0 regions
+[INFO] [detection] Page 097: 0 regions
+[INFO] [detection] Page 098: 1 regions
+[INFO] [detection] Page 099: 0 regions
+[INFO] [detection] Page 100: 2 regions
+[INFO] [detection] Page 101: 0 regions
+[INFO] [detection] Page 102: 2 regions
+[INFO] [detection] Page 103: 1 regions
+[INFO] [detection] Page 104: 1 regions
+[INFO] [detection] Page 105: 1 regions
+[INFO] [detection] Page 106: 2 regions
+[INFO] [detection] Page 107: 0 regions
+[INFO] [detection] Page 108: 2 regions
+[INFO] [detection] Page 109: 1 regions
+[INFO] [detection] Page 110: 0 regions
+[INFO] [detection] Page 111: 1 regions
+[INFO] [detection] Page 112: 0 regions
+[INFO] [detection] Page 113: 1 regions
+[INFO] [detection] Page 114: 2 regions
+[INFO] [detection] Page 115: 1 regions
+[INFO] [detection] Page 116: 0 regions
+[INFO] [detection] Page 117: 1 regions
+[INFO] [detection] Page 118: 1 regions
+[INFO] [detection] Page 119: 1 regions
+[INFO] [detection] Page 120: 1 regions
+[INFO] [detection] Page 121: 0 regions
+[INFO] [detection] Page 122: 2 regions
+[INFO] [detection] Page 123: 1 regions
+[INFO] [detection] Page 124: 1 regions
+[INFO] [detection] Page 125: 0 regions
+[INFO] [detection] Page 126: 0 regions
+[INFO] [detection] Page 127: 1 regions
+[INFO] [detection] Page 128: 0 regions
+[INFO] [detection] Page 129: 3 regions
+[INFO] [detection] Page 130: 0 regions
+[INFO] [detection] Page 131: 1 regions
+[INFO] [detection] Page 132: 3 regions
+[INFO] [detection] Page 133: 1 regions
+[INFO] [detection] Page 134: 1 regions
+[INFO] [detection] Page 135: 1 regions
+[INFO] [detection] Page 000: 2 regions
+[INFO] VRAM peak detection: 356 MB
+[INFO] YOLO comic detector unloaded
+[INFO] [ocr] Starting OCR
+[INFO] Loading Hybrid Qwen OCR model=D:\projects\models\Qwen3-VL-8B-Instruct device=cuda:0 4bit=True local_files_only=True
+W1107 18:47:26.290000 2636 Lib\site-packages\torch\utils\flop_counter.py:113] triton not found; flop counting will not work for triton kernels
+System.Management.Automation.RemoteException
+Loading weights:   0%|          | 0/750 [00:00<?, ?it/s]
+Loading weights:   0%|          | 1/750 [00:01<15:34,  1.25s/it]
+Loading weights:   0%|          | 2/750 [00:02<17:46,  1.43s/it]
+Loading weights:   1%|          | 4/750 [00:02<07:06,  1.75it/s]
+Loading weights:   1%|          | 5/750 [00:03<05:19,  2.33it/s]
+Loading weights:   1%|1         | 9/750 [00:03<02:07,  5.82it/s]
+Loading weights:   2%|2         | 15/750 [00:03<01:05, 11.17it/s]
+Loading weights:   2%|2         | 18/750 [00:03<01:00, 12.01it/s]
+Loading weights:   3%|3         | 26/750 [00:03<00:37, 19.41it/s]
+Loading weights:   4%|3         | 29/750 [00:03<00:40, 17.64it/s]
+Loading weights:   5%|4         | 37/750 [00:04<00:31, 22.79it/s]
+Loading weights:   5%|5         | 40/750 [00:04<00:35, 20.27it/s]
+Loading weights:   6%|6         | 48/750 [00:04<00:26, 26.04it/s]
+Loading weights:   7%|6         | 51/750 [00:04<00:32, 21.72it/s]
+Loading weights:   8%|7         | 59/750 [00:05<00:26, 26.05it/s]
+Loading weights:   8%|8         | 62/750 [00:05<00:32, 21.39it/s]
+Loading weights:   9%|8         | 67/750 [00:05<00:26, 25.86it/s]
+Loading weights:   9%|9         | 71/750 [00:05<00:33, 20.39it/s]
+Loading weights:  10%|9         | 74/750 [00:05<00:32, 21.03it/s]
+Loading weights:  10%|#         | 78/750 [00:05<00:27, 24.39it/s]
+Loading weights:  11%|#         | 81/750 [00:06<00:30, 22.29it/s]
+Loading weights:  11%|#1        | 84/750 [00:06<00:40, 16.55it/s]
+Loading weights:  12%|#2        | 90/750 [00:06<00:28, 23.15it/s]
+Loading weights:  13%|#2        | 94/750 [00:07<00:43, 15.05it/s]
+Loading weights:  13%|#3        | 101/750 [00:07<00:29, 22.31it/s]
+Loading weights:  14%|#4        | 105/750 [00:07<00:41, 15.72it/s]
+Loading weights:  15%|#5        | 114/750 [00:07<00:30, 21.06it/s]
+Loading weights:  16%|#5        | 118/750 [00:08<00:33, 19.12it/s]
+Loading weights:  17%|#6        | 125/750 [00:08<00:29, 21.51it/s]
+Loading weights:  17%|#7        | 128/750 [00:08<00:33, 18.34it/s]
+Loading weights:  18%|#8        | 136/750 [00:08<00:27, 22.67it/s]
+Loading weights:  19%|#8        | 139/750 [00:09<00:32, 19.00it/s]
+Loading weights:  20%|#9        | 147/750 [00:09<00:26, 23.02it/s]
+Loading weights:  20%|##        | 150/750 [00:09<00:30, 19.57it/s]
+Loading weights:  21%|##1       | 158/750 [00:09<00:26, 22.76it/s]
+Loading weights:  21%|##1       | 161/750 [00:10<00:30, 19.26it/s]
+Loading weights:  22%|##2       | 166/750 [00:10<00:24, 23.57it/s]
+Loading weights:  23%|##2       | 169/750 [00:10<00:25, 22.46it/s]
+Loading weights:  23%|##2       | 172/750 [00:10<00:31, 18.34it/s]
+Loading weights:  24%|##4       | 180/750 [00:10<00:24, 23.36it/s]
+Loading weights:  24%|##4       | 183/750 [00:11<00:29, 19.24it/s]
+Loading weights:  25%|##5       | 191/750 [00:11<00:23, 23.47it/s]
+Loading weights:  26%|##5       | 194/750 [00:11<00:29, 18.92it/s]
+Loading weights:  27%|##6       | 202/750 [00:11<00:22, 24.00it/s]
+Loading weights:  27%|##7       | 205/750 [00:12<00:26, 20.22it/s]
+Loading weights:  28%|##8       | 213/750 [00:12<00:21, 25.23it/s]
+Loading weights:  29%|##8       | 216/750 [00:12<00:25, 21.10it/s]
+Loading weights:  30%|##9       | 224/750 [00:12<00:20, 25.62it/s]
+Loading weights:  30%|###       | 227/750 [00:13<00:25, 20.67it/s]
+Loading weights:  31%|###1      | 235/750 [00:13<00:21, 23.72it/s]
+Loading weights:  32%|###1      | 238/750 [00:13<00:25, 19.79it/s]
+Loading weights:  33%|###2      | 244/750 [00:13<00:19, 25.57it/s]
+Loading weights:  33%|###3      | 248/750 [00:14<00:28, 17.56it/s]
+Loading weights:  34%|###4      | 257/750 [00:14<00:21, 22.85it/s]
+Loading weights:  35%|###4      | 260/750 [00:14<00:25, 18.93it/s]
+Loading weights:  36%|###5      | 268/750 [00:15<00:20, 22.96it/s]
+Loading weights:  36%|###6      | 271/750 [00:15<00:24, 19.42it/s]
+Loading weights:  37%|###7      | 279/750 [00:15<00:20, 22.78it/s]
+Loading weights:  38%|###7      | 282/750 [00:15<00:25, 18.62it/s]
+Loading weights:  38%|###8      | 288/750 [00:15<00:19, 24.14it/s]
+Loading weights:  39%|###8      | 292/750 [00:16<00:26, 17.13it/s]
+Loading weights:  40%|###9      | 299/750 [00:16<00:18, 23.82it/s]
+Loading weights:  40%|####      | 303/750 [00:16<00:26, 17.11it/s]
+Loading weights:  42%|####1     | 312/750 [00:17<00:19, 22.44it/s]
+Loading weights:  42%|####2     | 316/750 [00:17<00:22, 19.25it/s]
+Loading weights:  43%|####3     | 323/750 [00:17<00:20, 21.15it/s]
+Loading weights:  43%|####3     | 326/750 [00:17<00:22, 18.76it/s]
+Loading weights:  45%|####4     | 334/750 [00:18<00:18, 22.92it/s]
+Loading weights:  45%|####4     | 337/750 [00:18<00:22, 18.66it/s]
+Loading weights:  46%|####6     | 345/750 [00:18<00:17, 23.08it/s]
+Loading weights:  46%|####6     | 348/750 [00:19<00:20, 19.50it/s]
+Loading weights:  47%|####7     | 356/750 [00:19<00:16, 24.02it/s]
+Loading weights:  48%|####7     | 359/750 [00:19<00:19, 19.75it/s]
+Loading weights:  49%|####8     | 367/750 [00:19<00:16, 23.42it/s]
+Loading weights:  49%|####9     | 370/750 [00:20<00:19, 19.54it/s]
+Loading weights:  50%|#####     | 376/750 [00:20<00:14, 25.23it/s]
+Loading weights:  51%|#####     | 380/750 [00:20<00:20, 17.74it/s]
+Loading weights:  52%|#####1    | 389/750 [00:20<00:16, 22.55it/s]
+Loading weights:  52%|#####2    | 392/750 [00:21<00:18, 19.08it/s]
+Loading weights:  54%|#####3    | 403/750 [00:21<00:11, 31.33it/s]
+Loading weights:  59%|#####8    | 439/750 [00:21<00:03, 82.77it/s]
+Loading weights:  62%|######2   | 467/750 [00:21<00:02, 118.39it/s]
+Loading weights:  67%|######6   | 499/750 [00:21<00:01, 159.43it/s]
+Loading weights:  69%|######9   | 521/750 [00:21<00:01, 171.00it/s]
+Loading weights:  73%|#######3  | 549/750 [00:21<00:01, 189.75it/s]
+Loading weights:  77%|#######6  | 575/750 [00:21<00:00, 201.79it/s]
+Loading weights:  80%|#######9  | 598/750 [00:21<00:00, 208.58it/s]
+Loading weights:  83%|########3 | 623/750 [00:22<00:00, 212.29it/s]
+Loading weights:  86%|########6 | 647/750 [00:22<00:00, 219.78it/s]
+Loading weights:  91%|######### | 679/750 [00:22<00:00, 247.65it/s]
+Loading weights:  94%|#########3| 705/750 [00:22<00:00, 229.64it/s]
+Loading weights:  97%|#########7| 729/750 [00:22<00:00, 181.07it/s]
+Loading weights: 100%|##########| 750/750 [00:22<00:00, 117.62it/s]
+Loading weights: 100%|##########| 750/750 [00:22<00:00, 32.66it/s] 
+D:\projects\Lib\site-packages\transformers\models\qwen2_vl\image_processing_qwen2_vl.py:129: FutureWarning: Passing `min_pixels` and `max_pixels` to a processor call is deprecated and will be removed in v5.23. Pass in `size={'longest_edge': xxx, 'shortest_edge': xxx} to override the target size.`
+  warnings.warn(
+D:\projects\Lib\site-packages\bitsandbytes\backends\cuda\ops.py:957: UserWarning: inner dimension (4304) is not aligned for fast kernel with blocksize=64, falling back to slower implementation.
+  warn(
+[INFO] [ocr] Page 001: 4/4 successful
+[INFO] [ocr] Page 002: 1/1 successful
+[INFO] [ocr] Page 003: 1/1 successful
+[INFO] [ocr] Page 004: 4/4 successful
+[INFO] [ocr] Page 005: 1/1 successful
+[INFO] [ocr] Page 006: 0/0 successful
+[INFO] [ocr] Page 007: 0/0 successful
+[INFO] [ocr] Page 008: 0/0 successful
+[INFO] [ocr] Page 009: 0/0 successful
+[INFO] [ocr] Page 010: 1/1 successful
+[INFO] [ocr] Page 011: 0/0 successful
+[INFO] [ocr] Page 012: 2/2 successful
+[INFO] [ocr] Page 013: 0/0 successful
+[INFO] [ocr] Page 014: 1/1 successful
+[INFO] [ocr] Page 015: 0/0 successful
+[INFO] [ocr] Page 016: 3/3 successful
+[INFO] [ocr] Page 017: 2/2 successful
+[INFO] [ocr] Page 018: 2/2 successful
+[INFO] [ocr] Page 019: 0/0 successful
+[INFO] [ocr] Page 020: 0/0 successful
+[INFO] [ocr] Page 021: 1/1 successful
+[INFO] [ocr] Page 022: 0/0 successful
+[INFO] [ocr] Page 023: 1/1 successful
+[INFO] [ocr] Page 024: 2/2 successful
+[INFO] [ocr] Page 025: 3/3 successful
+[INFO] [ocr] Page 026: 0/0 successful
+[INFO] [ocr] Page 027: 1/1 successful
+[INFO] [ocr] Page 028: 0/0 successful
+[INFO] [ocr] Page 029: 3/3 successful
+[INFO] [ocr] Page 030: 1/1 successful
+[INFO] [ocr] Page 031: 2/2 successful
+[INFO] [ocr] Page 032: 3/3 successful
+[INFO] [ocr] Page 033: 1/1 successful
+[INFO] [ocr] Page 034: 3/3 successful
+[INFO] [ocr] Page 035: 1/1 successful
+[INFO] [ocr] Page 036: 0/0 successful
+[INFO] [ocr] Page 037: 0/0 successful
+[INFO] [ocr] Page 038: 0/0 successful
+[INFO] [ocr] Page 039: 0/0 successful
+[INFO] [ocr] Page 040: 0/0 successful
+[INFO] [ocr] Page 041: 1/1 successful
+[INFO] [ocr] Page 042: 0/0 successful
+[INFO] [ocr] Page 043: 3/3 successful
+[INFO] [ocr] Page 044: 0/0 successful
+[INFO] [ocr] Page 045: 0/0 successful
+[INFO] [ocr] Page 046: 1/1 successful
+[INFO] [ocr] Page 047: 1/1 successful
+[INFO] [ocr] Page 048: 1/1 successful
+[INFO] [ocr] Page 049: 0/0 successful
+[INFO] [ocr] Page 050: 2/2 successful
+[INFO] [ocr] Page 051: 0/0 successful
+[INFO] [ocr] Page 052: 0/0 successful
+[INFO] [ocr] Page 053: 0/0 successful
+[INFO] [ocr] Page 054: 0/0 successful
+[INFO] [ocr] Page 055: 1/1 successful
+[INFO] [ocr] Page 056: 1/1 successful
+[INFO] [ocr] Page 057: 0/0 successful
+[INFO] [ocr] Page 058: 1/1 successful
+[INFO] [ocr] Page 059: 1/1 successful
+[INFO] [ocr] Page 060: 1/1 successful
+[INFO] [ocr] Page 061: 2/2 successful
+[INFO] [ocr] Page 062: 3/3 successful
+[INFO] [ocr] Page 063: 4/4 successful
+[INFO] [ocr] Page 064: 0/0 successful
+[INFO] [ocr] Page 065: 0/0 successful
+[INFO] [ocr] Page 066: 0/0 successful
+[INFO] [ocr] Page 067: 0/0 successful
+[INFO] [ocr] Page 068: 1/1 successful
+[INFO] [ocr] Page 069: 0/0 successful
+[INFO] [ocr] Page 070: 2/2 successful
+[INFO] [ocr] Page 071: 1/1 successful
+[INFO] [ocr] Page 072: 0/0 successful
+[INFO] [ocr] Page 073: 1/1 successful
+[INFO] [ocr] Page 074: 1/1 successful
+[INFO] [ocr] Page 075: 2/2 successful
+[INFO] [ocr] Page 076: 2/2 successful
+[INFO] [ocr] Page 077: 0/0 successful
+[INFO] [ocr] Page 078: 1/1 successful
+[INFO] [ocr] Page 079: 1/1 successful
+[INFO] [ocr] Page 080: 0/0 successful
+[INFO] [ocr] Page 081: 1/1 successful
+[INFO] [ocr] Page 082: 1/1 successful
+[INFO] [ocr] Page 083: 0/0 successful
+[INFO] [ocr] Page 084: 2/2 successful
+[INFO] [ocr] Page 085: 0/0 successful
+[INFO] [ocr] Page 086: 1/1 successful
+[INFO] [ocr] Page 087: 0/0 successful
+[INFO] [ocr] Page 088: 1/1 successful
+[INFO] [ocr] Page 089: 0/0 successful
+[INFO] [ocr] Page 090: 0/0 successful
+[INFO] [ocr] Page 091: 3/3 successful
+[INFO] [ocr] Page 092: 3/3 successful
+[INFO] [ocr] Page 093: 1/1 successful
+[INFO] [ocr] Page 094: 6/6 successful
+[INFO] [ocr] Page 095: 0/0 successful
+[INFO] [ocr] Page 096: 0/0 successful
+[INFO] [ocr] Page 097: 0/0 successful
+[INFO] [ocr] Page 098: 1/1 successful
+[INFO] [ocr] Page 099: 0/0 successful
+[INFO] [ocr] Page 100: 2/2 successful
+[INFO] [ocr] Page 101: 0/0 successful
+[INFO] [ocr] Page 102: 2/2 successful
+[INFO] [ocr] Page 103: 1/1 successful
+[INFO] [ocr] Page 104: 1/1 successful
+[INFO] [ocr] Page 105: 1/1 successful
+[INFO] [ocr] Page 106: 2/2 successful
+[INFO] [ocr] Page 107: 0/0 successful
+[INFO] [ocr] Page 108: 2/2 successful
+[INFO] [ocr] Page 109: 1/1 successful
+[INFO] [ocr] Page 110: 0/0 successful
+[INFO] [ocr] Page 111: 1/1 successful
+[INFO] [ocr] Page 112: 0/0 successful
+[INFO] [ocr] Page 113: 1/1 successful
+[INFO] [ocr] Page 114: 2/2 successful
+[INFO] [ocr] Page 115: 1/1 successful
+[INFO] [ocr] Page 116: 0/0 successful
+[INFO] [ocr] Page 117: 1/1 successful
+[INFO] [ocr] Page 118: 1/1 successful
+[INFO] [ocr] Page 119: 1/1 successful
+[INFO] [ocr] Page 120: 1/1 successful
+[INFO] [ocr] Page 121: 0/0 successful
+[INFO] [ocr] Page 122: 2/2 successful
+[INFO] [ocr] Page 123: 1/1 successful
+[INFO] [ocr] Page 124: 1/1 successful
+[INFO] [ocr] Page 125: 0/0 successful
+[INFO] [ocr] Page 126: 0/0 successful
+[INFO] [ocr] Page 127: 1/1 successful
+[INFO] [ocr] Page 128: 0/0 successful
+[INFO] [ocr] Page 129: 3/3 successful
+[INFO] [ocr] Page 130: 0/0 successful
+[INFO] [ocr] Page 131: 1/1 successful
+[INFO] [ocr] Page 132: 3/3 successful
+[INFO] [ocr] Page 133: 1/1 successful
+[INFO] [ocr] Page 134: 1/1 successful
+[INFO] [ocr] Page 135: 1/1 successful
+[INFO] [ocr] Page 000: 2/2 successful
+[INFO] VRAM peak ocr: 6630 MB
+[INFO] Hybrid Qwen OCR unloaded
+[INFO] [translation] Starting chapter translation (unit=region, format=scanlation)
+[INFO] Creating translator backend='huggingface' model='facebook/nllb-200-distilled-1.3B'
+[INFO] Translator backend=huggingface model=facebook/nllb-200-distilled-1.3B
+[INFO] Loading seq2seq model: facebook/nllb-200-distilled-1.3B
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+System.Management.Automation.RemoteException
+Loading weights:   0%|          | 0/1016 [00:00<?, ?it/s]
+Loading weights:   0%|          | 1/1016 [00:00<03:33,  4.76it/s]
+Loading weights:  17%|#6        | 172/1016 [00:00<00:01, 685.43it/s]
+Loading weights:  27%|##6       | 270/1016 [00:00<00:01, 723.10it/s]
+Loading weights:  35%|###5      | 359/1016 [00:00<00:00, 706.75it/s]
+Loading weights:  44%|####4     | 450/1016 [00:00<00:00, 758.84it/s]
+Loading weights:  53%|#####2    | 534/1016 [00:00<00:00, 748.19it/s]
+Loading weights:  61%|######    | 616/1016 [00:00<00:00, 753.19it/s]
+Loading weights:  68%|######8   | 695/1016 [00:01<00:00, 578.79it/s]
+Loading weights:  75%|#######4  | 761/1016 [00:01<00:00, 579.38it/s]
+Loading weights:  81%|########1 | 825/1016 [00:01<00:00, 592.43it/s]
+Loading weights:  88%|########7 | 889/1016 [00:01<00:00, 596.13it/s]
+Loading weights:  94%|#########3| 952/1016 [00:01<00:00, 595.57it/s]
+Loading weights: 100%|#########9| 1014/1016 [00:01<00:00, 602.12it/s]
+Loading weights: 100%|##########| 1016/1016 [00:01<00:00, 589.00it/s]
+[INFO] [translation] 115 lines / 77 pages translated (115 non-empty FA)
+[INFO] Scanlation FA: D:\projects\manga-ai\data\chapters\Ch.133 - Suddenly Became A Princess One Day\translation\chapter_scanlation_fa.txt
+[INFO] Readable QA: D:\projects\manga-ai\data\chapters\Ch.133 - Suddenly Became A Princess One Day\translation\chapter_en_fa.txt
+[INFO] HF translator unloaded
+[INFO] [masking] Generating masks
+[INFO] Downloading comic-text-detector (attempt 1) from https://github.com/zyddnys/manga-image-translator/releases/download/beta-0.2.1/comictextdetector.pt.onnx
+[INFO] Loaded comic-text-detector (cv2.dnn) from D:\projects\manga-ai\models\comictextdetector.pt.onnx
+[INFO] [masking] Page 001: mask generated
+[INFO] [masking] Page 002: mask generated
+[INFO] [masking] Page 003: mask generated
+[INFO] [masking] Page 004: mask generated
+[INFO] [masking] Page 005: mask generated
+[INFO] [masking] Page 006: mask generated
+[INFO] [masking] Page 007: mask generated
+[INFO] [masking] Page 008: mask generated
+[INFO] [masking] Page 009: mask generated
+[INFO] [masking] Page 010: mask generated
+[INFO] [masking] Page 011: mask generated
+[INFO] [masking] Page 012: mask generated
+[INFO] [masking] Page 013: mask generated
+[INFO] [masking] Page 014: mask generated
+[INFO] [masking] Page 015: mask generated
+[INFO] [masking] Page 016: mask generated
+[INFO] [masking] Page 017: mask generated
+[INFO] [masking] Page 018: mask generated
+[INFO] [masking] Page 019: mask generated
+[INFO] [masking] Page 020: mask generated
+[INFO] [masking] Page 021: mask generated
+[INFO] [masking] Page 022: mask generated
+[INFO] [masking] Page 023: mask generated
+[INFO] [masking] Page 024: mask generated
+[INFO] [masking] Page 025: mask generated
+[INFO] [masking] Page 026: mask generated
+[INFO] [masking] Page 027: mask generated
+[INFO] [masking] Page 028: mask generated
+[INFO] [masking] Page 029: mask generated
+[INFO] [masking] Page 030: mask generated
+[INFO] [masking] Page 031: mask generated
+[INFO] [masking] Page 032: mask generated
+[INFO] [masking] Page 033: mask generated
+[INFO] [masking] Page 034: mask generated
+[INFO] [masking] Page 035: mask generated
+[INFO] [masking] Page 036: mask generated
+[INFO] [masking] Page 037: mask generated
+[INFO] [masking] Page 038: mask generated
+[INFO] [masking] Page 039: mask generated
+[INFO] [masking] Page 040: mask generated
+[INFO] [masking] Page 041: mask generated
+[INFO] [masking] Page 042: mask generated
+[INFO] [masking] Page 043: mask generated
+[INFO] [masking] Page 044: mask generated
+[INFO] [masking] Page 045: mask generated
+[INFO] [masking] Page 046: mask generated
+[INFO] [masking] Page 047: mask generated
+[INFO] [masking] Page 048: mask generated
+[INFO] [masking] Page 049: mask generated
+[INFO] [masking] Page 050: mask generated
+[INFO] [masking] Page 051: mask generated
+[INFO] [masking] Page 052: mask generated
+[INFO] [masking] Page 053: mask generated
+[INFO] [masking] Page 054: mask generated
+[INFO] [masking] Page 055: mask generated
+[INFO] [masking] Page 056: mask generated
+[INFO] [masking] Page 057: mask generated
+[INFO] [masking] Page 058: mask generated
+[INFO] [masking] Page 059: mask generated
+[INFO] [masking] Page 060: mask generated
+[INFO] [masking] Page 061: mask generated
+[INFO] [masking] Page 062: mask generated
+[INFO] [masking] Page 063: mask generated
+[INFO] [masking] Page 064: mask generated
+[INFO] [masking] Page 065: mask generated
+[INFO] [masking] Page 066: mask generated
+[INFO] [masking] Page 067: mask generated
+[INFO] [masking] Page 068: mask generated
+[INFO] [masking] Page 069: mask generated
+[INFO] [masking] Page 070: mask generated
+[INFO] [masking] Page 071: mask generated
+[INFO] [masking] Page 072: mask generated
+[INFO] [masking] Page 073: mask generated
+[INFO] [masking] Page 074: mask generated
+[INFO] [masking] Page 075: mask generated
+[INFO] [masking] Page 076: mask generated
+[INFO] [masking] Page 077: mask generated
+[INFO] [masking] Page 078: mask generated
+[INFO] [masking] Page 079: mask generated
+[INFO] [masking] Page 080: mask generated
+[INFO] [masking] Page 081: mask generated
+[INFO] [masking] Page 082: mask generated
+[INFO] [masking] Page 083: mask generated
+[INFO] [masking] Page 084: mask generated
+[INFO] [masking] Page 085: mask generated
+[INFO] [masking] Page 086: mask generated
+[INFO] [masking] Page 087: mask generated
+[INFO] [masking] Page 088: mask generated
+[INFO] [masking] Page 089: mask generated
+[INFO] [masking] Page 090: mask generated
+[INFO] [masking] Page 091: mask generated
+[INFO] [masking] Page 092: mask generated
+[INFO] [masking] Page 093: mask generated
+[INFO] [masking] Page 094: mask generated
+[INFO] [masking] Page 095: mask generated
+[INFO] [masking] Page 096: mask generated
+[INFO] [masking] Page 097: mask generated
+[INFO] [masking] Page 098: mask generated
+[INFO] [masking] Page 099: mask generated
+[INFO] [masking] Page 100: mask generated
+[INFO] [masking] Page 101: mask generated
+[INFO] [masking] Page 102: mask generated
+[INFO] [masking] Page 103: mask generated
+[INFO] [masking] Page 104: mask generated
+[INFO] [masking] Page 105: mask generated
+[INFO] [masking] Page 106: mask generated
+[INFO] [masking] Page 107: mask generated
+[INFO] [masking] Page 108: mask generated
+[INFO] [masking] Page 109: mask generated
+[INFO] [masking] Page 110: mask generated
+[INFO] [masking] Page 111: mask generated
+[INFO] [masking] Page 112: mask generated
+[INFO] [masking] Page 113: mask generated
+[INFO] [masking] Page 114: mask generated
+[INFO] [masking] Page 115: mask generated
+[INFO] [masking] Page 116: mask generated
+[INFO] [masking] Page 117: mask generated
+[INFO] [masking] Page 118: mask generated
+[INFO] [masking] Page 119: mask generated
+[INFO] [masking] Page 120: mask generated
+[INFO] [masking] Page 121: mask generated
+[INFO] [masking] Page 122: mask generated
+[INFO] [masking] Page 123: mask generated
+[INFO] [masking] Page 124: mask generated
+[INFO] [masking] Page 125: mask generated
+[INFO] [masking] Page 126: mask generated
+[INFO] [masking] Page 127: mask generated
+[INFO] [masking] Page 128: mask generated
+[INFO] [masking] Page 129: mask generated
+[INFO] [masking] Page 130: mask generated
+[INFO] [masking] Page 131: mask generated
+[INFO] [masking] Page 132: mask generated
+[INFO] [masking] Page 133: mask generated
+[INFO] [masking] Page 134: mask generated
+[INFO] [masking] Page 135: mask generated
+[INFO] [masking] Page 000: mask generated
+[INFO] [inpainting] Starting inpainting / text removal
+[INFO] Loading anime-lama (TorchScript) on cuda:0
+D:\projects\Lib\site-packages\torch\jit\_serialization.py:176: FutureWarning: `torch.jit.load` is deprecated. Please switch to `torch.export`.
+  warnings.warn(
+[INFO] [inpainting] Page 001: cleaned
+[INFO] [inpainting] Page 002: cleaned
+[INFO] [inpainting] Page 003: cleaned
+[INFO] [inpainting] Page 004: cleaned
+[INFO] [inpainting] Page 005: cleaned
+[INFO] [inpainting] Page 006: cleaned
+[INFO] [inpainting] Page 007: cleaned
+[INFO] [inpainting] Page 008: cleaned
+[INFO] [inpainting] Page 009: cleaned
+[INFO] [inpainting] Page 010: cleaned
+[INFO] [inpainting] Page 011: cleaned
+[INFO] [inpainting] Page 012: cleaned
+[INFO] [inpainting] Page 013: cleaned
+[INFO] [inpainting] Page 014: cleaned
+[INFO] [inpainting] Page 015: cleaned
+[INFO] [inpainting] Page 016: cleaned
+[INFO] [inpainting] Page 017: cleaned
+[INFO] [inpainting] Page 018: cleaned
+[INFO] [inpainting] Page 019: cleaned
+[INFO] [inpainting] Page 020: cleaned
+[INFO] [inpainting] Page 021: cleaned
+[INFO] [inpainting] Page 022: cleaned
+[INFO] [inpainting] Page 023: cleaned
+[INFO] [inpainting] Page 024: cleaned
+[INFO] [inpainting] Page 025: cleaned
+[INFO] [inpainting] Page 026: cleaned
+[INFO] [inpainting] Page 027: cleaned
+[INFO] [inpainting] Page 028: cleaned
+[INFO] [inpainting] Page 029: cleaned
+[INFO] [inpainting] Page 030: cleaned
+[INFO] [inpainting] Page 031: cleaned
+[INFO] [inpainting] Page 032: cleaned
+[INFO] [inpainting] Page 033: cleaned
+[INFO] [inpainting] Page 034: cleaned
+[INFO] [inpainting] Page 035: cleaned
+[INFO] [inpainting] Page 036: cleaned
+[INFO] [inpainting] Page 037: cleaned
+[INFO] [inpainting] Page 038: cleaned
+[INFO] [inpainting] Page 039: cleaned
+[INFO] [inpainting] Page 040: cleaned
+[INFO] [inpainting] Page 041: cleaned
+[INFO] [inpainting] Page 042: cleaned
+[INFO] [inpainting] Page 043: cleaned
+[INFO] [inpainting] Page 044: cleaned
+[INFO] [inpainting] Page 045: cleaned
+[INFO] [inpainting] Page 046: cleaned
+[INFO] [inpainting] Page 047: cleaned
+[INFO] [inpainting] Page 048: cleaned
+[INFO] [inpainting] Page 049: cleaned
+[INFO] [inpainting] Page 050: cleaned
+[INFO] [inpainting] Page 051: cleaned
+[INFO] [inpainting] Page 052: cleaned
+[INFO] [inpainting] Page 053: cleaned
+[INFO] [inpainting] Page 054: cleaned
+[INFO] [inpainting] Page 055: cleaned
+[INFO] [inpainting] Page 056: cleaned
+[INFO] [inpainting] Page 057: cleaned
+[INFO] [inpainting] Page 058: cleaned
+[INFO] [inpainting] Page 059: cleaned
+[INFO] [inpainting] Page 060: cleaned
+[INFO] [inpainting] Page 061: cleaned
+[INFO] [inpainting] Page 062: cleaned
+[INFO] [inpainting] Page 063: cleaned
+[INFO] [inpainting] Page 064: cleaned
+[INFO] [inpainting] Page 065: cleaned
+[INFO] [inpainting] Page 066: cleaned
+[INFO] [inpainting] Page 067: cleaned
+[INFO] [inpainting] Page 068: cleaned
+[INFO] [inpainting] Page 069: cleaned
+[INFO] [inpainting] Page 070: cleaned
+[INFO] [inpainting] Page 071: cleaned
+[INFO] [inpainting] Page 072: cleaned
+[INFO] [inpainting] Page 073: cleaned
+[INFO] [inpainting] Page 074: cleaned
+[INFO] [inpainting] Page 075: cleaned
+[INFO] [inpainting] Page 076: cleaned
+[INFO] [inpainting] Page 077: cleaned
+[INFO] [inpainting] Page 078: cleaned
+[INFO] [inpainting] Page 079: cleaned
+[INFO] [inpainting] Page 080: cleaned
+[INFO] [inpainting] Page 081: cleaned
+[INFO] [inpainting] Page 082: cleaned
+[INFO] [inpainting] Page 083: cleaned
+[INFO] [inpainting] Page 084: cleaned
+[INFO] [inpainting] Page 085: cleaned
+[INFO] [inpainting] Page 086: cleaned
+[INFO] [inpainting] Page 087: cleaned
+[INFO] [inpainting] Page 088: cleaned
+[INFO] [inpainting] Page 089: cleaned
+[INFO] [inpainting] Page 090: cleaned
+[INFO] [inpainting] Page 091: cleaned
+[INFO] [inpainting] Page 092: cleaned
+[INFO] [inpainting] Page 093: cleaned
+[INFO] [inpainting] Page 094: cleaned
+[INFO] [inpainting] Page 095: cleaned
+[INFO] [inpainting] Page 096: cleaned
+[INFO] [inpainting] Page 097: cleaned
+[INFO] [inpainting] Page 098: cleaned
+[INFO] [inpainting] Page 099: cleaned
+[INFO] [inpainting] Page 100: cleaned
+[INFO] [inpainting] Page 101: cleaned
+[INFO] [inpainting] Page 102: cleaned
+[INFO] [inpainting] Page 103: cleaned
+[INFO] [inpainting] Page 104: cleaned
+[INFO] [inpainting] Page 105: cleaned
+[INFO] [inpainting] Page 106: cleaned
+[INFO] [inpainting] Page 107: cleaned
+[INFO] [inpainting] Page 108: cleaned
+[INFO] [inpainting] Page 109: cleaned
+[INFO] [inpainting] Page 110: cleaned
+[INFO] [inpainting] Page 111: cleaned
+[INFO] [inpainting] Page 112: cleaned
+[INFO] [inpainting] Page 113: cleaned
+[INFO] [inpainting] Page 114: cleaned
+[INFO] [inpainting] Page 115: cleaned
+[INFO] [inpainting] Page 116: cleaned
+[INFO] [inpainting] Page 117: cleaned
+[INFO] [inpainting] Page 118: cleaned
+[INFO] [inpainting] Page 119: cleaned
+[INFO] [inpainting] Page 120: cleaned
+[INFO] [inpainting] Page 121: cleaned
+[INFO] [inpainting] Page 122: cleaned
+[INFO] [inpainting] Page 123: cleaned
+[INFO] [inpainting] Page 124: cleaned
+[INFO] [inpainting] Page 125: cleaned
+[INFO] [inpainting] Page 126: cleaned
+[INFO] [inpainting] Page 127: cleaned
+[INFO] [inpainting] Page 128: cleaned
+[INFO] [inpainting] Page 129: cleaned
+[INFO] [inpainting] Page 130: cleaned
+[INFO] [inpainting] Page 131: cleaned
+[INFO] [inpainting] Page 132: cleaned
+[INFO] [inpainting] Page 133: cleaned
+[INFO] [inpainting] Page 134: cleaned
+[INFO] [inpainting] Page 135: cleaned
+[INFO] [inpainting] Page 000: cleaned
+[INFO] VRAM peak inpainting: 7062 MB
+[INFO] [pipeline] Completed
+
+Done. Manifest: D:\projects\manga-ai\data\chapters\Ch.133 - Suddenly Became A Princess One Day\manifest.json
+Pages: 136
+Regions: 137
+

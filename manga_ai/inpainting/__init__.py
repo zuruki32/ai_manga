@@ -10,7 +10,13 @@ from manga_ai.logging import get_logger
 
 logger = get_logger("manga_ai.inpainting")
 
-__all__ = ["Inpainter", "MockInpainter", "create_inpainter", "lama_available"]
+__all__ = [
+    "Inpainter",
+    "MockInpainter",
+    "create_inpainter",
+    "lama_available",
+    "iopaint_available",
+]
 
 
 def lama_available() -> bool:
@@ -18,6 +24,18 @@ def lama_available() -> bool:
         import simple_lama_inpainting  # noqa: F401
         return True
     except ImportError:
+        return False
+
+
+def iopaint_available() -> bool:
+    # Catch any import-time failure (e.g. a huggingface-hub version clash),
+    # not just ImportError, so a broken install degrades gracefully to OpenCV
+    # instead of crashing the pipeline.
+    try:
+        import iopaint  # noqa: F401
+        return True
+    except Exception as e:  # pragma: no cover - env dependent
+        logger.warning("IOPaint import failed (%s) — cleaning will use OpenCV", e)
         return False
 
 
@@ -38,6 +56,37 @@ def create_inpainter(backend: str = "mock", **kwargs) -> Inpainter:
     if backend == "opencv":
         from manga_ai.inpainting.opencv_backend import OpenCVInpainter
         return OpenCVInpainter(**_opencv_kwargs(kwargs))
+    if backend in ("anime-lama", "lama-anime", "animelama", "anime_lama"):
+        # Self-contained color anime/manga LaMa — no iopaint/diffusers/hub deps.
+        from manga_ai.inpainting.anime_lama import AnimeLaMaInpainter
+        return AnimeLaMaInpainter(
+            device=kwargs.get("device", "cuda"),
+            crop_margin=int(kwargs.get("crop_margin", 128)),
+            model_path=kwargs.get("model_path"),
+            solid_fill_std=float(kwargs.get("solid_fill_std", 10.0)),
+            feather_sigma=float(kwargs.get("feather_sigma", 2.0)),
+        )
+    if backend in ("iopaint", "manga"):
+        if not iopaint_available():
+            logger.warning(
+                "IOPaint requested but not installed — using OpenCV cleaner "
+                "(low quality on manga). Install with: "
+                "pip install 'manga-ai[iopaint]'   # or: pip install iopaint"
+            )
+            from manga_ai.inpainting.opencv_backend import OpenCVInpainter
+            return OpenCVInpainter(**_opencv_kwargs(kwargs))
+        from manga_ai.inpainting.iopaint_backend import IOPaintInpainter
+        # backend "manga" is shorthand for iopaint + the manga model
+        default_model = "manga" if backend == "manga" else kwargs.get("model", "manga")
+        return IOPaintInpainter(
+            model_name=kwargs.get("model", default_model),
+            device=kwargs.get("device", "cuda"),
+            crop_trigger_size=int(kwargs.get("crop_trigger_size", 1024)),
+            crop_margin=int(kwargs.get("crop_margin", 128)),
+            resize_limit=int(kwargs.get("resize_limit", 2048)),
+            hd_strategy=kwargs.get("hd_strategy", "crop"),
+            result_is_bgr=bool(kwargs.get("result_is_bgr", True)),
+        )
     if backend == "lama":
         if not lama_available():
             logger.warning(

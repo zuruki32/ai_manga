@@ -59,6 +59,7 @@ class Pipeline:
         self.manifest_path = self.chapter_dir / "manifest.json"
 
         self.force = bool(config.get("pipeline.force", False))
+        self.limit = int(config.get("pipeline.limit", 0) or 0)
         self.pipeline_version = config.get("pipeline.version", __version__)
         self.cache = ArtifactCache(enabled=config.get("cache.enabled", True))
 
@@ -81,6 +82,19 @@ class Pipeline:
             bubble_inflate=config.get("masking.bubble_inflate", True),
             bubble_pad_px=config.get("masking.bubble_pad_px", 8),
         )
+        # Optional comic-text-detector mask (catches SFX / stylized text the
+        # dialogue detector misses) — unioned into the cleaning mask.
+        self.ctd_masker = None
+        if str(config.get("masking.text_segmentation", "") or "").lower() in ("ctd", "comic_text_detector"):
+            try:
+                from manga_ai.masking.ctd import CTDTextMasker
+                self.ctd_masker = CTDTextMasker(
+                    thresh=float(config.get("masking.ctd_thresh", 0.3)),
+                    dilate=int(config.get("masking.ctd_dilate", 3)),
+                )
+            except Exception as e:
+                logger.warning(f"ctd text segmentation unavailable: {e}")
+
         self.quality = QualityChecker(config.section("quality"))
 
         preferred = config.get("device.preferred", "cuda")
@@ -212,6 +226,15 @@ class Pipeline:
                     passes=self.config.get("inpainting.passes", 2),
                     soft_edge=self.config.get("inpainting.soft_edge", 3),
                     bg_fill=self.config.get("inpainting.bg_fill", True),
+                    # IOPaint ("iopaint" / "manga") options
+                    model=self.config.get("inpainting.model"),
+                    crop_trigger_size=self.config.get("inpainting.crop_trigger_size", 1024),
+                    crop_margin=self.config.get("inpainting.crop_margin", 128),
+                    resize_limit=self.config.get("inpainting.resize_limit", 2048),
+                    hd_strategy=self.config.get("inpainting.hd_strategy", "crop"),
+                    result_is_bgr=self.config.get("inpainting.result_is_bgr", True),
+                    solid_fill_std=self.config.get("inpainting.solid_fill_std", 10.0),
+                    feather_sigma=self.config.get("inpainting.feather_sigma", 2.0),
                 )
             except Exception as e:
                 logger.warning(f"Inpainter '{backend}' failed ({e}), falling back to opencv")
@@ -239,6 +262,11 @@ class Pipeline:
         self._ocr = None
         self._translator = None
         self._inpainter = None
+        if self.ctd_masker is not None:
+            try:
+                self.ctd_masker.unload()
+            except Exception:
+                pass
         clear_cuda()
 
     # ------------------------------------------------------------------
@@ -372,6 +400,15 @@ class Pipeline:
                 new_id = f"{p}_{seen[p]}"
                 unique_pages.append(new_id)
                 unique_images.append(img)
+
+        if self.limit and self.limit > 0 and len(unique_images) > self.limit:
+            log_stage(
+                logger,
+                "preprocess",
+                f"Limiting to first {self.limit} of {len(unique_images)} pages",
+            )
+            unique_images = unique_images[: self.limit]
+            unique_pages = unique_pages[: self.limit]
 
         for d in (
             self.detection_dir,
@@ -942,7 +979,33 @@ class Pipeline:
             try:
                 arr, info = self.preprocessor.load(img_path)
                 page_regions = by_page.get(page, [])
+                # Cleaning only needs where text is (detection), not what it says
+                # (OCR). If OCR produced no regions for this page, fall back to
+                # the raw detection boxes so text removal still works.
+                if not page_regions:
+                    det_path = self.detection_dir / f"{page}.json"
+                    if det_path.exists():
+                        try:
+                            dets = json.loads(det_path.read_text(encoding="utf-8"))
+                            if dets:
+                                page_regions = dets
+                                logger.info(
+                                    "masking: page %s using %d detection boxes "
+                                    "(no OCR regions)", page, len(dets)
+                                )
+                        except Exception:
+                            pass
                 mask = self.mask_gen.generate((info.height, info.width), page_regions, image=arr)
+                # Union in the comic-text-detector mask so SFX / stylized text
+                # the dialogue detector missed also gets removed.
+                if self.ctd_masker is not None:
+                    try:
+                        tmask = self.ctd_masker.text_mask(arr)
+                        if tmask.shape[:2] != mask.shape[:2]:
+                            tmask = cv2.resize(tmask, (mask.shape[1], mask.shape[0]), interpolation=cv2.INTER_NEAREST)
+                        mask = cv2.bitwise_or(mask, tmask)
+                    except Exception as e:
+                        log_error(logger, stage, f"ctd mask failed: {e}", page=page)
                 mask_path = self.masks_dir / f"{page}.png"
                 cv2.imwrite(str(mask_path), mask)
                 masks[page] = mask
@@ -999,6 +1062,17 @@ class Pipeline:
         self._set_stage_meta(stage, meta)
 
         inpainter = self._get_inpainter()
+        # Record the backend that ACTUALLY loaded (create_inpainter may have
+        # fallen back to OpenCV if IOPaint/LaMa was unavailable), so the
+        # manifest/summary never mislabels the cleaner that ran.
+        actual = getattr(inpainter, "name", backend_name)
+        if actual != backend_name:
+            meta.warnings.append(f"requested '{backend_name}' but using '{actual}'")
+        meta.backend = actual
+        model_name = getattr(inpainter, "model_name", None)
+        if model_name:
+            meta.model = model_name
+        self._set_stage_meta(stage, meta)
         errors: List[str] = []
 
         def _opencv_fallback(reason: str) -> Inpainter:

@@ -25,4 +25,7 @@ pytest>=7.4.0
 # manga-ocr>=0.1.0
 
 # --- Local inpainting ---
+# Recommended: manga/anime-finetuned LaMa via IOPaint (backend: "iopaint" / "manga")
+# iopaint>=1.5.0
+# Alternative: generic big-LaMa
 # simple-lama-inpainting>=0.1.0
