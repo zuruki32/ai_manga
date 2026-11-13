@@ -55,7 +55,10 @@ class CTDTextMasker:
         self.thresh = float(thresh)
         self.dilate = int(dilate)
         self.model_path = Path(model_path) if model_path else (_default_cache() / "comictextdetector.pt.onnx")
-        self._net = None
+        self._net = None       # cv2.dnn net (CPU fallback)
+        self._sess = None      # onnxruntime session (GPU)
+        self._in_name = None
+        self._backend = None
 
     # ------------------------------------------------------------------
     def _ensure_downloaded(self) -> Path:
@@ -85,11 +88,32 @@ class CTDTextMasker:
         )
 
     def _ensure_net(self) -> None:
-        if self._net is not None:
+        if self._backend is not None:
             return
         path = self._ensure_downloaded()
+        # Prefer onnxruntime on GPU (fast); cv2.dnn is CPU-only and ~17 s/page.
+        # Only use onnxruntime when a GPU provider exists (its CPU path is slower
+        # than cv2.dnn), so install onnxruntime-gpu for fast masking.
+        try:
+            import onnxruntime as ort
+
+            provs = ort.get_available_providers()
+            gpu = [p for p in ("CUDAExecutionProvider", "ROCMExecutionProvider",
+                               "TensorrtExecutionProvider", "DmlExecutionProvider") if p in provs]
+            if gpu:
+                self._sess = ort.InferenceSession(str(path), providers=gpu + ["CPUExecutionProvider"])
+                self._in_name = self._sess.get_inputs()[0].name
+                self._backend = "onnxruntime"
+                logger.info("Loaded comic-text-detector (onnxruntime %s)", gpu)
+                return
+        except Exception as e:
+            logger.info("onnxruntime GPU unavailable (%s)", e)
         self._net = cv2.dnn.readNetFromONNX(str(path))
-        logger.info("Loaded comic-text-detector (cv2.dnn) from %s", path)
+        self._backend = "cv2dnn"
+        logger.info(
+            "Loaded comic-text-detector (cv2.dnn, CPU). For fast masking on GPU: "
+            "pip install onnxruntime-gpu"
+        )
 
     # ------------------------------------------------------------------
     def text_mask(self, image_rgb: np.ndarray) -> np.ndarray:
@@ -104,8 +128,11 @@ class CTDTextMasker:
         canvas[:nh, :nw] = resized
         # canvas is already RGB (pipeline arrays are RGB); don't swap channels
         blob = cv2.dnn.blobFromImage(canvas, 1 / 255.0, (s, s), swapRB=False)
-        self._net.setInput(blob)
-        seg = self._net.forward("seg")
+        if self._backend == "onnxruntime":
+            seg = self._sess.run(["seg"], {self._in_name: blob})[0]
+        else:
+            self._net.setInput(blob)
+            seg = self._net.forward("seg")
         segm = seg[0, 0] if seg.ndim == 4 else np.squeeze(seg)
         segm = segm[:nh, :nw]
         mask = cv2.resize(
@@ -118,3 +145,5 @@ class CTDTextMasker:
 
     def unload(self) -> None:
         self._net = None
+        self._sess = None
+        self._backend = None

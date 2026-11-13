@@ -70,6 +70,11 @@ lama = [
 iopaint = [
     "iopaint>=1.5.0",
 ]
+# Fast comic-text-detector masking on GPU (masking.text_segmentation: "ctd").
+# Without it, ctd still runs via OpenCV on CPU — correct but slow (~17 s/page).
+ctd = [
+    "onnxruntime-gpu>=1.16.0",
+]
 local = [
     "manga-ai[gpu,easyocr,translation-local]",
 ]
